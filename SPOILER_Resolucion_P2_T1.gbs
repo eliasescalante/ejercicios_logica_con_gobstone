@@ -1,0 +1,222 @@
+type EmpresaMédica is record { /*
+ PROPÓSITO: Modela una empresa de prestaciones médicas.
+ INV.REP:
+  * No hay dos prestaciones en “prestaciones” con el mismo id.
+  * No hay dos socios en “socios” con el mismo número de dni.
+  * Todas las autorizaciones de los socios en “socios” tienen un “nombrePrestador” y un “tipo” que
+    coincide con el nombre y el tipo de la prestadora en el campo “prestaciones” que tiene el id 
+    igual al” idDePrestación” de dicha autorización
+  * Todas las autorizaciones de los socios en “socios” tienen un número distinto de
+    “idDePrestación”, que además coincide con el id de alguna prestación del campo“prestaciones”.
+*/
+  field prestaciones         // [Prestación]
+  field socios               // [Socio]
+}
+type Prestación is record { /*
+  PROPÓSITO: Modelar una Prestación médica.
+  INV.REP:
+  * *nombreDePrestador* no es un string
+    vacío.
+  * *id* es mayor a cero.
+  * *costoEnBonos* es mayor o
+    igual a cero.
+*/
+  field id              // Número
+  field nombrePrestador // String
+  field costoEnBonos    // Número
+  field tipo            // TipoDePrestación
+}
+type Pedido is record { /*
+  PROPÓSITO: Modelar un pedido de prestación
+    médica.
+*/
+  field tipo        // TipoDePrestación 
+  field diagnóstico // String
+}
+type Autorización is record { /*
+  PROPÓSITO: Modelar una autorización de prestación
+    médica.
+*/
+  field tipo            // TipoDePrestación 
+  field diagnóstico     // String
+  field idDePrestación  // Número
+  field nombrePrestador // String
+}
+type Socio is record { /*
+  PROPÓSITO: Modelar un socio de la empresa de salud.
+  INV.REP:
+  * *dniSocio* no es un string vacío.
+  * *cantidadDeBonos* es mayor o igual a cero.
+*/
+  field dniSocio               // String
+  field cantidadDeBonos        // Número
+  field solicitudesPendientes  // [Pedido] 
+  field autorizacionesDadas    // [Autorización]
+}
+type TipoDePrestación is variant { /*
+  PROPÓSITO: Modelar los distintos tipos
+    de prestaciones médicas.
+*/
+  case Consulta   {}
+  case Receta     {}
+  case Derivación {}
+  case Estudio    {}
+}
+// Punto 1
+function empresa_ConCambioDePrestadora_Por_(empresa , nombrePrestadoraComprada, nombreNuevaPrestadora){
+    /*  PROPROSITO: describe la empresa dada con los nombres de la prestadora comprada cambiados por la nueva prestadora
+        PRECONDICIONES:
+            - nombreNuevaPrestadora no puede ser un string vacio.
+            - las dos prestadoras no deben tener el mismo nombre.
+        PARAMETROS:
+            - empresa: EmpresaMédica
+            - nombrePrestadoraComprada: String
+            - nombreNuevaPrestadora: String
+        TIPO: EmpresaMédica */
+    return(
+        EmpresaMédica(empresa |
+            prestaciones <- prestaciones_ConPrestadora_CambiadaA_(prestaciones(empresa), nombrePrestadoraComprada, nombreNuevaPrestadora )
+            socios <- socios_ConPrestadora_CambiadaA_(socios(empresa), nombrePrestadoraComprada, nombreNuevaPrestadora )
+            )
+        )
+}
+function socios_ConPrestadora_CambiadaA_(socios, prestadoraVieja, prestadoraNueva){
+    /*  PROPÓSITO: Describe la lista de socios dada, donde cada prestación cambió su prestadora por
+          **prestadoraNueva**, solo si su prestadora era **prestadoraVieja**, si no, queda como estaba.
+        PARÁMETROS:
+          * socios: [Socio]
+          * prestadoraVieja: String
+          * prestadoraNueva: String
+        PRECONDICIÓN: 
+            - nombreNuevaPrestadora no puede ser un string vacio.
+        TIPO: [Socio]
+        OBSERVACIONES: Recorrido de transformación*/    
+    sociosConPrestadoraCambiada := []
+    foreach socio in socios {
+        sociosConPrestadoraCambiada := sociosConPrestadoraCambiada ++ [socio_ConPrestadora_CambiadaA_(socio, prestadoraVieja, prestadoraNueva)]
+    }
+    return(sociosConPrestadoraCambiada)
+}
+function socio_ConPrestadora_CambiadaA_(socio, prestadoraVieja, prestadoraNueva){
+    /*  PROPÓSITO: Describe el socio dada, donde cada prestación cambió su prestadora por
+          **prestadoraNueva**, solo si su prestadora era **prestadoraVieja**, si no, queda como estaba.
+        PARÁMETROS:
+          * socio: Socio
+          * prestadoraVieja: String
+          * prestadoraNueva: String
+        PRECONDICIÓN: 
+            - nombreNuevaPrestadora no puede ser un string vacio.
+        TIPO: Socio */        
+    return(
+        Socio( socio |
+            autorizacionesDadas <- autorizaciones_ConPrestadora_CambiadaA_(autorizacionesDadas(socio), prestadoraVieja, prestadoraNueva)
+            )
+        )
+}
+function autorizaciones_ConPrestadora_CambiadaA_(autorizaciones, prestadoraVieja, prestadoraNueva){
+    /*  PROPÓSITO: Describe la lista de autorizaciones dadas, donde cada autorizacion cambió su prestadora por
+          **prestadoraNueva**, solo si su prestadora era **prestadoraVieja**, si no, queda como estaba.
+        PARÁMETROS:
+          * autorizaciones: Autorización
+          * prestadoraVieja: String
+          * prestadoraNueva: String
+        PRECONDICIÓN: 
+            - nombreNuevaPrestadora no puede ser un string vacio.
+        TIPO: Autorización
+        OBSERVACIONES: Recorrido de transformación */     
+    autorizacionesConPrestadoraCambiada := []
+    foreach autorizacion in autorizaciones {
+        autorizacionesConPrestadoraCambiada := autorizacionesConPrestadoraCambiada ++ 
+            [autorizacion_ConPrestadora_CambiadaA_(autorizacion, prestadoraVieja, prestadoraNueva)]
+    }
+    return(autorizacionesConPrestadoraCambiada)
+}
+function autorizacion_ConPrestadora_CambiadaA_(autorizacion, prestadoraVieja, prestadoraNueva){
+    /*  PROPÓSITO: Describe la  autorizacion dada, donde cambió su prestadora por
+          **prestadoraNueva**, solo si su prestadora era **prestadoraVieja**, si no, queda como estaba.
+        PARÁMETROS:
+          * autorizaciones: Autorización
+          * prestadoraVieja: String
+          * prestadoraNueva: String
+        PRECONDICIÓN: 
+            - nombreNuevaPrestadora no puede ser un string vacio.
+        TIPO: Autorización  */    
+    return(
+        choose 
+            autorizacion when (prestadoraVieja /= nombrePrestador(autorizacion))
+            autorizacion_ConNuevaPrestadora_(autorizacion, prestadoraNueva) otherwise
+        )
+}
+function autorizacion_ConNuevaPrestadora_(autorizacion, prestadoraNueva){
+    /*
+        PROPÓSITO: Describe la  autorizacion dada, donde cambió su prestadora por
+          **prestadoraNueva**.
+        PARÁMETROS:
+          * autorizaciones: Autorización
+          * prestadoraNueva: String
+        PRECONDICIÓN: 
+            - prestadoraNueva no puede ser un string vacio.
+        TIPO: Autorización
+    */        
+    
+    return(
+        Autorización( autorizacion |
+            nombrePrestador <- prestadoraNueva
+            )
+        )
+}
+// Punto 3)
+function dnisDeSociosEn_ConPedidoDeTipo_ConDineroInsuficiente(empresa, tipoDePrestacion){
+    /*    PROPÓSITO: describe una lista de dnis de socios que entre entre sus prestaciones 
+            al alguna prestanción del tipo dado y que no tienen bonos suficientes para realizar todas 
+            las prestaciones autorizadas.
+        PARÁMETROS:
+          * empresa: EmpresaMédica
+          * tipoDePrestacion: TipoDePrestación
+        PRECONDICIÓN: 
+            - Ninguna.
+        TIPO: [String]
+        OBSERVACIONES: Recorrido de filtrado.*/
+    dnisEncontradosHastaAhora:= []
+    foreach socio in socios(empresa){
+        dnisEncontradosHastaAhora := dnisEncontradosHastaAhora ++ singular_Si_(dniSocio(socio),
+            esSocio_ConAlgunPedidoDeTipo_En_(socio,tipoDePrestacion, empresa) && esSocio_ConDineroInsuficienteEn_(socio, empresa))
+    }
+    return(dnisEncontradosHastaAhora)
+}
+function esSocio_ConAlgunPedidoDeTipo_En_(socio,tipoDePrestacion, empresa){
+    /*  PROPÓSITO: indicar si el socio dado tiene algun pedido del tipo dado
+        PARÁMETROS:
+            - socio: Socio
+            - tipoDePrestacion: TipoDePrestación
+            - empresa : EmpresaMédica
+        PRECONDICIÓN: 
+            - debe estar el socio dado afiliado a la empresa dada.
+        TIPO: Booleano
+        OBSERVACIONES: Recorrido de Búsqueda.*/    
+    prestacionesARecorrer:= prestacionesAutorizadasDeSocioConDni_En_(dniSocio(socio), empresa)
+    while(not esVacía(prestacionesARecorrer) && tipoDePrestacion /= tipo(primero(prestacionesARecorrer))  ){
+        prestacionesARecorrer := resto(prestacionesARecorrer)
+    }
+    return(not esVacía(prestacionesARecorrer))
+}
+function esSocio_ConDineroInsuficienteEn_(socio, empresa){
+        /*
+        PROPÓSITO: indicar si el socio dado no tiene bonos suficientes para 
+            realizar todas las prestaciones autorizadas.
+        PARÁMETROS:
+            - socio: Socio
+            - empresa : EmpresaMédica
+        PRECONDICIÓN: 
+            - debe estar el socio dado afiliado a la empresa dada.
+        TIPO: Booleano
+        OBSERVACIONES: Recorrido de busqueda y acumulacion*/    
+    bonosRestantesDelSocio:= cantidadDeBonos(socio)
+    prestacionesARecorrer:= prestacionesAutorizadasDeSocioConDni_En_(dniSocio(socio), empresa)
+    while(not esVacía(prestacionesARecorrer) && bonosRestantesDelSocio - costoEnBonos(primero(prestacionesARecorrer)) >= 0 ){
+        bonosRestantesDelSocio := bonosRestantesDelSocio - costoEnBonos(primero(prestacionesARecorrer))
+        prestacionesARecorrer:= resto(prestacionesARecorrer)
+    }
+    return(not esVacía(prestacionesARecorrer))
+}
+

@@ -1,0 +1,331 @@
+type EmpresaConstructora is record { 
+/*
+    PROPÓSITO: Modelar una empresa de construcciones.
+    INV.REP:
+    * No hay dos servicios en “servicios” con el mismo id.
+    * No hay dos emprendimientos en “emprendimientos” con el mismo “idEmprendimiento”.
+    * Todos las contratos firmados en los emprendimientos de “emprendimientos” tienen un
+    “proveedor” y un “tipo” que se corresponde con los del servicio del campo **servicios** cuyo
+    id es igual al “idDeServicio” del contrato.
+    * Todos las contratos firmados en los emprendimientos de “emprendimientos” tienen un número
+    distinto de “idDeServicio”, que además coincide el id de algún servicio del campo “servicios”.
+*/
+    field servicios          // [Servicio]
+    field emprendimientos    // [Emprendimiento]
+}
+
+type Servicio is record { /*
+  PROPÓSITO: Modelar un Servicio de
+    construcción.
+  INV.REP:
+  * *prestador* no es un string vacío.
+  * *id* es mayor a cero.
+  * *precio* es mayor o igual a cero.
+*/
+  field id        // Número
+  field proveedor // String
+  field precio    // Número
+  field tipo      // TipoDeServicio
+}
+
+type Pedido is record { /*
+  PROPÓSITO: Modelar un pedido de servicio de
+    construcción.
+*/
+  field tipo       // TipoDeServicio
+  field direccion  // String
+}
+
+type Contrato is record { /*
+  PROPÓSITO: Modelar un contrato de servicio de
+    construcción.
+*/
+  field tipo         // TipoDeServicio
+  field direccion    // String
+  field idDeServicio // Número
+  field proveedor    // String
+}
+
+
+type Emprendimiento is record { 
+/*
+  PROPÓSITO: Modelar un emprendimiento de la empresa
+    constructora.
+  INV.REP:
+  * **idEmprendimiento** no es un string vacío.
+  * **presupuestoDisponible** es mayor o igual 0.
+*/
+  field idEmprendimiento      // String
+  field presupuestoDisponible // Número
+  field pedidos               // [Pedido] 
+  field contratosFirmados     // [Contratos]
+}
+
+
+type TipoDeServicio is variant { /*
+  PROPÓSITO: Modelar los distintos
+    tipos de servicios tercerizados.
+*/
+  case Plomería  {}
+  case Pintura   {}
+  case Aberturas {}
+  case Gas       {}
+}
+
+
+function empresa_ConCambioDeServicio_Por_(empresa, nombreProovedorComprado, nombreProovedorComprador){
+    /*
+        PROPOSITO: describe una nueva empresa en donde todos los contratos que eran de la prestadora 
+            comprada fueron cambiados por contratos de la prestadora que la compró. 
+        PRECONDICIONES:
+            - nombreProovedorComprador no debe ser un String vacío.
+        PARAMETROS:
+            - empresa : EmpresaConstructora
+            - nombreProovedorComprado: String
+            - nombreProovedorComprador: String
+        TIPO: EmpresaConstructora
+    
+    */
+    
+    return(
+        EmpresaConstructora( empresa |
+            servicios <- servicios_ConProveedor_CambiadoA_(servicios(empresa),nombreProovedorComprado, nombreProovedorComprador)
+            emprendimientos <- emprendimientos_ConProveedor_CambiadoA_(emprendimientos(empresa),nombreProovedorComprado, nombreProovedorComprador)
+            )
+        )
+    
+}
+
+
+function emprendimientos_ConProveedor_CambiadoA_(emprendimientos, nombreProovedorComprado, nombreProovedorComprador){
+    /*
+        PROPOSITO: describe una lista de emprendimientos en donde todos los contratos que eran de la prestadora 
+            comprada fueron cambiados por contratos de la prestadora que la compró. 
+        PRECONDICIONES:
+            - nombreProovedorComprador no debe ser un String vacío.
+        PARAMETROS:
+            - emprendimientos : [Emprendimiento]
+            - nombreProovedorComprado: String
+            - nombreProovedorComprador: String
+        TIPO: [Emprendimiento]
+        OBSERVACIONES: Recorrido de transformación
+    */    
+    
+    emprendimientosModificados := []
+    
+    foreach emprendimento in emprendimientos {
+        emprendimientosModificados =: emprendimientosModificados ++
+            [emprendimiento_ConProveedor_CambiadoA_(emprendimiento,nombreProovedorComprado, nombreProovedorComprador)]
+    }
+    
+    return(emprendimientosModificados)
+    
+}
+
+function emprendimiento_ConProveedor_CambiadoA_(emprendimiento, nombreProovedorComprado, nombreProovedorComprador){
+    /*
+        PROPOSITO: describe un emprendimiento en donde todos los contratos que eran de la prestadora 
+            comprada fueron cambiados por contratos de la prestadora que la compró. 
+        PRECONDICIONES:
+            - nombreProovedorComprador no debe ser un String vacío.
+        PARAMETROS:
+            - emprendimiento : Emprendimiento
+            - nombreProovedorComprado: String
+            - nombreProovedorComprador: String
+        TIPO: Emprendimiento
+    */    
+    
+    return(
+        Emprendimiento( emprendimiento |
+            contratosFirmados <- contratosFirmados_ConProveedor_CambiadoA_(
+                    contratosFirmados(emprendimiento), 
+                    nombreProovedorComprado, 
+                    nombreProovedorComprador
+                    )
+            )
+        )
+}
+
+function contratosFirmados_ConProveedor_CambiadoA_(contratosFirmados,nombreProovedorComprado, nombreProovedorComprador){
+    /*
+        PROPOSITO: describe todos los contratos y modifica los contratos que eran de la prestadora 
+            comprada la prestadora que la compró. 
+        PRECONDICIONES:
+            - nombreProovedorComprador no debe ser un String vacío.
+        PARAMETROS:
+            - contratosFirmados : [Contrato]
+            - nombreProovedorComprado: String
+            - nombreProovedorComprador: String
+        TIPO: Emprendimiento
+        OBSERVACIONES: Recorrido de transformación
+    */      
+    
+    contratosRevisados := []
+    
+    
+    foreach contrato in contratosFirmados{
+        contratosRevisados := contratosRevisados ++
+            [contratoFirmado_ConProveedor_CambiadoA_(contrato,nombreProovedorComprado, nombreProovedorComprador)]
+    }
+    
+    
+    return(contratosRevisados)
+    
+}
+
+function contratoFirmado_ConProveedor_CambiadoA_(contrato,nombreProovedorComprado, nombreProovedorComprador){
+    /*
+        PROPOSITO: describe el contrato con la  prestadora 
+            comprada la prestadora que la compró si corresponde. 
+        PRECONDICIONES:
+            - nombreProovedorComprador no debe ser un String vacío.
+        PARAMETROS:
+            - contrato : Contrato
+            - nombreProovedorComprado: String
+            - nombreProovedorComprador: String
+        TIPO: Contrato
+    */       
+    
+    return(
+        choose  contrato when (nombreProovedorComprado /= proveedor(contrato))
+                contrato_ConNuevoProovedor_(contrato, nombreProovedorComprador) otherwise
+        
+        
+        )
+    
+}
+
+function contrato_ConNuevoProovedor_(contrato, nuevoProovedor){
+    /*
+        PROPOSITO: describe el contrato con la  prestadora 
+            con el nuevo proovedor dado. 
+        PRECONDICIONES:
+            - nuevoProovedor no debe ser un String vacío.
+        PARAMETROS:
+            - contrato : Contrato
+            - nuevoProovedor: String
+        TIPO: Contrato
+    */      
+    
+    return(
+        Contrato(contrato |
+            proveedor <- nuevoProovedor
+            )
+        )
+}
+
+// Punto 2
+
+function idsDeEmprendimientosDeudoresEn_ConServiciosContratadosDeDeTipo_(empresa, tipoDeServicio){
+    /*
+        PROPOSITO: describe la lista de ids de emprendimientos  que entre sus contrato firmados 
+            tengan algun servicios del tipo dado  y que no tienen presupuesto suficiente para 
+            realizar todos los servicios ya contratados.
+        PRECONDICIONES:
+            - Ninguna
+        PARAMETROS:
+            - empresa : EmpresaConstructora
+            - tipoDeServicio: TipoDeServicio
+        TIPO: [String]
+        OBSERVACIONES: Recorrido de filtro
+    */     
+    
+    idsDeEmprendimientosDeudores := []
+    
+    foreach emprendimiento in emprendimientos(empresa){
+        idsDeEmprendimientosDeudores := idsDeEmprendimientosDeudores ++
+            singular_Si_(idEmprendimiento(emprendimiento), 
+            esEmprendimiento_ConServiciosDe_QueNoTienenSuficientePresupuestoEnLaEmpresa_(emprendimiento, tipoDeServicio, empresa))
+    }
+    
+    return(idsDeEmprendimientosDeudores)
+    
+    
+}
+
+function esEmprendimiento_ConServiciosDe_QueNoTienenSuficientePresupuestoEnLaEmpresa_(emprendimiento, tipoDeServicio, empresa){
+    /*
+        PROPOSITO: indica si el emprendimiento tiene servicios del tipo dado y no tiene suficiente presupuesto.
+        PRECONDICIONES:
+            - El emprendimiento dado tiene que ser parte de la empresa.
+        PARAMETROS:
+            - emprendimiento : Emprendimiento
+            - tipoDeServicio: TipoDeServicio
+            - empresa : EmpresaConstructora
+        TIPO: Booleano
+        OBSERVACIONES: Recorrido de ?
+    */ 
+    
+    return(hayServicos_DeTipo_(
+            serviciosContratadosDeEmprendimientoConId_En_(idEmprendimiento(emprendimiento), empresa),
+            tipoDeServicio
+            ) 
+            && 
+        not alcanzaElPresupuestoDe_ParaLosServicios_(
+            presupuestoDisponible(emprendimiento),
+            serviciosContratadosDeEmprendimientoConId_En_(idEmprendimiento(emprendimiento), empresa)
+            ))
+    
+    
+    
+    
+}
+
+function hayServicos_DeTipo_(servicios, tipoDeServicio){
+    /*
+        PROPOSITO: indica si hay al menos un servicio del tipo dado en los servicios dados.
+        PRECONDICIONES:
+            - Ninguna
+        PARAMETROS:
+            - servicios: [Servicio]
+            - tipoDeServicio : TipoDeServicio
+        TIPO: Booleano
+        OBSERVACIONES: Recorrido de Búsqueda
+    */ 
+    
+    serviciosARecorrer := servicios
+    
+    while(not esVacía(serviciosARecorrer) && tipo(primero(serviciosARecorrer)) /= tipoDeServicio ){
+        
+        serviciosARecorrer:= resto(serviciosARecorrer)
+    }
+    
+    return(not esVacía(serviciosARecorrer))
+    
+    
+}
+
+function alcanzaElPresupuestoDe_ParaLosServicios_(presupuesto, servicios){
+    /*
+        PROPOSITO: indica si alcanza el presupuesto dado para los servicios dados.
+        PRECONDICIONES:
+            - Ninguna
+        PARAMETROS:
+            - presupuesto: Numero
+            - servicios: [Servicio]
+        TIPO: Booleano
+        OBSERVACIONES: Recorrido de Búsqueda y acumulación
+    */     
+    
+    presupuestoRestante := presupuesto
+    
+    serviciosARecorrer:= servicios
+    
+    while(not esVacía(serviciosARecorrer) && (presupuestoRestante - precio(primero(serviciosARecorrer)  >= 0) ){
+        
+        presupuestoRestante := presupuestoRestante - precio(primero(serviciosARecorrer))
+        serviciosARecorrer := resto(serviciosARecorrer)
+    }
+    
+    return(esVacía(serviciosARecorrer))
+    
+}
+
+
+
+
+
+
+
+
+

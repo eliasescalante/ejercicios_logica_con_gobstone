@@ -1,0 +1,187 @@
+procedure MapearDensidadDeHispanohablantesBajoColor_(color){
+    /*
+    PROPOSITO: mapea la densidad de hispanohablantes en toda la imagen
+        indicandola con el color dado, en caso de no exisitir hispanohablantes
+        se indica con una bolita de color Negro.
+    PRECONDICIONES: No tiene
+    PARAMETROS:
+        -color: Color
+    */
+    
+    IrAlInicioDelRecorrido()
+    
+    while(hayCeldaDelRecorrido()){
+        
+        MapearDensidadDeHispanohablantesBajoColor_EnLaCeldaActual(color)
+        
+        IrASiguienteCeldaDelRecorrido()        
+    }
+    
+    MapearDensidadDeHispanohablantesBajoColor_EnLaCeldaActual(color)
+
+    
+}
+
+procedure MapearDensidadDeHispanohablantesBajoColor_EnLaCeldaActual(color){
+    /*
+    PROPOSITO: mapea la densidad de hispanohablantes en la celda actual
+        indicandola con el color dado, en caso de no exisitir hispanohablantes
+        se indica con una bolita de color Negro.
+    PRECONDICIONES: No tiene
+    PARAMETROS:
+        -color: Color
+    */
+    
+    if(hayHispanoHablantesEnLaCeldaActual()){
+        MapearDensidadDe_DeColor_(cantidadDeHispanoHablantesEnLaCeldaActual(),color)
+    }else{
+        MapearValorNeutro()
+    }
+    
+    
+
+}
+
+procedure MapearValorNeutro(densidad,color){
+    /**/
+    VaciarCelda()
+    Poner(Negro)
+}
+
+procedure MapearDensidadDe_DeColor_(densidad,color){
+    /**/
+    VaciarCelda()
+    Poner_DeColor_(densidad,color)
+}
+
+
+function hayHispanoHablantesEnLaCeldaActual(){
+    /**/
+    
+    paisARecorrer:= minColor()
+    
+    while(not elPais_EsHispano(paisARecorrer) && paisARecorrer /= maxColor()){
+        paisARecorrer:= siguiente(paisARecorrer)
+    }
+
+    return(elPais_EsHispano(paisARecorrer))
+
+}
+
+function cantidadDeHispanoHablantesEnLaCeldaActual(){
+    /**/
+    paisARecorrer:= minColor()
+    
+    cantidadDeHispanosHastaAhora:= cantidadDeTuristaDe_Si_SinoCero(paisARecorrer,elPais_EsHispano(paisARecorrer)
+    
+    while(paisARecorrer /= maxColor()){
+        paisARecorrer:= siguiente(paisARecorrer)
+        cantidadDeHispanosHastaAhora:= cantidadDeHispanosHastaAhora +
+            cantidadDeTuristaDe_Si_SinoCero(paisARecorrer,elPais_EsHispano(paisARecorrer)
+    }
+
+    return(cantidadDeHispanosHastaAhora)
+
+}
+
+function elPais_EsHispano(pais){
+    /**/
+    return(pais == argentina() || pais == mexico())
+}
+
+
+function cantidadDeTuristaDe_Si_SinoCero(pais,condicion){
+    /**/
+    return(
+        choose cantidadDeTuristasDe_(pais) when (condicion)
+                0   otherwise
+        
+        )
+}
+
+///
+
+function cantidadDeTuristasDe_(pais){
+    return(nroBolitas(color))
+}
+
+
+procedure IrACentroDeReuniónEnFilaDeTuristasDe_(pais){
+    /*
+    PROPOSITO: Ubica el cabezal al centro del reunion en la fila donde agrupa
+        mas turistas del pais dado.
+    PRECONDICIONES:
+        - Debe exitir una unica celda que agrupe la mayor cantidad de turistas en la fila actual.
+    PARAMETROS:
+        pais: Color
+    
+    */
+    
+    IrAlBorde(Oeste)
+    while(not esCentroDeReuniónEnFilaDeTuristasDe_(pais)){
+        Mover(Este)
+    }
+}
+
+
+function esCentroDeReuniónEnFilaDeTuristasDe_(pais){
+    /**/
+    return(cantidadDeTuristasAgrupadosEnLaCeldaActualDe_(pais) == maximoDeTuristasAgrupadosEnLaFilaActualDe_(pais))
+}
+
+
+function maximoDeTuristasAgrupadosEnLaFilaActualDe_(pais){
+    /**/
+
+    IrAlBorde(Oeste)
+    maximoDeTuristasAgrupadosHastaAhora := cantidadDeTuristasAgrupadosEnLaCeldaActualDe_(pais)
+        
+    while(puedeMover(Este)){
+        Mover(Este)
+        maximoDeTuristasAgrupadosHastaAhora:= maximoEntre_Y_(maximoDeTuristasAgrupadosHastaAhora,cantidadDeTuristasAgrupadosEnLaCeldaActualDe_(pais))
+    }
+    return(maximoDeTuristasAgrupadosHastaAhora)
+}
+
+
+function cantidadDeTuristasAgrupadosEnLaCeldaActualDe_(pais){
+    /**/
+    dirARecorrer:= minDir()
+    
+    cantidadDeTuristasHastaAhora:=  cantidadDeTuristasDe_(pais)
+    
+    while(dirARecorrer /= maxDir()){
+        
+        
+        cantidadDeTuristasHastaAhora:= cantidadDeTuristasHastaAhora + cantidadDeTuristasDe_Al_SiNoCero(pais,dirARecorrer)
+
+        dirARecorrer:= siguiente(dirARecorrer)
+    }
+    
+    return(cantidadDeTuristasHastaAhora + cantidadDeTuristasDe_Al_SiNoCero(pais,dirARecorrer))
+}
+
+function cantidadDeTuristasDe_Al_SiNoCero(pais,direccion){
+    return(
+        choose cantidadDeTuristasDe_Al_(pais) when (puedeMover(direccion))
+                                            0 otherwise
+        
+        )
+}
+
+
+
+function cantidadDeTuristasDe_Al_(pais,direccion){
+    /**/
+    Mover(direccion)
+    return(cantidadDeTuristasDe_(pais))
+}
+
+
+
+
+
+
+
+
+
