@@ -1,0 +1,1317 @@
+// EJERCICIO 1
+
+type Dia is record{
+    /*  Proposito: modelar un dia
+        INV. REP.: NINGUNA.*/
+    field dia // DiaDeLaSemana
+}
+type DiaDeLaSemana is variant {
+    /* PROPOSITO: modelar los dias de la semana */
+    case Lunes      {}
+    case Martes     {}
+    case Miercoles  {}
+    case Jueves     {}
+    case Viernes    {}
+    case Sabado     {}
+    case Domingo    {}
+}
+
+// a
+function díaSiguienteA_(dia){
+    /*  Proposito: describe el siguiente dia al "dia" dado.
+        Precondicion: ninguna.
+        Parametro: "dia", es un DiaDeLaSemana.
+        tipo: DiaDeLaSemana*/
+    return(choose   Lunes when (dia == Domingo)
+                    Martes when (dia == Lunes)
+                    Miercoles when (dia == Martes)
+                    Jueves when (dia == Miercoles)
+                    Viernes when (dia == Jueves)
+                    Sabado when (dia == Viernes)
+                    Domingo otherwise)
+}
+// b
+function diaPrevio_(dia){
+    /*  Proposito:  Describe el dia anterior al "dia" dado.
+        Tipo: un DiaDeLaSemana 
+        Parametros: dia, es un DiaDeLaSemana.
+        Precondiciones: ninguna
+    */
+    return (choose  Lunes       when (dia == Martes)
+                    Martes      when (dia == Miercoles)
+                    Miercoles   when (dia == Jueves)
+                    Jueves      when (dia == Viernes)
+                    Viernes     when (dia == Sabado)
+                    Sabado      when (dia == Domingo)
+                    Domingo     otherwise)
+}
+//c
+function es_DiaDeFinDeSemana(dia){
+    /*  Proposito: indica si el "dia" es un dia de fin de semana.
+        Precondiciones: ninguna.
+        Parametros: "dia", es un DiaDeLaSemana.
+        Tipo: Booleano*/
+    return( dia == Domingo || dia == Sabado || dia == Viernes )
+}
+
+//EJERCICIO 2
+type Carta is record {
+    /*
+        PROPOSITO: Modelar cartas españolas de truco
+        VAR-INR : Numero de cartas entre 1 y 7 o entre 10-12 */
+    field palo // del tipo Palo
+    field numero // del tipo Numero
+}
+
+type Palo is variant {
+    /*
+        PROPOSITO: Modelar los palos de las cartas españolas de truco */
+    case Bastos {}
+    case Copas {}
+    case Espadas {}
+    case Oros {}   
+}
+
+// a
+
+function es_Figura(carta){
+    /*  Proposito: indica si la "carta" es una figura.
+        Precondicion: ninguna.
+        Parametros: "carta", es una Carta.
+        Tipo: Booleano.*/
+    return(numero(carta) >= 10 )
+}
+
+//b
+
+function envidoCon_Y_(carta1, carta2){
+    /*
+        PROPOSITO: Describe el valor de envido simple con las cartas dadas
+        PRECONDICION: las cartas deben ser del mismo palo y no deben ser figuras.
+        PARAMETROS: carta1: es una Carta.
+                    carta2: es una Carta.
+        TIPO: Número */
+    return(numero(carta1) + numero(carta2 ) + 20)
+}
+
+//c
+
+function envidoCon_Y_mayorA_(carta1, carta2,cantidad){
+    /*  Proposito: indica si el envido con "carta1" y "carta2" es mayor a "cantidad".
+        Precondicion: las cartas deben ser del mismo palo y no deben ser figuras y la cantidad debe ser mayor a 0.
+        Parametros: carta1, es un Carta.
+                    carta2, es una Carta
+                    cantidad, es un Número.
+        tipo: Booleano*/
+    return(envidoCon_Y_(carta1,carta2) > cantidad)
+}
+
+//EJERCICIO 3
+
+type Celda is record{
+    /*
+        PROPÓSITO: modela una celda.
+        INV. REP.: Los números de los campos son todos
+        mayores o iguales a 0.
+    */
+    field cantidadDeAzules  // un número
+    field cantidadDeNegras  // un número
+    field cantidadDeRojas   // un número
+    field cantidadDeVerdes  // un número
+}
+
+// a
+
+function celdaActual(){
+    /*  Proposito: describe la celda actual.
+        Precondicion: ninguna.
+        Tipo: Celda.*/
+    return(Celda(cantidadDeAzules <- nroBolitas(Azul),
+                 cantidadDeNegras <- nroBolitas(Negro),
+                 cantidadDeRojas  <- nroBolitas(Rojo),
+                 cantidadDeVerdes <- nroBolitas(Verde)))
+}
+
+//b
+
+function cantidadDeAzulesEn_(celda){
+    /*  Proposito: describe la cantidad de Bolitas azules de la "celda" dada.
+        Precondicion: ninguna.
+        Parametro: celda, es una Celda.
+        Tipo: Número.*/
+    return(cantidadDeAzules(celda)) // preguntar.
+}
+
+//c
+
+function cantidadTotalDeBolitasEn_(celda){
+    /*  Proposito: describe la cantidad total de bolitas en la "celda" dada.
+        Precondicion: ninguna.
+        Parametros: celda. es una Celda.
+        Tipo: Número*/
+    return(cantidadDeAzules(celda) + cantidadDeNegras(celda) + cantidadDeRojas(celda) + cantidadDeVerdes(celda))
+}
+
+//d
+
+function tiene_MásBolitasQue_(celda1, celda2){
+    /*  Proposito: indica si la "celda1" tiene mas bolitas que la "celda2".
+        Precondicion: ninguna.
+        Parametros: celda1. es una Celda.
+                    celda2. es una Celda.
+        Tipo: Booleano.*/
+    return(cantidadTotalDeBolitasEn_(celda1) > cantidadTotalDeBolitasEn_(celda2))
+}
+
+//EJERCICIO 4
+
+type TipoDeCuenta is variant {
+    /*
+        PROPÓSITO: modelar los diferentes tipos de cuenta que
+        ofrece el banco.
+    */
+    case CuentaCorriente {}
+    case CajaDeAhorro    {}
+    case CuentaSueldo    {}
+}
+
+
+type Moneda is variant {
+    /*
+        PROPÓSITO: modelar los diferentes tipos de moneda con los
+        que trabaja el banco.
+    */
+    case Pesos   {}
+    case Dólares {}
+    case Euros   {}
+    case Reales  {}
+}
+
+
+type Cuenta is record {
+    /*
+        PROPÓSITO: modelar una cuenta.
+        INV. REP.:
+            * númeroDeCuenta debe ser >= 0.
+    */
+    field númeroDeCuenta    // Número
+    field tipoDeCuenta      // TipoDeCuenta
+    field nombreDelCliente  // String
+    field moneda            // Moneda
+    field saldo             // Número
+}
+
+// a
+
+function cuenta_ConSaldoActualizadoA_(cuenta, saldo){           // preguntar a saba.
+    /*  Proposito:  describe la "cuenta" con "saldo" actualizado.
+        Precondicion: ninguna.
+        Parametros: cuenta , es una Cuenta.
+                    saldo, es un Número.
+        Tipo: Cuenta*/
+    return(cuenta(saldo <- saldo)) // preguntar que onda.
+}
+// b
+
+function cuenta_ConTipoDeCuentaCambiadoA_(cuenta,tipoDeCuenta){
+    /*  Proposito: describe una "cuenta" con el nuevo "tipoDeCuenta" cambiado.
+        Precondicion: ninguna.
+        Parametro: cuenta, es una Cuenta.
+                   tipoDeCuenta, es unTipoDeCuenta
+        Tipo: Cuenta*/
+    return(cuenta(tipoDeCuenta <- tipoDeCuenta))// preguntar al profe
+}
+
+// c
+
+function cuenta_ConTipoCambiadoSegúnDisposición(cuenta){
+    /*
+        PROPÓSITO:
+            * describe la cuenta **cuenta** con el tipo de cuenta correspondiente
+            según el saldo.
+        PRECONDICIONES:
+            * **cuenta** debe ser de TipoDeCuenta y CuentaSueldo.
+        PARÁMETROS:
+            * cuenta: Cuenta.
+        TIPO:
+            * Cuenta.
+    */
+    return(choose   Cuenta(cuenta | TipoDeCuenta <- CajaDeAhorro) when (saldo(cuenta) > 25000)
+                    TipoDeCuenta(cuenta) otherwise)
+    })
+
+// d
+
+function saldoEnPesosDe_(cuenta){
+    /*
+        PROPÓSITO:
+            * describe el saldo en Pesos de la cuenta **cuenta**.
+        PRECONDICIONES:
+            * no tiene.
+        PARÁMETROS:
+            * cuenta: Cuenta.
+        TIPO:
+            * Cuenta.
+    */
+    return(choose
+                saldo(cuenta) * 68 when (moneda(cuenta) == Dólares)
+                saldo(cuenta) * 74 when (moneda(cuenta) == Euros)
+                saldo(cuenta) * 12 when (moneda(cuenta) == Reales)
+                saldo(cuenta) otherwise)
+}
+
+//E
+
+function númeroDeCuentaConMayorSaldoEntre_Y_(cuenta1, cuenta2){
+    /*
+        PROPÓSITO:
+            * indica si la cuenta **cuenta1** tiene un saldo mayor a **cuenta2**.
+        PRECONDICIONES:
+            * No tiene.
+        PARÁMETROS:
+            * cuenta1: Cuenta.
+            * cuenta2: Cuenta.
+        TIPO:
+            * Cuenta.
+    */
+    return(saldoEnPesosDe_(cuenta1) >  saldoEnPesosDe_(cuenta2))
+}
+
+//f
+
+function cuenta_ActualizadaTrasExtracciónDeCajeroDe_(cuenta, extracción){
+    /*
+        PROPÓSITO:
+            * describe la cuenta **cuenta** luego de la extracción **extracción**
+            de saldo.
+        PRECONDICIONES:
+            * La extracción debe corresponder con el tipo de moneda de la cuenta.
+            * **extracción** debe ser menor al saldo de la cuenta **cuenta**.
+        PARÁMETROS:
+            * cuenta: Cuenta.
+            * extracción: Número.
+        TIPO:
+            * Cuenta.
+    */
+    return(Cuenta(cuenta | saldo <- saldo(cuenta) - extracción))
+}
+
+// g
+
+function puedeExtraer_PorCajeroDeLaCuenta_(monto, cuenta){
+    /*
+        PROPÓSITO:
+            * indica si se puede extraer **monto** de la cuenta **cuenta**.
+        PRECONDICIONES:
+            * La extracción debe corresponder con el tipo de moneda de la cuenta.
+        PARÁMETROS:
+            * cuenta: Cuenta.
+            * monto: Número.
+        TIPO:
+            * Booleano.
+    */
+    return(monto >= saldo(cuenta))
+}
+
+// h
+
+function cuenta_ActualizadaTrasDepósitoEnCajeroDe_(cuenta, monto){
+    /*
+        PROPÓSITO:
+            * describe la cuenta **cuenta** luego del depósito **monto**.
+        PRECONDICIONES:
+            * El depósito de **monto** debe corresponder con el tipo de moneda de la cuenta.
+            * **monto** debe ser >= 0.
+        PARÁMETROS:
+            * cuenta: Cuenta.
+            * monto: Número.
+        TIPO:
+            * Cuenta.
+    */
+    return(Cuenta(cuenta | saldo <- saldo(cuenta) + monto))
+}
+
+
+//EJERCICIO 5
+
+type Coordenada is record{
+    /*  Proposito: modela la posicion de una celda en el tablero.
+        INV. REP.: las coordenas deben ser numeros positivos y enteros.*/
+        field fila // es un Número.
+        field columna // es un Número.
+}
+
+//A
+
+function coordenada__(x,y){
+    /*  Proposito: describe la coordenada "x" e "y" dadas.
+        Precondición: Ninguna.
+        Parametros: x. es un Numero.
+                    y: es un Numero.
+        Tipo: Coordenada.*/
+    return(Coordenada(fila <- y,
+                      columna <- x))
+}
+
+// B
+
+function esCoordenadaOrigen_(coordenada){
+    /*  Proposito: indica si la coordenada es coordenada del origen.
+        Precondicion: ninguna
+        Parametros: coordenada. es una Coordenada.
+        Tipo: Booleano.*/
+    return(fila(coordenada) == 0 && columna(coordenada) == 0)
+}
+
+// C
+
+function es_MayorCoordenadA_(coordenada1,coordenada2){
+    /*  Proposito: indica si la "coordenada1" dada aparece despues de la segunda "coordenada2" dada en un recorrido.
+        Precondicion: El recorrido va hacia el Norte luego hacia el Este.
+        Parametro: coordenada1. es una Coordenada.
+                   coordenada2. es una Coordenada.
+        Tipo: Booleano.*/
+        return((fila(c1) > fila (c2)) && columna(c1) == columna(c2) || columna(c1) > columna(c2))
+}
+
+// D
+
+function coordenadaActual(){
+    /*  Proposito: describe la coordenada actual del cabezal
+        Precondicion: ninguna.
+        Tipo: Coordenada.
+    */
+    return(Coordenada(fila    <- coordenadaY(),
+                      columna <- coordenadaX()))
+}
+
+//E
+
+function ultimaCoordenada(){
+    /*  Proposito: describe la ultima coordenada del tablero en un recorrido hacia el Noreste.
+        Precondicion: ninguna.
+        Tipo:Coordenada.
+    */
+    IrAPrimeraCeldaEnUnRecorridoAl_YAl_(Este, Norte)
+    while(haySiguienteCeldaEnUnRecorridoAl_YAl_(Este, Norte)){
+        IrASiguienteCeldaEnUnRecorridoAl_YAl_(Este, Norte)
+    }
+    return(coordenadaActual())
+}
+
+// F
+
+procedure IrACoordenada_(coordenada){
+    /*  Proposito: Ubicar el cabezal en la "coordenada" dada.
+        Precondicion: ninguna.
+        Parametros: "coordenada": es una Coordenada.
+    */
+    IrAEsquina_Y_(Este,Norte)
+    Mover_Veces_(Este, fila(coordenada))
+    Mover_Veces_(Norte, columna(coordenada))
+}
+
+// G
+
+function siguienteCoordenadaA_(coordenada){
+    /*  Proposito: describe la siguiente coordenada de la "coordenada" dada.
+        Precondicion: ninguna.
+        Párametros: coordenada, es una Coordenada.
+        Tipo: Coordenada*/
+    return(Coordenada(coordenada | fila     <- fila(coordenada) + 1,
+                      coordenada | columna  <- columna(coordenada) + 1))
+}
+
+// OTRA FORMA
+function siguienteCoordenadaA2_(coordenada){
+    IrACoordenada_(coordenada)
+    IrAPrimeraCeldaEnUnRecorridoAl_YAl_(Norte,Este)
+    return(coordenadaActual())
+}
+// H
+
+function reflejoDe_(coordenada){
+    /*  Proposito:     describe la coordenada que se obtiene de intercambiar la fila y la columna.
+        Precondición:   ninguna.
+        Parametros: "coordenada". es una Coordenada.
+        Tipo: Coordenada.*/
+    return(Coordenada(coordenada | fila         <-fila(coordenada) + 1,
+                      coordenada | columna      <- columna(coordenada) + 1))
+}
+
+// EJERCICIO 6
+
+type Fecha is record {
+    /*
+        PROPÓSITO: modela fechas del calendario gregoriano.
+        INV. REP: 
+            * El Año no puede ser 0.
+            * El mes debe ser <= 31 para los meses: Enero, Marzo,
+                Mayo, Julio, Agosto, Octubre, Diciembre.
+            * El mes debe ser <= 30 para los meses: Abril, Junio,
+                Septiembre, Noviembre.
+            * El mes debe ser <= 28 para el Mes de Febrero.
+            * Si es año bisiesto, Febrero tiene <= 29 días.
+    */
+    field día   // Número 
+    field mes   // Mes
+    field año   // Número
+}
+
+type Mes is variant { 
+    /*
+        PROPÓSITO:
+            * Modela los meses del año.
+    */
+    case Enero      {}
+    case Febrero    {}
+    case Marzo      {}
+    case Abril      {}
+    case Mayo       {}
+    case Junio      {}
+    case Julio      {}
+    case Agosto     {}
+    case Septiembre {}
+    case Octubre    {}
+    case Noviembre  {}
+    case Diciembre  {}
+}
+
+// B
+
+function esFecha24DeMarzo(){
+    /*
+        PROPÓSITO:
+            * Describe la fecha 24 de Marzo de 1984 como Registro
+            Fecha.
+        PRECONDICIONES:
+            * No tiene.
+        TIPO:
+            * Fecha.
+    */
+    return(Fecha(día <- 24,
+                 mes <- Marzo,
+                 año <- 1984))
+}
+
+//EJERCICIO 7
+
+procedure EscribirFecha_(fecha){
+    /*
+        PROPÓSITO:
+            * Escribe la fecha **fecha** representando con bolitas
+            rojas, los días en la celda actual, los meses en la 
+            celda lindante al Este y el año una celda más hacia
+            el Este.
+        PRECONDICIONES:
+            * Deben existir al menos dos celdas vacías al
+            Este de la celda actual.
+            * La celda actual debe estar vacía.
+        PARÁMETROS:
+            * fecha: Fecha - describe la fecha a representar.
+    */
+    EscribirDía_DeMes_DeAño_(día(fecha), 
+                             mes(fecha),
+                             año(fecha))
+}
+
+// EJERCICIO 8
+
+type Fecha is record {
+/*
+    PROPÓSITO: Modelar una fecha del calendario gregoriano.
+    INVARIANTE DE REPRESENTACIÓN:
+        - dia debe ser un número comprendido entre 1 y 31.
+        - Sí el mes es: Enero, Marzo, Mayo, Julio, Agosto, Octubre o Diciembre día debe ser 31
+        - Sí el mes es: Febrero, Abril, Junio, Septiemnre o Noviembre día debe ser 30.
+        - Sí año es divisible por 4 y/o 400, y no es divisible por 100, el mes de Febrero tiene 29 días.
+*/
+
+    field día     // TIPO: Número.
+    field mes      // TIPO: Mes.
+    field año      // TIPO: Número.
+}
+
+type Mes is variant {
+/
+    PROPÓSITO: Modelar los meses del calendario gregoriano.
+*/
+
+    case Enero      {}
+    case Febrero    {}
+    case Marzo      {}
+    case Abril      {}
+    case Mayo       {}
+    case Junio      {}
+    case Julio      {}
+    case Agosto     {}
+    case Septiembre {}
+    case Octubre    {}
+    case Noviembre  {}
+    case Diciembre  {}
+}
+
+function díaEnMesSiguienteAlDel (día, mes) {
+ /* PROPÓSITO: Describir el dia y mes dado. 
+ PRECONDICIONES: 
+ - dia debe ser un dia valido del mes dado.
+ Parametros:
+ *día: Número
+ *mes: Mes*/
+
+return (choose día + 1 when (not esFinDeMes(día, mes))
+                1 otherwise)
+}
+
+function esFinDeMes(día, mes)
+/* PROPÓSITO: indica si el día día es el ultimo del mesmes* 
+ PRECONDICIONES: 
+ - dia debe ser un dia valido del mes dado.
+ Parametros:
+ *día: Número
+ *mes: Mes
+*/
+return ( día <= 31 && esMesCon31 || día <= 30 && esMesCon30  ((día == 28  día == 29) &&
+            mes == Febrero))
+
+function siguienteDíaDelMes__(día, mes){
+    /*
+        PROPÓSITO:
+            * describe el día siguiente del Día **día** del 
+            Mes **mes**.
+        PRECONDICIONES:
+            * Los días deben corresponderse con los 
+            de los meses, según el registro Fecha.
+        PARÁMETROS:
+            * día: Número - describe un día de una Fecha.
+            * mes: Mes - describe un Mes de una Fecha.
+    */
+    return( choose día + 1 when (día < cantidadDeDíasDe_(mes))
+                    1           otherwise)
+}
+
+function cantidadDeDíasDe_(mes){
+    return(
+            choose
+            31 when (mesDe31Días_(mes)) 
+            30 when (mesDe30Días_(mes))
+            29 otherwise)
+}
+
+function mesDe31Días_(mes){
+    return (mes == Enero
+            ||
+            mes == Marzo
+            ||
+            mes == Mayo
+            ||
+            mes == Julio
+            ||
+            mes == Agosto
+            ||
+            mes == Octubre
+            ||
+            mes == Diciembre)
+}
+
+function mesDe30Días_(mes){
+    return (mes == Abril
+            ||
+            mes == Junio
+            ||
+            mes == Septiembre
+            ||
+            mes == Noviembre)
+}
+
+function mesDe28Días_(mes){
+    return (mes == Febrero)
+}
+
+// A
+
+function esDelPrimerSemestre_(fecha){
+    /*
+        PROPÓSITO:
+            * indica verdadero si la fecha **fecha** es del primer semestre.
+        PRECONDICIONES:
+            * No tiene.
+        PARÁMETROS:
+            * fecha: Fecha - describe la fecha a evaluar si es del primer semestre.
+        TIPO:
+            * Booleano
+    */
+    return(mes(fecha) == Enero
+           || 
+           mes(fecha) == Febrero
+           || 
+           mes(fecha) == Marzo
+           || 
+           mes(fecha) == Abril
+           || 
+           mes(fecha) == Mayo
+           || 
+           mes(fecha) == Junio)
+}
+
+// B
+
+function esDíaDeÑoquis_(fecha){
+    /*
+        PROPÓSITO:
+            * indica verdadero si la fecha **fecha** es de un "día de Ñoquis".
+        PRECONDICIONES:
+            * No tiene.
+        PARÁMETROS:
+            * fecha: Fecha - describe la fecha a evaluar si es "día de noquis".
+        TIPO:
+            * Booleano
+    */
+    return(día(fecha) == 29)
+}
+
+// C
+
+function esFechaDeAñoBisiesto_(fecha){
+    /*
+        PROPÓSITO:
+            * indica verdadero si la fecha **fecha** es año bisiesto.
+        PRECONDICIONES:
+            * No tiene.
+        PARÁMETROS:
+            * fecha: Fecha - describe la fecha a evaluar si es año bisiesto.
+        TIPO:
+            * Booleano
+    */
+    return(esDivisiblePor400_(año(fecha))
+            ||
+           esDivisiblePor4YNo100_(año(fecha)))
+}
+
+function esDivisiblePor4YNo100_(número){
+    return(esDivisiblePor4_(número) && not esDivisiblePor100_(número))
+}    
+
+
+function esDivisiblePor4_(número){
+    return((número mod 4) == 0)
+}
+
+function esDivisiblePor100_(número){
+    return((número mod 100) == 0)
+}
+
+function esDivisiblePor400_(número){
+    return((número mod 400) == 0)
+}
+
+// D
+
+function esMásAntigua_Que_(fecha1, fecha2){
+    return(añoDe_EsMenorQueAñoDe_(fecha1,fecha2)
+            || 
+           mismoAñoYMenorMesEntre_Y_(fecha1,fecha2)
+            ||
+           mismoAñoYMesYMenorAño(fecha1,fecha2))
+}
+
+function añoDe_EsMenorQueAñoDe_(fecha1, fecha2){
+    return(año(fecha1) < año(fecha2))
+}
+
+function mismoAñoYMenorMesEntre_Y_(fecha1, fecha2){
+    return(mismoAño_Y_(fecha1, fecha2)
+            &&
+           númeroDeMes(mes(fecha1)) < númeroDeMes(mes(fecha2)))
+}
+
+function mismoAño_Y_(fecha1, fecha2){
+    return (año(fecha1) == año(fecha2))
+}
+
+
+function mismoMes_Y_(mes1, mes2){
+    return (mes1 == mes2)
+}
+
+function númeroDeMes(mes){
+    return(
+            choose
+                1 when (mes == Enero)
+                2 when (mes == Febrero)
+                3 when (mes == Marzo)
+                4 when (mes == Abril)
+                5 when (mes == Mayo)
+                6 when (mes == Junio)
+                7 when (mes == Julio)
+                8 when (mes == Agosto)
+                9 when (mes == Septiembre)
+                10 when (mes == Octubre)
+                11 when (mes == Noviembre)
+                12 otherwise)
+                
+}
+
+function mismoAñoYMesYMenorAño(fecha1, fecha2){
+    return(mismoAño_Y_(fecha1, fecha2)
+            &&
+           mismoMes_Y_(mes(fecha1), mes(fecha2))
+            &&
+           día(fecha1) < día(fecha2))
+}
+
+function fecha1(){
+    /*
+        PROPÓSITO:
+            * Describe la fecha 24 de Marzo de 1984 como Registro
+            Fecha.
+        PRECONDICIONES:
+            * No tiene.
+        TIPO:
+            * Fecha.
+    */
+    return(Fecha(día <- 12,
+                 mes <- Junio,
+                 año <- 349))
+}
+
+
+function fecha2(){
+    /*
+        PROPÓSITO:
+            * Describe la fecha 24 de Marzo de 1984 como Registro
+            Fecha.
+        PRECONDICIONES:
+            * No tiene.
+        TIPO:
+            * Fecha.
+    */
+    return(Fecha(día <- 8,
+                 mes <- Marzo,
+                 año <- 350))
+}
+
+
+// E
+
+function primerDíaDelInvierno_(fecha){
+    /.../
+    return(día(fecha) == 21
+            &&
+           mes(fecha) == Julio)
+}
+
+// F
+
+function últimoDíaDelInvierno_(fecha){
+    /.../
+    return(día(fecha) == 20
+            &&
+           mes(fecha) == Septiembre)
+}
+
+// G
+
+function esInviernoEl_(fecha){
+    /.../
+    return(mismoMes_Y_(mes(fecha), Junio) && día(fecha) >= 21
+            ||
+           mismoMes_Y_(mes(fecha), Julio)
+            ||
+           mismoMes_Y_(mes(fecha), Agosto)
+            ||
+           mismoMes_Y_(mes(fecha), Septiembre) && día(fecha) < 21)
+}    
+
+// H
+
+function esVeranoEl_(fecha){
+    return(mismoMes_Y_(mes(fecha), Diciembre) && día(fecha) >= 21
+            ||
+           mismoMes_Y_(mes(fecha), Enero)
+            ||
+           mismoMes_Y_(mes(fecha), Febrero)
+            ||            
+           mismoMes_Y_(mes(fecha), Marzo) && día(fecha) < 21)
+}   
+
+function esPrimaveraEl_(fecha){
+    return(mismoMes_Y_(mes(fecha), Septiembre) && día(fecha) >= 21
+            ||
+           mismoMes_Y_(mes(fecha), Octubre)
+            ||
+           mismoMes_Y_(mes(fecha), Noviembre)
+            ||
+            mismoMes_Y_(mes(fecha), Diciembre) && día(fecha) < 21)
+}   
+
+function esOtoñoEl_(fecha){
+    return(mismoMes_Y_(mes(fecha), Marzo) && día(fecha) >= 21
+            ||
+           mismoMes_Y_(mes(fecha), Abril)
+            ||
+           mismoMes_Y_(mes(fecha), Mayo)
+            ||
+            mismoMes_Y_(mes(fecha), Junio) && día(fecha) < 21)
+}   
+
+// I
+
+function estaciónDe_(fecha){
+    return( choose
+                Primavera when (esPrimaveraEl_(fecha))
+                Otoño   when (esOtoñoEl_(fecha))
+                Invierno when (esInviernoEl_(fecha))
+                Verano  otherwise)   
+}
+
+type Estación is variant{
+    case Primavera {}
+    case Otoño {}
+    case Invierno {}
+    case Verano {}
+}
+
+// j
+
+function añosTranscurridosEntre_Y_(fecha1,fecha2){
+    /*  Proposito: describe el numero de años que hay entre fecha1 y fecha2 dadas.
+        Precondiciones: ninguna.
+        Parametros: fecha1 y fecha2 son Fechas.
+        Tipo: Numero.*/
+    return( choose  (años(fecha1) - años(fecha2))   when    (años(fecha1) > años(fecha2)) && 
+                                                            años(fecha1) - años(fecha2) > 1)
+                    años(fecha2)) -  años(fecha1)   when    ((años(fecha2) > años(fecha1) && 
+                                                            años(fecha2) - años(fecha1) > 1))
+                    0                               otherwise)
+}
+
+// K
+
+function siguienteFechaA_(fecha){
+    /*  Proposito: describe la siguiente fecha a partir de una "fecha" dada.
+        Preocndicion: ninguna.
+        Parametros: fecha, es una Fecha.
+        Tipo:fecha, es una Fecha.*/
+    return(siguienteDíaDelMes__(día(fecha), mes(fecha)))
+}
+
+// I
+
+function previaFechaA_(fecha){
+    /*  Proposito: describe la fecha previa a la fecha dada.
+        Precondicion: ninguna.
+        Parametros: fecha, es una Fecha.
+        Tipo: Fecha.*/
+    return( choose día - 1 when (día < cantidadDeDíasDe_(mes))
+                    31           otherwise)
+}
+
+// EJERCICIO 9
+
+type Persona is record{
+    /*
+        PROPÓSITO: Modela una Persona.
+        INV. REP.: 
+            * el DNI debe ser  > 0
+    */
+    field dni // Número
+    field domicilio // String
+    field fechaNac  // Fecha
+    field esDonante // Booleano
+}
+function persona1(){
+    return(Persona(dni <- "3216542",
+                   domicilio <- "Esquina 4",
+                   fechaNac <- fecha1(),
+                   esDonante <- False))
+}
+
+function persona2(){
+    return(Persona(dni <- "1234566",
+                   domicilio <- "Esquina 3",
+                   fechaNac <- fecha2(),
+                   esDonante <- False))
+}
+// a
+
+function sonConvivientes_Y_(persona1, persona2){
+    /*
+        PROPÓSITO:
+            * indica si las personas **persona1** y **persona2**
+            son convivientes.
+        PRECONDICIONES:
+            * No tiene.
+        PARÁMETROS:
+            * persona1: Persona - describe una persona a censar.
+            * persona2: Persona - describe una persona a censar.
+        TIPO:
+            * Booleano
+    */
+    return(domicilio(persona1) == domicilio(persona2))
+}
+
+// B
+
+function personaNacidaDe_El_(persona, fecha){
+    /*
+        PROPÓSITO:
+            * describe una nueva persona, hija de **persona** y nacida
+            en Fecha **fecha**.
+        PRECONDICIONES:
+            * No tiene.
+        PARÁMETROS:
+            * persona1: Persona - describe la madre de la persona nacida.
+            * fecha: Fecha  - describe la Fecha que nació la nueva persona.
+        TIPO:
+            * Persona
+    */
+    return(Persona (persona | dni <- sinAsignar(),
+                              fechaNac <- fecha,
+                              esDonante <- False))
+}
+
+// C
+
+function persona_RegistradaCon_(persona, dni){
+    /*
+        PROPÓSITO:
+            * describe una persona registrada **persona** con nuevo 
+            DNI **dni**.
+        PRECONDICIONES:
+            * No tiene.
+        PARÁMETROS:
+            * persona: Persona - describe Persona a asignarle un DNI.
+            * dni: String  - describe el dni a asignar.
+        TIPO:
+            * Persona
+    */
+    return(Persona(persona | dni <- dni))
+}
+
+// d
+
+function persona_ConDomicilioNuevoEn_(persona, domicilio){
+    /*
+        PROPÓSITO:
+            * describe una persona **persona** con nuevo el
+            domicilio **domicilio**.
+        PRECONDICIONES:
+            * No tiene.
+        PARÁMETROS:
+            * persona: Persona - describe Persona a asignarle un DNI.
+            * domicilio: String  - describe el domicilio a asignar.
+        TIPO:
+            * Persona
+    */
+    return(Persona(persona | domicilio <- domicilio))
+}
+
+// e
+
+function persona_ConSituaciónComoDonanteCambiada(persona){
+    /*
+        PROPÓSITO:
+            * describe una persona **persona** con nueva situación de
+            Donante.
+        PRECONDICIONES:
+            * No tiene.
+        PARÁMETROS:
+            * persona: Persona - describe Persona a modificar su situación
+            de donante
+        TIPO:
+            * Persona
+    */
+    return(Persona(persona | esDonante <- opuesto(esDonante(persona))))
+}
+
+//f
+
+function edadDe_Al_(persona, fecha){
+    return(calcularDistanciaEntre_Y_(fechaNac(persona),fecha))
+}
+
+function calcularDistanciaEntre_Y_(fecha1, fecha2){
+    /*
+        PRECONDICIÓN: fecha1 debe ser anterior a fecha2
+    */
+    return(choose
+        año(fecha2) - año(fecha1) - 1 when (not mismoAño_Y_(fecha1,fecha2)
+                                        && númeroDeMes(mes(fecha1)) >= númeroDeMes(mes(fecha2)))
+        año(fecha2) - año(fecha1) otherwise)
+}
+
+// 11 y 10 para discutir en clase.
+
+// 12
+
+type Estudiante is variant{
+    /*
+        PROPÓSITO: modela un Alumno.
+    */
+    case Identidad              {}   // Persona
+    case NroLegajo              {} // Número
+    case FechaIngreso           {}  // Fecha
+    case NroMateriasRendidas    {}  //Número
+    case NroMateriasAprobadas   {} //Número
+}
+
+//A
+
+function ingresante_En_Con_(persona, fecha, nroLegajo){
+    /*
+        PPROPÓSITO:
+            * describe un alumno con la identidad **persona** que ingresó
+            en la fecha **fecha** con el número de Legajo **nroLegajo**.
+        PRECONDICIONES:
+            * El número de legajo debe ser > 0.
+        PARÁMETROS:
+            * persona: Persona - describe la identidad del Alumno.
+            * fecha: Fecha - describe la fecha de ingreso del Alumno.
+            * nroLegajo: Número - describe el legajo del Alumno.
+        TIPO:
+            * Alumno
+    */
+    return(Alumno(identidad <- persona,
+                  nroLegajo <- nroLegajo,
+                  fechaIngreso <- fecha,
+                  nroMateriasRendidas <- 0,
+                  nroMateriasAprobadas <- 0))
+}
+
+//b
+
+function materiasDesaprobadasPor_(alumno){
+    /*
+        PPROPÓSITO:
+            * describe la cantidad de materias desaprobadas por 
+            el Alumno **alumno**.
+        PRECONDICIONES:
+            * No tiene.
+        PARÁMETROS:
+            * alumno: Alumno - describe el alumno.
+        TIPO:
+            * Número
+    */    
+    return(nroMateriasRendidas(alumno) - nroMateriasAprobadas(alumno))
+}
+
+// c
+
+function  alumno_ConLegajoNuevo_(alumno, legajo){
+    /*
+        PROPÓSITO:
+            * describe al Alumno **alumno** con un nuevo legajo número **legajo**.
+        PRECONDICIONES:
+            * El número de legajo debe ser > 0.
+        PARÁMETROS:
+            * alumno: Alumno - describe el alumno.
+        TIPO:
+            * Alumno
+    */    
+    return(Alumno(alumno | nroLegajo <- legajo))
+}
+
+//d
+
+function alumno_ConDomicilioNuevo_(alumno, domicilio){
+    /*
+        PROPÓSITO:
+            * describe al Alumno **alumno** con su nuevo domicilio en **domicilio**.
+        PRECONDICIONES:
+            * No tiene.
+        PARÁMETROS:
+            * alumno: Alumno - describe el alumno.
+        TIPO:
+            * Alumno.
+    */      
+    return(Alumno(alumno | identidad <- persona_ConDomicilioNuevoEn_(identidad(alumno), domicilio)))
+}
+
+// e
+
+function edadDelAlumno_AlIngresar(alumno){
+    /*
+        PROPÓSITO:
+            * describe la edad del Alumno **alumno** al ingresar a la Universidad.
+        PRECONDICIONES:
+            * No tiene.
+        PARÁMETROS:
+            * alumno: Alumno - describe el alumno.
+        TIPO:
+            * Número.
+    */
+    return(edadDe_Al_(identidad(alumno), fechaActual()))
+}
+
+//EJERCICIO 13
+
+type Empleado is record{
+    /*
+        PROPÓSITO: modela un Empleado.
+    */
+    field identidad     // Persona
+    field puesto        // Puesto
+    field sueldo        // Número
+}
+
+
+type Puesto is variant {
+    /* PROPÓSITO: modelar los diferentes puestos que hay dentro
+    de una empresa de software
+    */
+    case GestorDeProyecto {}
+    case LíderDeProyecto  {}
+    case Desarrollador    {}
+    case Operador         {}
+}
+
+// a
+
+function empleado_ConSueldoActualizadoA_(empleado, sueldo){
+    /*
+        PROPÓSITO:
+            * describe al Empleado **empleado** con el sueldo de
+            **sueldo** actualizado.
+        PRECONDICIONES:
+            * No tiene.
+        PARÁMETROS:
+            * empleado: Empleado - describe el empleado a actualizar.
+        TIPO:
+            * Empleado.
+    */    
+    return(Empleado(empleado | sueldo <- sueldo))
+}
+
+// b
+
+function empleado_ConNuevoPuesto_(empleado, puesto){
+    /*
+        PROPÓSITO:
+            * describe al Empleado **empleado** con el puesto de
+            **puesto** actualizado.
+        PRECONDICIONES:
+            * No tiene.
+        PARÁMETROS:
+            * empleado: Empleado - describe el empleado a actualizar.
+        TIPO:
+            * Empleado.
+    */    
+    return(Empleado(empleado | puesto <- puesto))
+}
+
+// c
+
+function categoríaDelPuesto_(puesto){
+    /*
+        PROPÓSITO:
+            * describe la categoría del puesto **puesto**.
+        PRECONDICIONES:
+            * No tiene.
+        PARÁMETROS:
+            * puesto: Puesto.
+        TIPO:
+            * Empleado.
+    */    
+    return(choose
+                4 when (puesto == GestorDeProyecto)
+                3 when (puesto == LíderDeProyecto)
+                2 when (puesto == Desarrollador)
+                1 otherwise)
+}
+
+// d
+function empleadoConMayorCargoEntre_Y_(empleadoA, empleadoB){
+    /*
+        PROPÓSITO:
+            * describe el empleado de mayor categoría entre **empleadoA** y **empleadoB**.
+        PRECONDICIONES:
+            * No tiene.
+        PARÁMETROS:
+            * empleadoA: Empleado - describe un empleado.
+            * empleadoB: Empleado - describe un empleado.
+        TIPO:
+            * Empleado.
+    */
+    return (choose
+                empleadoA when (laCategoríaDe_EsMayorALaDe_(puesto(empleadoA), puesto(empleadoB)))
+                empleadoB otherwise)
+}
+
+
+function laCategoríaDe_EsMayorALaDe_(puestoA, puestoB){
+    return(categoríaDelPuesto_(puestoA) >= categoríaDelPuesto_(puestoB))
+}
+
+// e
+
+function tienenIgualSueldo_Y_(empleadoA, empleadoB){
+    /*
+        PROPÓSITO:
+            * indica si los empleados **empleadoA** y **empleadoB** tienen el mismo sueldo.
+        PRECONDICIONES:
+            * No tiene.
+        PARÁMETROS:
+            * empleadoA: Empleado - describe un empleado.
+            * empleadoB: Empleado - describe un empleado.
+        TIPO:
+            * Booleano.
+    */
+    return(sueldo(empleadoA) == sueldo(empleadoB))
+}
+
+//f
+
+function empleado_ConAumentoEn_PorBonoDeFinalizaciónDeProyecto(empleado, porcentaje){
+    /*
+        PROPÓSITO:
+            * describe un empleado **empleado** con un aumento de sueldo incrementado
+            en un **porcentaje** porciento.
+        PRECONDICIONES:
+            * porcentaje debe ser >= 0.
+        PARÁMETROS:
+            * empleado: Empleado - describe un empleado.
+            * porcentaje: Número - describe el porcentaje de aumento de sueldo.
+        TIPO:
+            * Empleado.
+    */    
+    return(Empleado(empleado | sueldo <- sueldoConAumento_De_(sueldo(empleado),porcentaje)))
+}
+
+
+function sueldoConAumento_De_(sueldo, porcentaje){
+    return(sueldo + aumentoDeSueldo__(sueldo, porcentaje))
+}
+
+function aumentoDeSueldo__(sueldo, porcentaje){
+    return((sueldo * porcentaje) div 100)
+}
+
+
+// EJERCICIO DE SABA LOCO AJEDREZ
+
+
+type ficha is record{
+    /*  Proposito: modela una pieza de ajedrez
+        INV. REP.: NINGUNA.*/
+    field colorDeFicha // ColorDeLaFicha
+    field figura         //Figura
+    field posicion      //Coordenada
+}
+
+type Coordenada is record{
+    /*  Proposito: modela una coordenada
+         INV. REP.: los numeros no pueden ser negativos.*/
+    field x // Numero
+    field y // Numero
+}
+
+type Figura is variant{
+    case  Peon        {}
+    case  Torre       {}
+    case  Caballo     {}
+    case  Alfil       {}
+    case  Reina       {}
+    case  Rey         {}
+}
+
