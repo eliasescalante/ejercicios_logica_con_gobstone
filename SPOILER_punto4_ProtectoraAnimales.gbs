@@ -1,0 +1,82 @@
+
+
+function animalesRecuperadosAdoptadosPor_En_(listaDNISAdoptantes, protectora){
+    /*
+        PROPOSITO: describe los animales que fueron adoptados por 
+            adoptantes responsables con dnis **listaDNISApdoptantes
+            y ahora estan recupeardos.
+        PRECONDICIONES:
+            - los adoptantes responsables solo tienen una adopcion.
+            - los dnisDEAdoptantes deben deben ser adoptantes de la protectora
+            - los adoptantes en la lista deben tener una adopcion.
+        PARAMETROS:
+            - listaDNISAdoptantes: [String]
+            - protectora: ProtectoraDeAnimales
+        TIPO: [Animal]
+        OBSERVACIONES: recorrido de filtro
+    */
+    
+    animalesRecuperadosPorAdoptante := []
+    
+    foreach animal in animales(protectora){
+        animalesRecuperadosPorAdoptante := animalesRecuperadosPorAdoptante ++ 
+            singular_Si_(animal, esAnimal_RecuperadoYPerteneceAUnAdoptanteDe_En_(animal,listaDNISAdoptantes,protectora))
+    }
+    
+    return(animalesRecuperadosPorAdoptante)
+    
+}
+
+
+function esAnimal_RecuperadoYPerteneceAUnAdoptanteDe_En_(animal, listaDNSAdpotantes, protectora){
+    /*
+        PROPOSITO: indica si el animal esta recuperado y pertenece a alguno de los adoptantes de la lista dada.
+        PRECONDICIONES:
+            - El animal pertenece a la protectora dada.
+        PARAMETROS:
+            - listaDNISAdoptantes: [String]
+            - protectora: ProtectoraDeAnimales
+        TIPO: [Animal]
+    */    
+
+    return(not enRecuperacion(animal) && estaAdoptado_En_(animal, protectora) &&
+        contiene_A_(listaDNSAdpotantes, dniAdoptante(adopcionDel_En_(animal, protectora)))
+    )
+
+}
+
+function estaAdoptado_En_(animal, protectora){
+    /**/
+    
+    adopcionesARecorrer := adopciones(protectora)
+    
+    while(not esVacía(adopcionesARecorrer) && not esAdopcion_DelAnimal_(primero(adopcionesARecorrer), animal)   ){
+        adopcionesARecorrer := resto(adopcionesARecorrer)
+    }
+    
+    return(not esVacía(adopcionesARecorrer))
+    
+}
+
+
+function esAdopcion_DelAnimal_(adopcion, animal){
+    /**/
+    
+    return(nombreAnimal(adopcion == nombre(animal))
+}
+
+
+function adopcionDel_En_(animal, protectora){
+    /**/
+    adopcionesARecorrer := adopciones(protectora)
+    
+    while(not esAdopcion_DelAnimal_(primero(adopcionesARecorrer), animal)){
+        adopcionesARecorrer := resto(adopcionesARecorrer)
+    }
+    
+    return(primero(adopcionesARecorrer))
+}
+
+
+
+

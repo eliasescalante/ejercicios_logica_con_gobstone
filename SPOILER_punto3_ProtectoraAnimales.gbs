@@ -1,0 +1,106 @@
+
+
+function animalesDelCuidador_QueFueronadoptadosEn_(nombreCuidador, protectora){
+    /*
+        PROPOSITO: describe los animales que fueron adoptados 
+            y estaban a cargo el cuidador dado.
+        PRECONDICIONES:
+            - Tiene que existir el cuidador con el nombre dado.
+        PARAMETROS:
+            - nombreCuidador: String
+            - protetora: ProtectoraDeAnimales
+        TIPO: [Animales]
+        OBSERVACIONES: Recorrido de filtro
+    */
+    
+    //buscar al cuidador 
+    // obtener los nombres de los animales que estaba su cargo
+    
+    // los nombres de los animales que fueron adoptados.
+
+    nombreDeAnimalesDelCuidadorAdoptados := []
+    
+    foreach adopcion in adopciones(protectora) {
+        
+        nombreDeAnimalesDelCuidadorAdoptados := nombreDeAnimalesDelCuidadorAdoptados ++
+            sigular_Si_(nombreAnimal(adopcion), 
+            contiene_A_(
+                animalesACargo(cuidadorConNombre_En_(nombreCiudador,protectora)), 
+                nombreAnimal(adopcion)
+                )
+            )
+    }
+    
+    // obtener los animales a partir de su nombre
+    
+    return(animalesConNombre_En_(nombreDeAnimalesDelCuidadorAdoptados,protectora))
+    
+}
+
+function cuidadorConNombre_En_(nombreCuidador,protectora){
+    /*
+        PROPOSITO: describe el cuidador en la protectora dada.
+        PRECONDICIONES:
+            - debe existir el cuidador con el nombre dado en la protectora.
+        PARAMETROS:
+            - nombreCuidador: String
+            - protetora: ProtectoraDeAnimales
+        TIPO: Cuidador
+        OBSERVACIONES: Recorrido de Busqueda del nombre del cuidador en 
+            la lista de cuidadores de la protectora
+    */    
+    cuidadoresARecorrer:= cuidadores(protectora)
+    
+    while(nombre(primero(cuidadoresARecorrer)) /= nombreCuidador){
+        cuidadoresARecorrer := resto(cuidadoresARecorrer)
+    }
+    return(primero(cuidadoresARecorrer))
+    
+        
+}
+
+
+function animalesConNombre_En_(nombresDeAnimales,protectora){
+    /*
+        PROPOSITO: describe los animales de la lista de nombres dado y 
+            la protectora dada.
+        PRECONDICIONES:
+            - deben existir el animal con los nombres dados en protectora.
+        PARAMETROS:
+            - nombresDeAnimales: [String]
+            - protetora: ProtectoraDeAnimales
+        TIPO: [Animales]
+        OBSERVACIONES: Recorrido de Transformacion
+    */
+    
+    animalesEncontrados:= []
+    
+    foreach nombre in nombresDeAnimales{
+        animalesEncontrados:= animalesEncontrados ++ animalConNombre_En_(nombre,protectora)
+    }
+    return(animalesEncontrados)
+    
+}
+
+function animalConNombre_En_(nombreDeAnimal,protectora){
+    /*
+        PROPOSITO: describe el animal en la protectora dada.
+        PRECONDICIONES:
+            - debe existir el animal con el nombre dado en la protectora.
+        PARAMETROS:
+            - nombreDeAnimal: String
+            - protetora: ProtectoraDeAnimales
+        TIPO: Animales
+        OBSERVACIONES: Recorrido de Busqueda del nombre del animal en 
+            la lista de animales de la protectora
+    */    
+    
+    animalesARecorrer:= animales(protectora)
+    
+    while(nombre(primero(animalesARecorrer)) /= nombreDeAnimal){
+        animalesARecorrer := resto(animalesARecorrer)
+    }
+    
+    return(primero(animalesARecorrer))
+    
+}
