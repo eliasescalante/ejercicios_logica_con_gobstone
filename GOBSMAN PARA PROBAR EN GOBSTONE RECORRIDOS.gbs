@@ -1,0 +1,488 @@
+
+program{
+    RecorrerNivelMuriendoSiHayFantasma()
+}
+
+//GOBSMAN
+//EJERCICIO 1
+/*  PRIMITIVAS
+    MoverGobsManAl_(dirección)
+    LlevarGobsManAlBorde_(dirección)
+     ComerCoco()
+     ComerCereza()
+     hayCereza()
+    hayFantasma()
+*/
+// para que funciones el juego:
+
+procedure MorirGobsMan(){
+    /*...*/
+    Poner(Azul)
+}
+function gobsMan(){
+    /*...*/
+    return(Azul)
+}
+function esGobsManConVida(){
+    /*...*/
+    return(nroBolitas(Azul) == 1)
+}
+function esGobsManMuerto(){
+    /*...*/
+    return(nroBolitas(Azul) == 2)
+}
+function coco(){
+    /*...*/
+    return(Negro)
+}
+function esUnCoco(){
+    /*...*/
+    return(nroBolitas(coco()) == 1)
+}
+function cereza(){
+    /*...*/
+    return(Rojo)
+}
+function hayCereza(){
+    /*...*/
+    return(nroBolitas(cereza()) == 2)
+}
+function fantasma(){
+    /*...*/
+    return(Verde)
+}
+function hayFantasma(){
+    /*...*/
+    return(nroBolitas(fantasma()) == 5)
+}
+
+procedure MoverGobsManAl_(dirección){
+    /*...*/
+    Sacar(gobsMan())
+    Mover(dirección)
+    Poner(gobsMan())
+}
+procedure LlevarGobsManAlBorde_(dirección){
+    /*...*/
+    Sacar(gobsMan())
+    IrAlBorde(dirección)
+    Poner(gobsMan())
+}
+procedure ComerCoco(){
+    /*...*/
+    Sacar(coco())
+}
+procedure ComerCereza(){
+    /*...*/
+    Sacar_Veces_(cereza(), 2)
+}
+
+
+
+
+procedure ComerTodosLosCocosDelNivel(){
+    /*  Proposito: comer todos los cocos del nivel actual.
+        Precondicion: hay un coco en cada celda del nivel. El cabezal inicia sobre Gobsman.
+        Observacion: se utiliza la estrategia de recorrido de procesamiento*/
+    LlevarAGobsmanAPrimeraCeldaEnUnRecorridoAl_YAl_DelNivel(Este ,Norte )
+    while(haySiguienteCeldaEnUnRecorridoAl_Y_(Este, Norte)){
+        ComerCoco()
+        MoverAGobsmanASiguienteCeldaEnUnRecorridoAl_YAl_DelNivel(Este ,Norte )
+    }
+    ComerCoco()
+}
+
+procedure LlevarAGobsmanAPrimeraCeldaEnUnRecorridoAl_YAl_DelNivel(dirPri ,dirSec ){
+    /*  Proposito: ubicar a gobsman al inicio del nivel para un recorrido hacia "dirPri" y "dirSec"
+        Precondicion: el cabezal inicia sobre GOBSMAN.
+        Parametros: "dirPri": es una Direccion. denota la direccion principal a recorrer.
+                    "dirSec": es una DIreccion. denota la direccion secundaria del recorrido.*/
+    LlevarGobsManAlBorde_(opuesto(dirPri))
+    LlevarGobsManAlBorde_(opuesto(dirSec))
+}
+procedure MoverAGobsmanASiguienteCeldaEnUnRecorridoAl_YAl_DelNivel(dirPri ,dirSec ){
+    /*  Proposito: mover a Gobsman a la siguiente celda en un recorrido hacia "dirPri" y "dirSec"
+        Precondicion: debe existir una celda hacia "dirPri" o bien hacia "dirSec". el cabezal esta sobre Gobsman.
+        Parametros: "dirPri": es una Direccion. denota la direccion principal a recorrer.
+                    "dirSec": es una DIreccion. denota la direccion secundaria del recorrido.    */
+    if (puedeMover(dirPri)) { 
+        MoverGobsManAl_(dirPri)
+    } else { 
+        MoverGobsManAl_(dirSec)
+        LlevarGobsManAlBorde_(opuesto(dirPri))
+    }
+}
+
+// EJERCICIO 2
+
+procedure ComerTodasLasCerezasDelNivel(){
+    /*  Proposito: Comer todas las cerezas del nivel.
+        Precondiciones: el cabezal arranca sobre Gobsman.*/
+    LlevarAGobsmanAPrimeraCeldaEnUnRecorridoAl_YAl_DelNivel(Norte ,Este )
+    while(haySiguienteCeldaEnUnRecorridoAl_Y_(Norte, Este)){
+        ComerCerezaSiPuede()
+        MoverAGobsmanASiguienteCeldaEnUnRecorridoAl_YAl_DelNivel(Este ,Norte )
+    }
+    ComerCerezaSiPuede()
+}
+procedure ComerCerezaSiPuede(){
+    /*  Proposito: comer la cereza de la celda actual si hay.
+        Precondicion: gobsman debe estar sobre la celda actual.*/
+    if(hayCereza()){
+        ComerCereza()
+    }
+}
+
+// EJERCICIO 3
+
+/*procedure ComerTodoLoQueSeEncuentreEnElNivel(){
+    /  Proposito: Comer todos lo cocos y cerezas que halla en el nivel.
+        Precondicion: el cabezal debe estar sobre Gobsman./
+    LlevarAGobsmanAPrimeraCeldaEnUnRecorridoAl_YAl_DelNivel(Norte ,Este )
+     while(haySiguienteCeldaEnUnRecorridoAl_Y_(Norte, Este)){
+        ComerCerezaSiPuede()
+        ComerCoco()
+        MoverAGobsmanASiguienteCeldaEnUnRecorridoAl_YAl_DelNivel(Este ,Norte )
+    }
+    ComerCoco()
+    ComerCerezaSiPuede()
+}*/
+// EJERCICIO 4 
+
+procedure ComerTodoLoQueSeEncuentreEnElNivel(){
+    /*  Proposito: comer todos los cocos y cerezas las cerezas del nivel.
+        Precondicion: el cabezal inicia sobre gobsman.existen cocos en todo el nivel con excepcion en aquellas celdas que tengan una cereza.*/
+    LlevarAGobsmanAPrimeraCeldaEnUnRecorridoAl_YAl_DelNivel(Norte ,Este )
+    while(haySiguienteCeldaEnUnRecorridoAl_Y_(Norte, Este)){
+        ComerCocoOCerezaSiPuede()
+        MoverAGobsmanASiguienteCeldaEnUnRecorridoAl_YAl_DelNivel(Este ,Norte )
+    }
+    ComerCocoOCerezaSiPuede()
+}
+procedure ComerCocoOCerezaSiPuede(){
+    /*  Proposito: Comer el Coco o la Cereza si corresponde en la celda actual.
+        Precondicion: si no hay cereza debe existir un coco en la celda actual. Gobsman debe estar en la celda actual.*/
+    if(hayCereza()){
+        ComerCereza()
+    } else{
+        ComerCoco()
+    }
+}
+
+// EJERCICIO 5
+
+procedure RecorrerNivelMuriendoEnElFantasma(){
+    /*  Proposito: recorre el nivel hasta que gobsman encuentra a un fantasma.
+        Precondicion: existe un fantasma en alguna parte del nivel.*/
+    LlevarAGobsmanAPrimeraCeldaEnUnRecorridoAl_YAl_DelNivel(Norte ,Este )
+    while(not hayFantasma()){
+        MoverAGobsmanASiguienteCeldaEnUnRecorridoAl_YAl_DelNivel(Este ,Norte )
+    }
+    MorirGobsMan()
+}
+
+//EJERCICIO 6
+
+procedure RecorrerNivelMuriendoSiHayFantasma(){
+    /*  Proposito: recorre el nivel muriendo si hay un fantasma.
+        Precondicion: el cabezal esta sobre gobsman.*/
+    LlevarAGobsmanAPrimeraCeldaEnUnRecorridoAl_YAl_DelNivel(Este ,Norte )
+    while(not hayFantasma() && haySiguienteCeldaEnUnRecorridoAl_Y_(Este, Norte)){
+        MoverAGobsmanASiguienteCeldaEnUnRecorridoAl_YAl_DelNivel(Este ,Norte )
+    }
+    MorirGobsManSiHayFantasma()
+}
+procedure MorirGobsManSiHayFantasma(){
+    /*  Proposito: muere gobsman cuando hay un fanstama en la celda actual y si no hay no hace nada.
+        Precondicion: ninguna. Gbosman debe estar vivo y en la celda actual.*/
+    if(hayFantasma()){
+        MorirGobsMan()
+    }
+}
+
+// EJERCICIO 7
+
+procedure  JugarNivel(){
+    /*  Proposito: Jugar el nivel con gobsman, comiendo cocos y cerezas hasta encontrar un fantasma.
+        Precondicion: el cabezal se encuentra sobre Gobsman, gobsman esta vivo.*/
+    LlevarAGobsmanAPrimeraCeldaEnUnRecorridoAl_YAl_DelNivel(Este ,Sur )
+    while(not hayFantasma() && haySiguienteCeldaEnUnRecorridoAl_Y_(Este, Sur)){
+        ComerCocoOCerezaSiPuede()
+        MoverAGobsmanASiguienteCeldaEnUnRecorridoAl_YAl_DelNivel(Este ,Sur )
+    }
+    MatarAGobsManSiPuedeOComerCocoOCerezaSiHay()
+}
+procedure MatarAGobsManSiPuedeOComerCocoOCerezaSiHay(){
+    /*  Proposito: matar a Gobs Man si puede y si no comer coco o cereza.
+        Precondicion: Gobs Man debe estar vivo y debe estar en la celda actual.*/
+    if(hayFantasma()){
+        MorirGobsMan()
+    } else {
+        ComerCocoOCerezaSiPuede()
+    }
+}
+
+//BIBLIOTECA
+procedure Mover_Veces_(direccion, cantidad){
+    /*...*/
+	repeat(cantidad){
+		Mover(direccion)
+	}
+}
+procedure  Poner_Veces_(color, cantidad){
+    /*...*/
+    repeat(cantidad){
+        Poner(color)
+    }
+}
+procedure Sacar_Veces_(color, cantidad){
+    repeat(cantidad){
+        Sacar(color)
+    }
+}
+procedure PonerUnaDeCada(){
+    /*...*/
+    Poner(Azul)
+    Poner(Rojo)
+    Poner(Negro)
+    Poner(Verde)
+}
+procedure SacarTodasLasDeColor_(colorASacar){
+    /*
+        Proposito: Eliminar todas las bolitas de "colorASacar" de la celda actual.
+        Precondicion: debe existir en la celda actual bolitas de "coloASacar".
+        Parametros:
+            * colorASacar: es un color que denota el color de bolitas a sacar.
+    */
+    Sacar_Veces_(colorASacar, nroBolitas(colorASacar))
+}
+procedure Mover_SegúnColor_(direccion, color){
+    /*
+        Proposito: Ubicar cabezal hacia "direccion" segun la cantidad de bolitas de "color" denote en la celda actual. 
+        el cabezal finaliza en la celda a distancia "color" y direccion desde la celda actual.
+        Precondiciones: debe existir al menos numero de "color" celdas hacia "direccion" desde la celda actual. 
+        Parametros: 
+            * direccion: es una direccion y denota hacia donde debe moverse el cabezal.
+            * color: es un color que denota el color de la bolita
+                    a sensar para moverse hacia "direccion"
+    */
+    repeat(nroBolitas(color)){
+        Mover(direccion)
+    }
+}
+procedure MoverDiagonalHorariaAl_(direccion){
+    /*...*/
+    Mover(direccion)
+    Mover(siguiente(direccion))
+}
+procedure Sacar_DeColor_(cantidad, color){
+    /*
+        Proposito: Sacar "cantidad" de bolitas de "color"
+        Precondicion: debe existir en la celda actual "cantidad" de bolitas de "color" a sacar en la celda actual.
+        parametros:
+            * color: es un color, denota el "color" a sacar de la celda actual.
+            * cantidad: es un numero, denota la cantidad de bolitas a sacar de la celda actual.
+    */
+    repeat (cantidad){
+        Sacar(color)
+    }
+}
+procedure VaciarCelda(){
+    /* Proposito: Vaciar la celda actual de bolitas de colores.
+       Precondicion: ninguna.
+    */
+     Sacar_Veces_(Rojo, nroBolitas(Rojo))
+     Sacar_Veces_(Verde, nroBolitas(Verde))
+     Sacar_Veces_(Negro, nroBolitas(Negro))
+     Sacar_Veces_(Azul, nroBolitas(Azul))
+}
+procedure IrAEsquina_Y_(primeraDirección,segundaDirección){
+    /* Proposito:   ubicar el cabezal en la esquina hacia "primeraDirección" y "segundaDirección", desde la celda
+                    actual.
+       Precondicion: la "segundaDirección" y la "primeraDirección" no deben ser iguales u opuestas.
+       Parametros: primeraDirección: es una direccion, denota la primera direccion hacia la esquina a mover.
+                   segundaDirección: es una direccion, denota la segunda direccion hacia la esquina a mover.
+    */
+    IrAlBorde(segundaDirección)
+    IrAlBorde(primeraDirección)
+}
+procedure Reemplazar_Y_Por_(primerColorAReemplazar, segundoColorAReemplazar, colorAAgregar){
+    /*
+        Proposito: Reemplazar el "primerColorAReemplazar" y el "segundoColorAReemplazar" por
+                   "colorAAgregar"
+        Precondicion: debe existir al menos una bolita de "primerColorAReemplazar" y "segundoColorAReemplazar"
+                      en la celda actual.
+        Parametros:
+            * primerColorAReemplazar: es un Color
+            * segundoColorAReemplazar: es un Color.
+            * colorAAgregar: es un Color.
+    */
+    //B
+    Sacar(primerColorAReemplazar)
+    Sacar(segundoColorAReemplazar)
+    Poner(colorAAgregar)
+}
+procedure Poner_Si_(color, condición){
+    /*
+        Proposito: Colocar un "color" si se cumple la  "condicion"
+        Precondicion: ninguna
+        Parametros:
+            color: es un Color y denota el color a colocar.
+            condicion: es un Booleano. denota la condicion a cumplir para colcar el color.
+    */
+    if(condicion){
+        Poner(color)
+    }
+}
+procedure Sacar_Si_(color, condición){
+    /*
+        Proposito: Remover un "color" si se cumple la  "condicion"
+        Precondicion: ninguna (preguntar)
+        Parametros:
+            color: es un Color y denota el color a colocar.
+            condicion: es un Booleano. denota la condicion a cumplir para colcar el color.
+    */
+    if(condicion){
+        Sacar(color)
+    }
+}
+procedure Mover_Si_(dirección, condición){
+    /*
+        Proposito: ubicar el cabezal hacia "direccion" si "condicion" se cumple.
+        Precondicion: ninguna
+        Parametros:
+            * direccion : es una Direccion que denota hacia donde se mueve el cabezal.
+            * condicion: es un Booleano. que denota si se cumple o no la condicion.
+    */
+    if(condicion){
+        Mover(direccion)
+    }
+}
+
+// C
+
+//RECORRIDOS - HERRAMIENTAS PARA RECORRIDO POR CELDAS.
+procedure IrAPrimeraCeldaEnUnRecorridoAl_YAl_(dirPri ,dirSec ){
+    /*...*/
+    IrAlBorde(opuesto(dirPri ))
+    IrAlBorde(opuesto( dirSec))
+}
+function haySiguienteCeldaEnUnRecorridoAl_YAl_( dirPri,dirSec ){
+    /*...*/
+    return (puedeMover(dirPri ) || puedeMover(dirSec))
+}
+procedure IrASiguienteCeldaEnUnRecorridoAl_YAl_(dirPri ,dirSec ){
+    /*...*/
+    if (puedeMover(dirPri)) { 
+        Mover(dirPri) 
+    } else { 
+        Mover(dirSec ) 
+        IrAlBorde(opuesto(dirPri)) 
+    }
+}
+procedure IrAPrimeraCeldaEnUnRecorridoAl_Y_(dirPrincipal, dirSecundaria){
+        /*
+        Proposito: Ubicar el cabezal al inicio del recorrido. de "dirPrincipal" y "dirSecundaria".
+        Precondiciones: Las direcciones no pueden ser opuestas u iguales.
+        Parametros: diPrincipal: es una direccion que denota ir al borde de "dirPrincipal" .
+                    dirSecundaria: es una direccion que denota hacia que borde debo moverme hacia "dirSecundaria".*/
+    IrAlBorde(opuesto(dirPrincipal))
+    IrAlBorde(opuesto(dirSecundaria))
+}
+function haySiguienteCeldaEnUnRecorridoAl_Y_(dirPrincipal, dirSecundaria){
+    /*  Proposito: inidica si hay una siguiente celda en un recorrido hacia "dirPrincipal" y "dirSecundaria".
+        Precondicion: ninguna.
+        Parametros: dirPrincipal: es una Direccion.
+                    dirSecundaria: es una Direccion.
+        Tipo: booleano.*/
+    return(puedeMover(dirPrincipal ) || puedeMover(dirSecundaria)) 
+}
+procedure IrASiguienteCeldaEnUnRecorridoAl_Y_(dirPrincipal, dirSecundaria){
+    /*  Proposito:  Ubicar el cabezal en la siguiente celda de un recorrido hacia "dirPrincipal" y "dirSecundaria".
+        Precondicion: ninguna.
+        Parametros: dirPrincipal: es una Direccion.
+                    dirSecundaria: es una Direccion.*/
+    if (puedeMover(dirPri)) { 
+        Mover(dirPri) 
+    } else { 
+        Mover(dirSec ) 
+        IrAlBorde(opuesto(dirPri)) 
+    }
+}
+
+function tieneBolitas_Al_(color,direccion){
+    /*
+        Proposito: Indica si en la celda hacia la "direccion" dada hay bolitas de "color"
+        Precondicion: existe al menos una celda en la "direccion" dada.
+        Parametros:
+            * color: es un Color y denota el color a comprobar.
+            * direccion: es una Direccion denota la direccion a comprobar.
+        tipo: booleano
+    */
+    Mover(direccion)
+    return(hayBolitas(color))
+}
+
+function hayBolitas_Al_(color,direccion){           // CONSULTAR CON EL PROFE.
+    /*
+        Proposito: Indica si hay una celda lindante en la "direccion" indicada y si la misma tiene bolitas
+                   de "color" dado.
+        Precondicion: ninguna.
+        Parametros:
+            *color: es un Color y denota el color de bolitas a verificar en la celda lindante a direccion.
+            * direccion: es una Direccion y denota la direccion a verificar.
+        Tipo: booleano
+    */
+    return(puedeMover(dirección) && tieneBolitas_Al_(color,direccion))
+}
+
+/*function tieneBolitas_Al_(color,direccion){
+    /
+        Proposito: Indica si en la celda hacia la "direccion" dada hay bolitas de "color"
+        Precondicion: existe al menos una celda en la "direccion" dada.
+        Parametros:
+            * color: es un Color y denota el color a comprobar.
+            * direccion: es una Direccion denota la direccion a comprobar.
+        tipo: booleano
+    /
+    Mover(direccion)
+    return(hayBolitas(color))
+}*/
+
+function maximoEntre_Y_(valor1,valor2){
+    /*
+        Proposito: Describe el valor maximo entre valor1 y valor2
+        Precondicion: ninguna
+        parametros:
+            valor1: es un numero. denota el valor a comparar.
+            valor2: es un numero, denota el segundo valor a comparar.
+        tipo: Numero.
+    */
+    return(choose valor1 when (valor1 >  valor2)
+                  valor2 otherwise)
+}
+
+function minimoEntre_Y_(valor1,valor2){
+    /*
+        Proposito: Indica el valor minimo entre valor1 y valor2
+        Precondicion: ninguna
+        parametros:
+            valor1: es un numero. denota el valor a comparar.
+            valor2: es un numero, denota el segundo valor a comparar.
+        tipo: Numero
+    */
+    return(choose valor1 when (valor1 <  valor2)
+                  valor2 otherwise)
+}
+function unoSi_ceroSino(condicion){
+    /*
+        Proposito: Describe 1 si esta vacia la celda actual o cero si no
+        Parametro:
+            condicion: booleano
+        Tipo: numero (valores 1 o 0)
+    */
+    return(choose 1 when (condicion)
+                  0 otherwise)
+}
+
+

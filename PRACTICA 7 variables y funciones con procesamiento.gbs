@@ -1,0 +1,668 @@
+// EJERCICIO 1
+
+function hayBolitas_EnElBorde_(color, direccion){
+    /*
+        Proposito: Indica si hay bolitas del "color" indicado en la celda al borde de la "direccion" dada.
+        Precondicion: ninguna
+        Parametros:
+            * color: es un Color que denota la bolita a chequear si hay en la celda al borde de la "direccion" dada.
+            * direccion: es una Direccion, que denota la direccion a verificar la bolita de "color" dado al borde.
+    */
+    IrAlBorde(direccion)
+    return(hayBolitas(color))
+}
+
+// EJERCICIO 2 BIBLIOTECA
+
+function tieneBolitas_Al_(color,direccion){
+    /*
+        Proposito: Indica si en la celda hacia la "direccion" dada hay bolitas de "color"
+        Precondicion: existe al menos una celda en la "direccion" dada.
+        Parametros:
+            * color: es un Color y denota el color a comprobar.
+            * direccion: es una Direccion denota la direccion a comprobar.
+        tipo: booleano
+    */
+    Mover(direccion)
+    return(hayBolitas(color))
+}
+
+// EJERCICIO 3 BIBLIOTECA
+
+function hayBolitas_Al_(color,direccion){           // CONSULTAR CON EL PROFE.
+    /*
+        Proposito: Indica si hay una celda lindante en la "direccion" indicada y si la misma tiene bolitas
+                   de "color" dado.
+        Precondicion: ninguna.
+        Parametros:
+            *color: es un Color y denota el color de bolitas a verificar en la celda lindante a direccion.
+            * direccion: es una Direccion y denota la direccion a verificar.
+        Tipo: booleano
+    */
+    return(puedeMover(dirección) && tieneBolitas_Al_(color,direccion))
+}
+
+// EJERCICIO 4 
+
+function maximoEntre_Y_(valor1,valor2){
+    /*
+        Proposito: Describe el valor maximo entre valor1 y valor2
+        Precondicion: ninguna
+        parametros:
+            valor1: es un numero. denota el valor a comparar.
+            valor2: es un numero, denota el segundo valor a comparar.
+        tipo: Numero.
+    */
+    return(choose valor1 when (valor1 >  valor2)
+                  valor2 otherwise)
+}
+
+function minimoEntre_Y_(valor1,valor2){
+    /*
+        Proposito: Indica el valor minimo entre valor1 y valor2
+        Precondicion: ninguna
+        parametros:
+            valor1: es un numero. denota el valor a comparar.
+            valor2: es un numero, denota el segundo valor a comparar.
+        tipo: Numero
+    */
+    return(choose valor1 when (valor1 <  valor2)
+                  valor2 otherwise)
+}
+
+// EJERCICIO 5
+
+function nroBolitas_EnLaFilaActual(color){
+    /*
+        Proposito: Indica la cantidad de bolitas de "color" en la fila actual.
+        Precondicion: ninguna
+        tipo: Numero.
+        Parametro: color: es un color y denota el color de las bolitas a contar.
+    */
+    ComenzarElRecorrido()
+    cantidadDeBolitasYaVistas:= 0
+    while(puedeMover(Este)){
+        cantidadDeBolitasYaVistas := cantidadDeBolitasYaVistas + hayNumeroDeBolitas_(color)
+        Mover(Este)
+    }
+    cantidadDeBolitasYaVistas := cantidadDeBolitasYaVistas + hayNumeroDeBolitas_(color)
+    return(cantindadDeBolitasYaVistas)
+}
+
+procedure ComenzarElRecorrido(){
+    /*
+        Proposito: Ubicar el cabezal al inicio de la fila.
+        Precondicion: ninguna.
+    */
+    IrAlBorde(Oeste)
+}
+
+function hayNumeroDeBolitas_(color){
+    /*
+        Proposito: Indica cuantas bolitas de "color" hay en la celda actual.
+        Precondicion: ninguna
+        tipo: numero.
+        Parametro: 
+            color: es un color y denota el color de las bolitas a obtener su cantidad.
+    */
+    return(nroBolitas(color))
+}
+
+// A
+// 0 PORQUE LA VARIABLE ARRANCA CON 0
+// PORQUE SE COMIENZA POR UN RECORRIDO POR FILAS EN DONDE SE CONTEMPLA EL CASO BORDE.
+
+//EJERCICIO 6
+
+function nroFilas(){
+    /*
+        Proposito: Indica la cantidad de Filas del tablero.
+        Tipo:Numero.
+        Precondicion: ninguna.
+    */
+   IrAPrimeraCeldaEnUnRecorridoAl_Y_(Norte, Este)
+    cantidadDeFilas:= 0
+    while(puedeMover(Norte)){
+        cantidadDeFilas := cantidadDeFilas + 1
+        Mover(Norte)
+    }
+    cantidadDeFilas := cantidadDeFilas + 1
+    return(cantidadDeFilas)
+}
+
+
+function nroColumnas(){
+    /*
+        Proposito: Indica la cantidad de columnas del tablero
+        Precondicion: ninguna.
+        Tipo: Numero
+    */
+    IrAPrimeraCeldaEnUnRecorridoAl_Y_(Norte, Este)
+    cantidadDeColumnas:= 0
+    while(puedeMover(Este)){
+        cantidadDeColumnas := cantidadDeColumnas + 1
+        Mover(Este)
+    }
+    cantidadDeColumnas := cantidadDeColumnas + 1
+    return(cantidadDeColumnas)
+}
+
+// EJERCICIO 7
+
+function distanciaAlBorde_(direccion) {
+    /*
+        PROPÓSITO:  Describe la cantidad celdas que hay entre la celda actual y el borde indicado hacia "direccion"
+        PARÁMETROS:
+            * direccion: es una direccion que denota la direccion al borde a medir.
+        TIPO: Numero.
+    */
+    distanciaAlBorde:= 0
+    while(puedeMover(direccion)){
+        distanciaAlBorde := distanciaAlBorde + 1
+        Mover(direccion)
+    }
+    distanciaAlBorde := distanciaAlBorde + 1
+    return(distanciaAlBorde)
+}
+
+// EJERCICIO 8
+
+function coordenadaX(){
+    /*
+        Proposito: describe la coordenada x de la celda actual.
+        Precondicion: ninguna.
+        Tipo: Numero
+    */
+    return(distanciaAlBorde_(Oeste))
+}
+
+function coordenadaY(){
+    /*
+        Proposito: describe la coordenada al origen de y de la celda actual.
+        Precondicion: ninguna.
+        Tipo: Numero
+    */
+    return(distanciaAlBorde_(Sur))
+}
+
+// EJERCICIO 9
+
+//A
+
+function arbol(){
+    /*
+        Proposito: describe un arbol.
+        Precondicion: ninguna.
+        Tipo: Color
+    */
+    return(Verde)
+}
+
+function semilla(){
+    /*
+        Proposito: describe una semilla
+        Precondicion: ninguna.
+        Tipo: Color
+    */
+    return(Rojo)
+}
+
+function bomba(){
+    /*
+        Proposito: describe una bomba
+        Precondicion: ninguna.
+        Tipo: Color
+    */
+    return(Negro)
+}
+
+function nutriente(){
+    /*
+        Proposito: Describe un nutriente
+        Precondicion: ninguna.
+        Tipo: Color
+    */
+    return(Azul)
+}
+
+// B
+
+function nroTotalDeÁrbolesEnElTerreno(){
+    /*
+        Proposito: Describe la cantidad de arboles que hay en el terreno.
+        Precondicion: ninguna.
+        Tipo: Numero.
+        Observaciones: se realiza un recorrido de acumulacion.
+    */
+    IrAPrimeraCeldaEnUnRecorridoAl_YAl_(Sur ,Oeste )
+    cantidadDeArboles := 0
+    while(haySiguienteCeldaEnUnRecorridoAl_YAl_( Sur,Oeste )){
+        cantidadDeArboles := unoSi_ceroSino(hayArbolesEnLaParcelaActual())
+        IrASiguienteCeldaEnUnRecorridoAl_YAl_(Sur ,Oeste )
+    }
+    cantidadDeArboles := unoSi_ceroSino(hayArbolesEnLaParcelaActual())
+    return(cantidadDeArboles)
+}
+
+function hayArbolesEnLaParcelaActual(){
+    /*
+        Proposito: Describe si hay arboles en la parcela actual.
+        Precondicion: ninguna
+        Tipo: booleano
+    */
+    return (hayBolitas(arbol()))
+}
+
+//EJERCICIO 10
+
+function nroVacías(){
+    /*
+        Proposito: Describe la cantidad de celdas vacias del tablero.
+        Precondicion:ninguna.
+        Tipo: Numero
+    */
+    IrAPrimeraCeldaEnUnRecorridoAl_YAl_(Norte ,Este )
+    celdasVaciasContadas := 0
+    while(haySiguienteCeldaEnUnRecorridoAl_YAl_( Norte,Este )){
+        celdasVaciasContadas := celdasVaciasContadas + unoSi_ceroSino(esCeldaVacia())
+        IrASiguienteCeldaEnUnRecorridoAl_YAl_(Norte ,Este )
+    }
+    celdasVaciasContadas := celdasVaciasContadas + unoSi_ceroSino(esCeldaVacia())
+    return(celdasVaciasContadas)
+}
+
+
+// EJERCICIO 11
+
+function colorMínimoConBolitas(){
+    /*
+        Proposito: Describe el color mas chico del cual hay bolitas en la celda actual.
+        Precondicion: debe existir al menos una bolita con color.
+        Tipo: Color.
+    */
+    colorActual := minColor()
+    while(not hayBolitas(colorActual)){
+        colorActual := siguiente(colorActual)
+    }
+    return(colorActual)
+}
+
+// EJERCICIO 12
+
+function a(c1, c2){ 
+    /*
+        Proposito:  Describir la cantidad de bolitas de la que hay más entre las bolitas de los colores dados.
+        Tipo: color
+    */
+    return(choose c2 when (nroBolitas(c2) > nroBolitas(c1))
+                  c1 otherwise)
+}
+function b(n1, n2) { 
+    /*
+        Proposito: Describir el mayor de dos valores dados
+        Tipo: numero
+    */
+    return(choose n1 when (n1 > n2)
+                  n2 otherwise)
+}
+function c() {
+     /*
+        Proposito: Describir cuál es la mayor cantidad de bolitas del color dado que tiene
+        alguna celda del tablero.
+        tipo: color 
+     */
+    mayor := Azul
+    colorActual:= siguiente(Azul)
+    while (colorActual /= Azul) {
+        mayor := a(mayor, colorActual)
+        colorActual := siguiente(colorActual)
+    }
+    return(mayor)
+}
+function d() { 
+    /*
+        Proposito: Describir la cantidad total de bolitas de todos los colores de la celda
+                    actual.
+        Tipo: numero
+    */
+    cant := 0
+    colorActual := Azul
+    while (colorActual /= Verde) {
+        cant := cant + nroBolitas(colorActual)
+        colorActual := siguiente(colorActual)
+    }
+    return(cant + nroBolitas(colorActual))
+}
+function e(c1, c2) { 
+    /*
+        Proposito: Describir el color de entre los dados que tiene más bolitas en la celda actual.
+        Tipo: numero
+    */
+    return(b(nroBolitas(c1), nroBolitas(c2)))
+}
+function f(c1, c2) { 
+    /*
+        Proposito: Describe la cantidad de bolitas que mas hay en la celda actual.
+        Tipo:numero
+    */
+    return(nroBolitas(a(c1, c2)))
+}
+function g(c) { 
+    /*
+        Proposito: Describe la cantidad de bolitas del color dado que existe en el tablero.
+        Tipo: numero
+    */
+    IrAlInicioDeUnRecorrido__(Norte, Este)
+    cant := 0
+    while(not estoyElFinalDeUnRecorrido__(Norte, Este)) {
+        cant := cant + nroBolitas(c)
+        PasarASiguienteCelda__(Norte, Este)
+    }
+    return(cant + nroBolitas(c))
+}
+function h(c) { 
+    /*
+        Proposito:Describir cuál es la mayor cantidad de bolitas del color dado que tiene
+                        alguna celda del tablero.
+
+        Tipo:numero
+    */
+    IrAlInicioDeUnRecorrido__(Norte, Este)
+    mayor := nroBolitas(c)
+        while(not estoyElFinalDeUnRecorrido__(Norte, Este)) {
+            mayor := b(mayor, nroBolitas(c))
+            PasarASiguienteCelda__(Norte, Este)
+        }
+    return(b(mayor, nroBolitas(c)))
+}
+
+//EJERCICIO 13
+
+// A: EN EL PRIMER PROCEDIMIENTO SE USA UNA VARIABLE INNECESARIAMENTE,
+
+procedure PonerAzul_veces(cantidad) {
+    /*
+        Proposito: Colocar bolitas azules "p" mas 1 veces en la celda actual.
+        Precondicion: ninguna.
+        Parametros:
+        * cantidad : es un numero, denota la cantidad de veces a colocar azul en la celda actual.
+    */
+
+     cantidad := cantidad + 1; 
+     Poner__Veces(Azul, cantidad) 
+}
+
+procedure Poner_VecesAzulSi(cantidad) {
+    /*
+        Proposito: Colocar cantidad de veces dado de bolitas azul en la celda actual.
+        Precondicion: ninguna
+        Parametros:
+            Cantidad: es un numero, denota la cantidad de veces a colocar azul en la celda actual.
+    */
+    if(cantidad /= 3) {
+        Poner__Veces(Azul, cantidad)
+    }
+
+}
+procedure PonerYMover_(veces){ 
+    /*
+        Proposito: colocar bolitas azules tantas vecesy mover al este tantas veces.
+        Precondicion: debe existir al menos veces celdas hacia el este desde la celda actual.
+        parametros:
+            veces: numero, denota el numero a mover y poner en la celda actual
+    */
+    Poner__Veces(Azul, veces)
+    Mover__Veces(Este, veces) 
+}
+procedure MoverDiezVecesAl_(direccion) {
+    /*
+        Proposito: ubicar el cabezal hacia la "direccion" a una distancia de 10 celdas.
+        Precondicion: existe al menos 10 celdas hacia el este a mover desde la celda actual.
+        Parametros: direccion: es una Direccion. 
+    */
+    Mover_Veces_(direccion, 10)
+}
+
+
+// EJERCICIO 14
+
+function total_(color) {
+// Proposito: Denota la cantidad de bolitas del color color que ya se recorrieron
+// parametros: * color: es un color, denota el color a sumar de la celda actual.
+    IrAlInicioDeUnRecorrido__(Sur,Oeste)
+    var := 0
+    while(not estoyElFinalDeUnRecorrido__(Norte, Este)){ 
+        var := var + nroBolitas(x)
+        pasarASiguienteCelda__(Norte, Este) 
+    }
+    return(var + nroBolitas(x))
+}
+
+function bolitasDeColor(color) {
+// Proposito: Denota la mayor cantidad de bolitas del color dado que tenía alguna de las celdas recorridas.
+// Parametros: * color: es un color que denota el color de la bolita a evaluar.
+    IrAlInicioDeUnRecorrido__(Sur, Oeste)
+    cantidad := nroBolitas(n)
+    PasarASiguienteCelda__(Norte, Este)
+    while(not estoyElFinalDeUnRecorrido__(Norte, Este)){ 
+        cantidad := máximoEntre_Y_(cantidad, nroBolitas(color))
+        PasarASiguienteCelda__(Norte, Este)
+    }
+    return(máximoEntre_Y_(cantidad, nroBolitas(color)))
+}
+
+//EJERCICIO 15
+
+procedure IrArNesimaVacia_(n){
+    /*
+        Proposito:Ubicar el cabezal en la celda vacia numero n en el recorrido Este Norte, en caso de no existir la celda vacia n, va al final del recorrido
+        Precondicion:ninguna
+        Parametros:
+            n: es un numero.
+        Observaciones: recorrido de busqueda y acumulacion
+       */
+       IrAlInicioDelRecorrido_Y_(Norte,Este)
+       celdasVaciasYaVistas := 0
+       while(haySiguienteCeldaEnUnRecorridoAl_YAl_( Norte,Este ) && celdasVaciasYaVistas /= n){
+           celdasVaciasYaVistas := celdasVaciasYaVistas + unoSi_ceroSino(esCeldaVacia())
+           IrASiguienteCeldaEnUnRecorridoAl_Y_(Norte, Este)
+         }
+}
+
+//EJERCICIO 16
+
+// A --------------------------------------------------------------------
+function cantidadDeCanalesLibres(){
+    /*
+        Proposito: Describe la cantidad de canales vacios sin aviones.
+        Precondicion: ninguna.
+        Tipo:numero
+    */
+    IrAlInicioDeUnRecorridoAl_Y_(Norte, Este)
+    cantidadDeCanalesVacios := 0
+    while(puedeMover(Este)){
+        cantidadDeCanalesVacios := cantidadDeCanalesVacios + unoSi_ceroSino(esCanalVacio())
+    }
+    celdasVaciasYaVistas := celdasVaciasYaVistas + unoSi_ceroSino(esCanalVacio())
+    return(cantidadDeCanalesVacios)
+}
+
+function esCanalVacio(){
+    /*  Proposito: describe si el canal esta vacio o no.
+        Precondicion: Ninguna.
+        Tipo: Booleano.*/
+    IrAlBorde(Sur)
+    celdaOcupada := 0
+    while(puedeMover(Norte)){
+        celdaOcupada := celdaOcupada + unoSi_ceroSino(esCeldaVacia())
+        Mover(Norte)
+    }
+    celdaOcupada := celdaOcupada + unoSi_ceroSino(esCeldaVacia())
+    return(celdaOcupada == 0)
+}
+
+// B --------------------------------------------------------------------
+function cantidadDeAvionesDespegando(){
+    /*
+        Proposito: Describe la cantidad total de aviones despegando en el aereopuerto.
+        Precondicion: ninguna
+        Tipo: Numero
+    */
+    IrAlInicioDeUnRecorridoAl_Y_(Norte, Este)
+    cantidadDeAvionesDespegando := 0
+    while(haySiguienteCeldaEnUnRecorridoAl_YAl_( Norte,Este ){
+        cantidadDeAvionesDespegando := cantidadDeAvionesDespegando + unoSi_ceroSino(esAvionDespegando())
+        IrASiguienteCeldaEnUnRecorridoAl_YAl_(Norte ,Este )
+    }
+    cantidadDeAvionesDespegando := cantidadDeAvionesDespegando + unoSi_ceroSino(esAvionDespegando()) 
+    return(cantidadDeCanalesVacios)
+}
+
+function esAvionDespegando(){
+    /*  Proposito: describe un avion despegando.
+        Precondicion: ninguna.
+        Tipo: Booleano*/
+    return(hayBolitas(Verde))
+}
+
+//C------------------------------------------------------------------------------
+
+procedure IrACanalLibreParaDespegar()(){
+    /*
+        Proposito: ubicar el cabezal en el canal libre mas proximo al suroeste desde la celda actual.
+        Precondicion: debe existir un canal libre hacia el suroeste.
+    */
+    IrAlBorde(Sur)
+    while(puedeMover(Este) && not esCanalVacio()){
+        Mover(Este)
+    }
+
+}
+
+// D ---------------------------------------------------------------------
+
+function cantidadDeAvionesTotales(){
+    /*  Proposito: describe la cantidad total de aviones en el aeropuerto.
+        Precondiciones: ninguna.
+        Tipo: Numero.*/
+    IrAlInicioDeUnRecorridoAl_Y_(Norte, Este)
+    cantidadDeAvionesVistos := 0
+    while(haySiguienteCeldaEnUnRecorridoAl_YAl_( Norte,Este ){
+        cantidadDeAvionesVistos := cantidadDeAvionesVistos + unoSi_ceroSino(hayAvion())
+        IrASiguienteCeldaEnUnRecorridoAl_YAl_(Norte ,Este )
+    }
+    cantidadDeAvionesVistos := cantidadDeAvionesVistos + unoSi_ceroSino(hayAvion()) 
+    return(cantidadDeAvionesVistos)
+}
+
+function hayAvion(){
+    /*  Proposito: indica si hay un avion en la celda actual.
+        Precondicion: ninguna.
+        Tipo: Booleano.*/
+    return(hayBolitas(Azul))
+}
+
+//E-----------------------------------------------------------------------------
+
+procedure IrACanalLibreParaAterrizar(){
+    /*  Proposito: ubicar el cabezal en el primer canal libre mas cercano al Noroeste del aeropuerto.
+        Precondicion: existe un canal libre cercano al Noroeste.*/
+    IrAlInicioDeUnRecorridoAl_Y_(Sur, Este)
+    while(puedeMover(Oeste) && not esCanalVacio()){
+        Mover(Oeste)
+    }
+}
+
+//F--------------------------------------------------------------------------------------------------------
+
+function cantidadDeCanalesConColisiónInminente(){
+    /*  Proposito: describe la cantidad de carriles con posibles colisiones en todo el aeropuerto.
+        Precondicion: ninguna
+        Tipo:Numero*/
+    IrAlBorde(Oeste)  // enmascararlo si estoy inspirado XD
+    cantidadDeCarrilesConPosiblesColisiones := 0
+    while(puedeMover(Este)){// enmascarar el puedemover por ir a siguiente canal.
+        cantidadDeCarrilesConPosiblesColisiones := cantidadDeCarrilesConPosiblesColisiones + unoSi_ceroSino(esCanalConColisionInminente())
+        Mover(Este)
+    }
+    cantidadDeCarrilesConPosiblesColisiones := cantidadDeCarrilesConPosiblesColisiones + unoSi_ceroSino(esCanalConColision())
+    return(cantidadDeCarrilesConPosiblesColisiones)
+}
+
+function esCanalConColisionInminente(){
+    /*  Proposito: indica si el canal tiene o no riesgo de colision.
+        Precondicion: ninguna.
+        Tipo: Booleano.*/
+    IrAlBorde(Norte)
+    while(not (hayAvionDespegando() && hayAvionDebajoAterrizando()) && puedeMover(Sur)){
+        Mover(Sur)
+    }
+    return(puedeMover(Sur))
+}
+
+function hayAvionDebajoAterrizando(){
+    /*  Proposito: indica si hay un a bla bla*/
+    while(not hayAvionAterrizando() && puedeMover(Sur)){
+        Mover(Sur)
+    }
+    return(hayAvionAterrizando())
+}
+
+//g----------------------------------------------------------------------------------------------------------
+procedure IrACanalConColisiónInminente(){
+    /*  Proposito: ubicar el cabezal en el primer carril con una colision inminente.
+        Precondicion: ninguna.
+    */
+    IrAlInicioDeUnRecorridoAl_Y_(Norte, Este)
+    while(not esCanalConColisionInminente() && puedeMover(Oeste)){
+        Mover(Oeste)
+    }
+}
+// H ---------------------------------------------------------------------------------------------------------
+function mayorNroDeVueloDespegando(){
+    /*  Proposito: describe el numero de vuelo mas grande que este despegando en el aeropuerto.
+        Precondicion: ninguna.
+        Tipo: Numero.*/
+    IrAPrimeraCeldaEnUnRecorridoAl_YAl_(Norte ,Este )
+    mayorNumeroDeVueloDespegandoHastaAhora := 0
+    while(haySiguienteCeldaEnUnRecorridoAl_YAl_( Norte,Este )){
+        mayorNumeroDeVueloDespegandoHastaAhora := maximoEntre_Y_(numeroDelVueloSiHayAvion(),mayorNumeroDeVueloDespegandoHastaAhora)
+        IrASiguienteCeldaEnUnRecorridoAl_YAl_(Norte ,Este )
+    }
+    mayorNumeroDeVueloDespegandoHastaAhora := maximoEntre_Y_(numeroDelVuelo(),mayorNumeroDeVueloDespegandoHastaAhora)
+    return(mayorNumeroDeVueloDespegandoHastaAhora)
+}
+function numeroDelVueloSiHayAvion(){ // ver la forma de resolverlo.
+    /*  Proposito: describe el numero del vuelo del avion en la celda actual.
+        Precondicion: ninguna.
+        Tipo: Numero*/
+    return(nroBolitas(Azul))
+}
+
+//EJERCICIO 17
+
+//A
+
+function estáElJugador_(nroJugador){
+    /*  Proposito: indica si el jugador "nroJugador" tiene una apuesta registrada.
+        Precondicion: ninguna.
+        Tipo: Booleano.
+        Parametro: "nroJugador": es un Numero. denota el numero que representa un jugador.*/
+    IrAPrimeraCeldaEnUnRecorridoAl_YAl_(Norte ,Este )
+    while((nroJugador /= nroJugador()) && haySiguienteCeldaEnUnRecorridoAl_YAl_( Norte,Este )){
+        IrASiguienteCeldaEnUnRecorridoAl_YAl_(Norte ,Este )
+    }
+    return(hayApuesta())
+}
+
+//B
+
+function alguienJugóA_MasDe_(nroApostado, cantidadMínima),{
+    /*  Proposito: indica si algun jugador aposto al numero indicado "nroApostado" por un monto mayor a "cantidadMínima"
+        Precondicion: ninguna.
+        Tipo: Booleano.
+        Parametros: nroApostado. Es un Numero. denota el numero al cual se aposto.
+                    cantidadMínima: es un Numero. denota la cantidad minima a apostar.*/
+                    
+    
+}

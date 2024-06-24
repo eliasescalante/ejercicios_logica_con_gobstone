@@ -1,0 +1,449 @@
+//BIBLIOTECA
+procedure Mover_Veces_(direccion, cantidad){
+    /*...*/
+	repeat(cantidad){
+		Mover(direccion)
+	}
+}
+procedure  Poner_Veces_(color, cantidad){
+    /*...*/
+    repeat(cantidad){
+        Poner(color)
+    }
+}
+procedure PonerUnaDeCada(){
+    /*...*/
+    Poner(Azul)
+    Poner(Rojo)
+    Poner(Negro)
+    Poner(Verde)
+}
+procedure SacarTodasLasDeColor_(colorASacar){
+    /*
+        Proposito: Eliminar todas las bolitas de "colorASacar" de la celda actual.
+        Precondicion: debe existir en la celda actual bolitas de "coloASacar".
+        Parametros:
+            * colorASacar: es un color que denota el color de bolitas a sacar.
+    */
+    Sacar_Veces_(colorASacar, nroBolitas(colorASacar))
+}
+procedure Mover_SegúnColor_(direccion, color){
+    /*
+        Proposito: Ubicar cabezal hacia "direccion" segun la cantidad de bolitas de "color" denote en la celda actual. 
+        el cabezal finaliza en la celda a distancia "color" y direccion desde la celda actual.
+        Precondiciones: debe existir al menos numero de "color" celdas hacia "direccion" desde la celda actual. 
+        Parametros: 
+            * direccion: es una direccion y denota hacia donde debe moverse el cabezal.
+            * color: es un color que denota el color de la bolita
+                    a sensar para moverse hacia "direccion"
+    */
+    repeat(nroBolitas(color)){
+        Mover(direccion)
+    }
+}
+procedure MoverDiagonalHorariaAl_(direccion){
+    /*...*/
+    Mover(direccion)
+    Mover(siguiente(direccion))
+}
+procedure Sacar_DeColor_(cantidad, color){
+    /*
+        Proposito: Sacar "cantidad" de bolitas de "color"
+        Precondicion: debe existir en la celda actual "cantidad" de bolitas de "color" a sacar en la celda actual.
+        parametros:
+            * color: es un color, denota el "color" a sacar de la celda actual.
+            * cantidad: es un numero, denota la cantidad de bolitas a sacar de la celda actual.
+    */
+    repeat (cantidad){
+        Sacar(color)
+    }
+}
+procedure VaciarCelda(){
+    /* Proposito: Vaciar la celda actual de bolitas de colores.
+       Precondicion: ninguna.
+    */
+     Sacar_Veces_(Rojo, nroBolitas(Rojo))
+     Sacar_Veces_(Verde, nroBolitas(Verde))
+     Sacar_Veces_(Negro, nroBolitas(Negro))
+     Sacar_Veces_(Azul, nroBolitas(Azul))
+}
+procedure IrAEsquina_Y_(primeraDirección,segundaDirección){
+    /* Proposito:   ubicar el cabezal en la esquina hacia "primeraDirección" y "segundaDirección", desde la celda
+                    actual.
+       Precondicion: la "segundaDirección" y la "primeraDirección" no deben ser iguales u opuestas.
+       Parametros: primeraDirección: es una direccion, denota la primera direccion hacia la esquina a mover.
+                   segundaDirección: es una direccion, denota la segunda direccion hacia la esquina a mover.
+    */
+    IrAlBorde(segundaDirección)
+    IrAlBorde(primeraDirección)
+}
+procedure Reemplazar_Y_Por_(primerColorAReemplazar, segundoColorAReemplazar, colorAAgregar){
+    /*
+        Proposito: Reemplazar el "primerColorAReemplazar" y el "segundoColorAReemplazar" por
+                   "colorAAgregar"
+        Precondicion: debe existir al menos una bolita de "primerColorAReemplazar" y "segundoColorAReemplazar"
+                      en la celda actual.
+        Parametros:
+            * primerColorAReemplazar: es un Color
+            * segundoColorAReemplazar: es un Color.
+            * colorAAgregar: es un Color.
+    */
+    //B
+    Sacar(primerColorAReemplazar)
+    Sacar(segundoColorAReemplazar)
+    Poner(colorAAgregar)
+}
+procedure Poner_Si_(color, condición){
+    /*
+        Proposito: Colocar un "color" si se cumple la  "condicion"
+        Precondicion: ninguna
+        Parametros:
+            color: es un Color y denota el color a colocar.
+            condicion: es un Booleano. denota la condicion a cumplir para colcar el color.
+    */
+    if(condicion){
+        Poner(color)
+    }
+}
+procedure Sacar_Si_(color, condición){
+    /*
+        Proposito: Remover un "color" si se cumple la  "condicion"
+        Precondicion: ninguna (preguntar)
+        Parametros:
+            color: es un Color y denota el color a colocar.
+            condicion: es un Booleano. denota la condicion a cumplir para colcar el color.
+    */
+    if(condicion){
+        Sacar(color)
+    }
+}
+procedure Mover_Si_(dirección, condición){
+    /*
+        Proposito: ubicar el cabezal hacia "direccion" si "condicion" se cumple.
+        Precondicion: ninguna
+        Parametros:
+            * direccion : es una Direccion que denota hacia donde se mueve el cabezal.
+            * condicion: es un Booleano. que denota si se cumple o no la condicion.
+    */
+    if(condicion){
+        Mover(direccion)
+    }
+}
+function esCeldaVacia(){
+    /*  Proposito: indica si la celda actual esta vacia.
+        Precondicion: ninguna.
+        Tipo: Booleano.*/
+    return(not esCeldaMultiColor())
+}
+function hayAlMenosUnaDeCada(){
+    /*  Proposito: indica si hay al menos una de cada en la celda actual.
+        Precondicion: ninguna.
+        Tipo: Booleano.*/
+    return(esCeldaMultiColor())
+}
+// C
+function esCeldaConBolitas(){
+    /*  Proposito: indica si la celda actual es una celda con al menos un color de bolitas.
+        Precondicion: ninguna.
+        Tipo: Booleano.*/
+    return(esCeldaSinAlMenosUnColor())
+}
+// RECORRIDOS - HERRAMIENTAS PARA RECORRIDO POR CELDAS.
+procedure IrAPrimeraCeldaEnUnRecorridoAl_YAl_(dirPri ,dirSec ){
+    /*...*/
+    IrAlBorde(opuesto(dirPri ))
+    IrAlBorde(opuesto( dirSec))
+}
+function haySiguienteCeldaEnUnRecorridoAl_YAl_( dirPri,dirSec ){
+    /*...*/
+    return (puedeMover(dirPri ) || puedeMover(dirSec))
+}
+procedure IrASiguienteCeldaEnUnRecorridoAl_YAl_(dirPri ,dirSec ){
+    /*...*/
+    if (puedeMover(dirPri)) { 
+        Mover(dirPri) 
+    } else { 
+        Mover(dirSec ) 
+        IrAlBorde(opuesto(dirPri)) 
+    }
+}
+
+function tieneBolitas_Al_(color,direccion){
+    /*
+        Proposito: Indica si en la celda hacia la "direccion" dada hay bolitas de "color"
+        Precondicion: existe al menos una celda en la "direccion" dada.
+        Parametros:
+            * color: es un Color y denota el color a comprobar.
+            * direccion: es una Direccion denota la direccion a comprobar.
+        tipo: booleano
+    */
+    Mover(direccion)
+    return(hayBolitas(color))
+}
+
+function hayBolitas_Al_(color,direccion){           // CONSULTAR CON EL PROFE.
+    /*
+        Proposito: Indica si hay una celda lindante en la "direccion" indicada y si la misma tiene bolitas
+                   de "color" dado.
+        Precondicion: ninguna.
+        Parametros:
+            *color: es un Color y denota el color de bolitas a verificar en la celda lindante a direccion.
+            * direccion: es una Direccion y denota la direccion a verificar.
+        Tipo: booleano
+    */
+    return(puedeMover(dirección) && tieneBolitas_Al_(color,direccion))
+}
+
+function tieneBolitas_Al_(color,direccion){
+    /*
+        Proposito: Indica si en la celda hacia la "direccion" dada hay bolitas de "color"
+        Precondicion: existe al menos una celda en la "direccion" dada.
+        Parametros:
+            * color: es un Color y denota el color a comprobar.
+            * direccion: es una Direccion denota la direccion a comprobar.
+        tipo: booleano
+    */
+    Mover(direccion)
+    return(hayBolitas(color))
+}
+
+function maximoEntre_Y_(valor1,valor2){
+    /*
+        Proposito: Describe el valor maximo entre valor1 y valor2
+        Precondicion: ninguna
+        parametros:
+            valor1: es un numero. denota el valor a comparar.
+            valor2: es un numero, denota el segundo valor a comparar.
+        tipo: Numero.
+    */
+    return(choose valor1 when (valor1 >  valor2)
+                  valor2 otherwise)
+}
+
+function minimoEntre_Y_(valor1,valor2){
+    /*
+        Proposito: Indica el valor minimo entre valor1 y valor2
+        Precondicion: ninguna
+        parametros:
+            valor1: es un numero. denota el valor a comparar.
+            valor2: es un numero, denota el segundo valor a comparar.
+        tipo: Numero
+    */
+    return(choose valor1 when (valor1 <  valor2)
+                  valor2 otherwise)
+}
+function unoSi_ceroSino(condicion){ // practica 9 ejercicio 26
+    /*
+        Proposito: Describe 1 si esta vacia la celda actual o cero si no
+        Parametro:
+            condicion: booleano
+        Tipo: numero (valores 1 o 0)
+    */
+    return(choose 1 when (condicion)
+                  0 otherwise)
+}
+
+function coordenadaX(){
+    /*
+        Proposito: describe la coordenada x de la celda actual.
+        Precondicion: ninguna.
+        Tipo: Numero
+    */
+    return(distanciaAlBorde_(Oeste))
+}
+
+function coordenadaY(){
+    /*
+        Proposito: describe la coordenada al origen de y de la celda actual.
+        Precondicion: ninguna.
+        Tipo: Numero
+    */
+    return(distanciaAlBorde_(Sur))
+}
+function distanciaAlBorde_(direccion) {
+    /*
+        PROPÓSITO:  Describe la cantidad celdas que hay entre la celda actual y el borde indicado hacia "direccion"
+        PARÁMETROS:
+            * direccion: es una direccion que denota la direccion al borde a medir.
+        TIPO: Numero.
+    */
+    distanciaAlBorde:= 0
+    while(puedeMover(direccion)){
+        distanciaAlBorde := distanciaAlBorde + 1
+        Mover(direccion)
+    }
+    distanciaAlBorde := distanciaAlBorde + 1
+    return(distanciaAlBorde)
+}
+
+
+procedure IrACoordenada_(coordenada){
+    /*  Proposito: Ubicar el cabezal en la "coordenada" dada.
+        Precondicion: ninguna.
+        Parametros: "coordenada": es una Coordenada.
+    */
+    IrAEsquina_Y_(Este,Norte)
+    Mover_Veces_(Este, fila(coordenada))
+    Mover_Veces_(Norte, columna(coordenada))
+}
+// LISTAS
+function cons(elemento, lista) {
+ /* PROPÓSITO: Describir la lista resultante de agregar el
+elemento dado al principio de la lista dada.
+ PRECONDICIONES: Ninguna.
+ PARÁMETROS:
+ * elemento: Un tipo cualquiera.
+ * lista: Una lista de elementos
+ del mismo tipo que **elemento**.
+ TIPO: El mismo que **lista**.
+ */
+ return ( [ elemento ] ++ lista )
+}
+
+function snoc(lista, elemento) {
+ /* PROPÓSITO: Describir la lista resultante de agregar el
+elemento dado al final de la lista dada.
+ PRECONDICIONES: Ninguna.
+ PARÁMETROS:
+ * lista: Una lista de cualquier tipo.
+ * elemento: Del tipo de los elementos de **lista**.
+ TIPO: El mismo que **lista**.
+ */
+ return ( lista ++ [ elemento ] )
+}
+
+function enTotal_IgualesA_(cantidad, elemento) {
+ /* PROPÓSITO: Describir la lista con **cantidad** elementos iguales a **elemento**.
+ PRECONDICONES: Ninguna.
+ PARÁMETROS:
+ * cantidad: Número.
+ * elemento: Un tipo cualquiera.
+ TIPO: Una lista de elementos del mismo tipo que **elemento**.
+ OBSERVACIÓN: Si **cantidad** es menor a 0 describe a la lista vacía.
+ */
+ listaHastaAhora := []
+ repeat (cantidad) {
+ listaHastaAhora :=
+ [ elemento ] ++ listaHastaAhora
+ }
+ return (listaHastaAhora)
+}
+
+
+function filaActual() {
+ /* PROPÓSITO: Describir la fila actual del tablero como
+ una lista de celdas.
+ PRECONDICONES: Ninguna.
+ TIPO: [Celda]
+ */
+ filaProcesada := []
+ IrAlBorde(Oeste)
+ while (puedeMover(Este)) {
+ filaProcesada :=
+ filaProcesada ++ [ celdaActual() ]
+ Mover(Este)
+ }
+ return (filaProcesada ++ [ celdaActual() ])
+}
+
+
+function tableroActual() {
+ /* PROPÓSITO: Describir el tablero como una lista
+ de listas de celdas.
+ PRECONDICONES: Ninguna.
+ TIPO: [[Celda]]
+ */
+ tableroProcesado := []
+ IrAlBorde(Norte)
+ while (puedeMover(Sur)) {
+ tableroProcesado :=
+ tableroProcesado ++ [ filaActual() ]
+ Mover(Sur)
+ }
+ return (tableroProcesado ++ [ filaActual() ])
+}
+
+
+//OPERACIONES CON LAS LISTAS
+function esVacia_([lista]){}
+function resto_([lista]){}
+function primero_([lista]){}
+
+function segundo_(lista) {
+ /* PROPÓSITO: Describir el segundo elemento de la lista dada.
+ PRECONDICONES: La lista dada tiene al menos dos elementos.
+ PARÁMETROS:
+ * lista: Una lista de cualquier tipo.
+ TIPO: El de los elementos de la lista dada.
+ */
+ return (primero(resto(lista)))
+}
+
+function sinLosDosPrimeros(lista) {
+ /* PROPÓSITO: Describir la lista resultante de quitarle a
+ la lista dada sus primeros dos elementos.
+ PRECONDICONES: La lista dada tiene al menos dos elementos.
+ PARÁMETROS:
+ * lista: Una lista de cualquier tipo.
+ TIPO: El mismo que la lista dada.
+ */
+ return (resto(resto(lista)))
+}
+
+function tercero(lista) {
+ /* PROPÓSITO: Describir el tercer elemento de la lista dada.
+ PRECONDICONES: La lista dada tiene al menos tres elementos.
+ PARÁMETROS:
+ * lista: Una lista de cualquier tipo.
+ TIPO: El de los elementos de la lista dada.
+ */
+ return (primero(sinLosDosPrimeros(lista)))
+}
+
+function largoDeLaLista_(lista){
+    /* ...*/
+    contador := 0
+    listaActual := lista
+    while(not esVacía(listaActual)){
+        contador := contador + 1
+        listaActual := resto(listaActual)
+    }
+    return(contador)
+}
+function esVacia_(lista){
+    return(largoDeLaLista_(lista) == 0)
+}
+function singularSi_(elemento, condicion){
+    /*  Proposito: describe una lista con elemento dado si se cumple la condicion dada, si no describe una lista vacia.
+        Precondiciones: ninguna.
+        Parametros:
+            * elemento: es del tipo Elemento
+            * condicion: es del tipo booleano
+        Resultado: Lista de elemento.   */
+    return(choose [elemento] when(condicion)
+                    []       otherwise)
+}
+function elemento_DeLaLista_(indice, lista){
+    /*...*/
+    listaARecorrer := lista
+    repeat(indice){
+        listaARecorrer := resto(listaARecorrer)
+    }
+    return(primero(listaARecorrer))
+}
+function contiene_A_(listaDeElementos, elemento) {
+    /*  PROPÓSITO: 
+            * Indica si el elemento *elemento* esta en la lista *listaDeElementos*.
+        PARÁMETROS:
+            * listaDeElementos: [Elementos]
+            * elemento: Elemento 
+        PRECONDICIONES: Ninguna.
+        TIPO: Booleano
+        OBSERVACIONES:
+            * Tipo de recorrido*/
+    listaARecorrer := listaDeElementos
+    while (not esVacía(listaARecorrer) && not primero(listaARecorrer) == elemento) {
+        listaARecorrer := resto(listaARecorrer)
+    }
+    return(not esVacía(listaARecorrer))
+}

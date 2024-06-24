@@ -1,0 +1,300 @@
+program{
+    return(clubConMásMotoqueros())
+}
+
+
+//Ejercicio 1
+function cantidadDeClubesEnLaConvención(){
+    /*
+        Proposito: describe la cantidad de clubes en la convencion.
+        Precondicion: Ninguna
+        Tipo: Numero
+        Observaciones: Recorrido de acumulacion.
+    */    
+    
+    numeroDeClubAsignado := 0  // 2
+    
+    while(hayMotoqueroSinClub()){
+        IrAMotoqueroSinClub()
+        numeroDeClubAsignado:= numeroDeClubAsignado + 1
+        AsignarClub_AMotoquerosConectados(numeroDeClubAsignado)
+    }
+    
+    
+    
+    
+    return(numeroDeClubAsignado)
+    
+}
+
+
+//Ej2-a
+procedure AsignarClubATodosLosMotoqueros(){
+    /*
+        Proposito: describe la cantidad de clubes en la convencion.
+        Precondicion: Ninguna
+        Tipo: Numero
+        Observaciones: Recorrido de acumulacion.
+    */    
+    
+    numeroDeClubAsignado := 0  // 2
+    
+    while(hayMotoqueroSinClub()){
+        IrAMotoqueroSinClub()
+        numeroDeClubAsignado:= numeroDeClubAsignado + 1
+        AsignarClub_AMotoquerosConectados(numeroDeClubAsignado)
+    }
+    
+    
+    
+    
+
+}
+
+
+ 
+ 
+//Ej2
+function clubConMásMotoqueros(){
+    //
+    
+    AsignarClubATodosLosMotoqueros()
+    
+    clubConMasMotoqueros := 1
+    clubARecorrer:= cantidadDeClubesEnLaConvención()
+    
+    while(clubARecorrer /= 1){
+        
+        clubConMasMotoqueros := clubConMasMotoquerosEntre_y_(clubConMasMotoqueros,clubARecorrer) 
+        
+        clubARecorrer:= clubARecorrer - 1
+    }
+    
+    
+    return(clubConMasMotoqueros)
+    
+}
+
+function clubConMasMotoquerosEntre_y_(club1, club2){
+    return(
+        choose  club1 when (cantidadDeMiembrosDelClub_(club1)> cantidadDeMiembrosDelClub_(club2))
+                club2 otherwise
+        
+    
+        )
+}
+
+
+
+
+//Ej2-b
+function cantidadDeMiembrosDelClub_(numeroDeClub){
+    /* 
+    Precondiciones:
+        - todos los motoqueros deben tener un club asignado 
+        - el numero de club debe existir en el tablero
+    */
+     cantidadDeMiembrosHastaAhora := unoSi_CeroSino(esMotoqueroDelClub_(numeroDeClub)) 
+     
+     
+     while(not esFinDeRecorrido__(Este,Norte)){
+        PasarALaSiguienteCeldaDelRecorrido__(Este,Norte)
+        
+        cantidadDeMiembrosHastaAhora:= cantidadDeMiembrosHastaAhora + unoSi_CeroSino(esMotoqueroDelClub_(numeroDeClub)) 
+
+     }
+     return(cantidadDeMiembrosHastaAhora)
+}
+
+
+function unoSi_CeroSino(condición) { 
+    /*
+        PROPOSITO: describe 1 cuando se cumple la condicion condición o 0 en caso contrario.
+        PRECONDICION: ninguna.
+        TIPO: Número.
+    */
+    return (choose 1 when (condición)
+                   0 otherwise)
+}
+
+
+function hayMotoqueroSinClub(){
+    /*
+        Proposito: indica si en la convención hay algún motoquero 
+            que todavía no tenga un club.
+        Precondicion: Ninguna
+        Tipo: Booleano
+        Observaciones: Recorrido de busqueda, buscamos un motoquero sin club
+    */
+    
+    IniciarRecorrido__(Este,Norte)
+    
+    while(not hayMotoqueroSinClubEnLaCeldaActual() && not esFinDeRecorrido__(Este,Norte)){
+        PasarALaSiguienteCeldaDelRecorrido__(Este,Norte)
+    }
+    
+    
+    return(hayMotoqueroSinClubEnLaCeldaActual())
+}
+
+
+function hayMotoqueroSinClubEnLaCeldaActual(){
+    /*
+        Proposito: indica si en la celda actual hay un motoquero 
+            que todavía no tenga un club.
+        Precondicion: Ninguna
+        Tipo: Booleano
+    */
+    
+    return(hayMotoqueroAcá() && not elMotoqueroPerteneceAUnClub())
+    
+}
+
+function hayMotoqueroAcá(){
+    return(elMotoqueroEstáActivo())
+}
+
+
+function hayMotoqueroConClubEnLaCeldaActual(){
+    /*
+        Proposito: indica si en la celda actual hay un motoquero 
+            que todavía no tenga un club.
+        Precondicion: Ninguna
+        Tipo: Booleano
+    */
+    
+    return(hayMotoqueroAcá() && elMotoqueroPerteneceAUnClub())
+    
+}
+
+
+
+procedure IrAMotoqueroSinClub(){
+    /*
+        Proposito: lleva el cabezal a un motoquero sin club.
+        Precondicion: Debe exitir un motoquero sin club.
+        Observacion: Recorrido de busqueda, buscando un motoquero sin club.
+    */
+    
+    IniciarRecorrido__(Este,Norte)
+    
+    while(not hayMotoqueroSinClubEnLaCeldaActual()){
+        PasarALaSiguienteCeldaDelRecorrido__(Este,Norte)
+    }
+    
+    
+}
+
+
+procedure AsignarClub_AMotoquerosConectados(numeroDeClub){ //1
+    /*
+        Proposito: asigna al motoquero actual y a todos los motoqueros conectados a este, como
+            pertenecientes al club **numeroDeClob**. 
+            Dejando el cabezal en el ultimo Motoquero del club asignado.
+        Precondicion: 
+            - El motoquero actual y los motoqueros conectados no tienen un club asignado.
+        Observacion: Recorrido de busqueda y procesamiento, 
+            buscando un motoquero sin club vecino de club con numero dado.
+    */
+    
+    IncluirEnElClubNúmero_(numeroDeClub)
+    
+    while(hayMotoqueroSinClubConVecinoDe_(numeroDeClub)){
+        IrAMotoqueroSinClubVecinoDeUnMotoqueroConClub_(numeroDeClub)
+        IncluirEnElClubNúmero_(numeroDeClub)
+    }
+
+}
+
+procedure IrAMotoqueroSinClubVecinoDeUnMotoqueroConClub_(numeroDeClub){
+    /*
+        Proposito: Lleva el cabezal a un motoquero sin cub con un motoquero vecino del club dado.
+        Precondicion: 
+            - Debe existir al menos un motoquero sin club que tenga como vencino un motoquero del club dado
+        Observacion: Recorrido de busqueda.
+    */
+    
+    
+    IniciarRecorrido__(Este,Norte)
+    
+    while(not hayMotoqueroSinClubEnLaCeldaActualConVecino_(numeroDeClub)){
+        
+        PasarALaSiguienteCeldaDelRecorrido__(Este,Norte)
+    }
+    
+    
+}
+
+
+
+
+
+
+function hayMotoqueroSinClubConVecinoDe_(numeroDeClub){
+    /*
+        Proposito: indica si hay un motoquero sin club que tenga como vencino otro motoquero 
+            con el **numeroDeClub** dado
+        Precondicion: Ninguna
+        Observacion: Recorrido de busqueda por todo el tablero buscando un motoquero sin club que tenga como vecino ..
+    */
+    
+    IniciarRecorrido__(Este,Norte)
+    
+    while(not hayMotoqueroSinClubEnLaCeldaActualConVecino_(numeroDeClub) && 
+            not esFinDeRecorrido__(Este,Norte)){
+        PasarALaSiguienteCeldaDelRecorrido__(Este,Norte)
+    }
+    
+    
+    return(hayMotoqueroSinClubEnLaCeldaActualConVecino_(numeroDeClub))
+}
+
+
+function hayMotoqueroSinClubEnLaCeldaActualConVecino_(numeroDeClub){
+    return( hayMotoqueroSinClubEnLaCeldaActual() && hayVecinoMotoqueroCon_(numeroDeClub))
+}
+
+
+
+function hayVecinoMotoqueroCon_(numeroDeClub){
+    /*
+        Proposito: indica si hay un vecino motoquero con el **numeroDeClub** dado
+        Precondicion: ninguna
+        parametros:
+            - numeroDeClub: Numero - es el numero de club que deberia tener un vecino 
+                del el motoquero en la celda actual si existiese.
+        Observacion: Recorrido de busqueda por todas las direcciones, buscando un motoquero sin club que tenga como vecino ..
+    */
+    
+    direccionARecorrer := minDir()
+    
+    
+    while(not hayMotoqueroCon_En_(numeroDeClub, direccionARecorrer) && direccionARecorrer /= maxDir()){
+        direccionARecorrer := siguiente(direccionARecorrer)
+    }
+    
+    
+    return(hayMotoqueroCon_En_(numeroDeClub, direccionARecorrer))
+    
+    
+    
+    
+}
+
+
+function hayMotoqueroCon_En_(numeroDeClub, direccionARecorrer){
+    return(puedeMover(direccionARecorrer) && esMotoqueroCon_En_(numeroDeClub, direccionARecorrer))
+}
+
+function esMotoqueroCon_En_(numeroDeClub, direccion){
+    Mover(direccion)
+    return(esMotoqueroDelClub_(numeroDeClub))
+}
+
+function esMotoqueroDelClub_(numeroDeClub){
+    return(hayMotoqueroConClubEnLaCeldaActual() && clubAlQuePerteneceElMotoquero() == numeroDeClub)
+}
+
+
+
+
