@@ -6,3 +6,4 @@
 - Registros y estructuras de datos
 - Arrays, recorridos (busqueda, transformacion, procesamiento)
 - Listas, operaciones
+- Contratos
