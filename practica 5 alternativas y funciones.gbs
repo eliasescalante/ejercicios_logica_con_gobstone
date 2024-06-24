@@ -1,0 +1,1039 @@
+// EJERCICIO 1
+
+// a : not haybolitas(Rojo)
+    TABLERO A : VERDADERO
+    TABLERO B : VERDADERO
+    TABLERO C : FALSO
+// b : puedeMover(Sur) && puedeMover(Oeste)
+    TABLERO A : FALSO
+    TABLERO B : FALSO
+    TABLERO C : VERDADER
+// c : puedeMover(Sur) || puedeMover(Oeste)
+    TABLERO A : FALSO
+    TABLERO B : VERDADERO
+    TABLERO C : VERDADERO
+//D: not puedeMover(Sur) && puedeMover(Oeste)
+    TABLERO A : FALSO
+    TABLERO B : VERDADERO
+    TABLERO C : FALSO
+//E : nroBolitas(Negro) == nroBolitas(Azul) && nroBolitas(Negro) == nroBolitas(Verde)
+    TABLERO A : FALSO
+    TABLERO B : VERDADERO
+    TABLERO C : FALSO
+//F : puedeMover(opuesto(opuesto(dirección))) suponiendo que, por alguna razón, esta expresión aparece dentro del cuerpo del procedimiento Mover_SegúnColor_, y que 
+//    se lo invocó como Mover_SegúnColor_(Oeste, Azul)
+
+    TABLERO A : FALSO
+    TABLERO B : VERDADERO
+    TABLERO C : FALSO
+//G : 
+    TABLERO B Y C : LA EXPRESION SERIA VERDADERO ---- PREGUNTAR AL PROFE
+
+//EJERCICIO 2 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+//A
+
+function hayMasDe5BolitasEnTotal() {
+    /*
+        PROPÓSITO:  Indica si hay mas de 5 bolitas en la celda actual.
+        TIPO: Booleano
+        PRECONDICIONES:
+            * ninguna
+    */
+    return ((nroBolitas(Azul) + nroBolitas(Rojo) + nroBolitas(Negro) + nroBolitas(Verde)) > 5 )
+}
+
+//B
+
+function hayAlmenos5BolitasEnTotal(){
+    /*  Proposito: indica si hay al menos 5 bolitas en total en la celda actual.
+        Precondicion: ninguna
+        Tipo: Booleano */
+    return((nroBolitas(Azul) + nroBolitas(Rojo) + nroBolitas(Negro) + nroBolitas(Verde)) = 5)
+}
+
+//C
+
+function hayAlMenos5BolitasEnTotalYEstaEnElBordeEste(){
+    /*  Proposito: indica si la celda actual tiene al menos 5 bolitas en total y la misma se encuentra en
+                   borde Este.
+        Precondicion: ninguna.
+        Tipo: Booleano. */
+    return(hayAlmenos5BolitasEnTotal() && not puedeMover(Este))
+}
+
+//D
+
+function esLindanteAlNorteOAlEste(){
+    /*  Proposito: indica si la celda actual es lindante al norte o al este.
+        Precondicion: ninguna.
+        Tipo: Booleano. */
+    return(puedeMover(Norte) || puedeMover(Este))
+}
+
+//E
+
+function esCeldaMultiColor(){
+    /*  Proposito: indica si la celda actual tiene bolitas de todos los colores.
+        Precondicion: ninguna
+        Tipo: Booleano. */
+    return(hayBolitas(Azul) && hayBolitas(Rojo) && hayBolitas(Verde) && hayBolitas(Negro))
+}
+
+//F
+
+function esCeldaSinAlMenosUnColor(){
+    /*  Proposito: indica si en la celda actual falta al menos un color de bolitas.
+        Precondicion: ninguna.
+        Tipo: booleano. */
+    return(not hayBolitas(Rojo) ||not  hayBolitas(Negro) || not hayBolitas(Azul) || hayBolitas(Verde))
+}
+
+function esCeldaSinAlMenosUnColorV2(){
+    /*  Proposito: indica si en la celda actual falta al menos un color de bolitas.
+        Precondicion: ninguna.
+        Tipo: booleano. */
+    return(not esCeldaMultiColor() && esCeldaSinAlMenosUnColor())
+}
+
+// EJERCICIO 3 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//A
+procedure SacarUnaFicha_SiSePuede(colorDeLaFicha){
+    /*  Proposito: retirar una sola ficha de la celda actual si hay de color "colorDeLaFicha".
+        Parametros: "colorDeLaFicha": es un Color. denota el color de la ficha a retirar de la celda actual.
+        Observacion: la ficha se representa con una bolita de "colorDeLaFicha". */
+    if(hayFichaDe_(colorDeLaFicha)){
+        Sacar(colorDeLaFicha)
+    }
+}
+
+function hayFichaDe_(color){
+    /*  Proposito: indica si hay una ficha de "color" en la celda actual.
+        Precondiciones: ninguna
+        Tipo:Booleano
+        Parametros: "color", es un Color.*/
+    return(hayBolitas(color))
+}
+//B
+procedure DesempatarParaElLocal_Contra_(colorDelLocal, colorDelVisitante) {
+    /*  Proposito: desempatar el equipo de "colorDelLocal" si el mismo empata con el equipo del "colorDelVisitante".
+        Precondicion: ninguna.
+        Parametros: "colorDelLocal": es un Color.
+                    "colorDelVisitante": es un Color.*/
+    if(esCantidadDelEquipo_(colorDelLocal) == cantidadDelEquipo_(colorDelVisitante) ){
+        AgregarUnJugadorDe_(colorDelLocal)
+    }
+}
+procedure AgregarUnJugadorDe_(color){
+    /*  Proposito: agregar un jugador de "color" en la celda actual.
+        Precondicion: ninguna.
+        Parametro: "color": es un Color.*/
+    Poner(color)
+}
+
+function esCantidadDelEquipo_(color){
+    /* Proposito: describe la cantidad de jugadores del equipo de "color".
+       Precondicion: ninguna.
+       Parametros: "color", es un Color.
+       Tipo: Numero */
+    return(nroBolitas(color))
+}
+
+//C
+
+procedure ExpandirBacteriaDeLaColonia(){
+    /*  Proposito: Expandir Las Bacterias de la celda actual si se dan las condiciones en la misma.
+        Precondiciones: * en la celda actual debe existir un cultivo de bacterias.
+                        * debe existir suficientes nutrientes (a razon de dos nutrientes por bacteria)
+        Observaciones: las bacterias se representan con bolitas verdes y los nutrientes con bolitas Rojas. */
+    if(hayBacterias() && hayNutrientes()){
+        ExpandirBacteriasSiPuede()
+    }
+}
+procedure ExpandirBacteriasSiPuede(){
+    /*  Proposito: expandir bacterias en la celda actual si se dan las condiciones en la misma. en caso que no haya condiciones no hace nada.
+        Precondicion:  en la celda actual debe existir al menos un cultivo de bacterias.
+                       en la celda actual debe existir al menos 2 nutrientes.*/
+    if(hayBacterias() && (esCantidadDeNutrientes() >= 2)){
+        repeat(esCantidadDeNutrientes() div 2){
+            ExpandirUnaBacteria()
+        }
+    }
+}
+procedure ExpandirUnaBacteria(){
+    /*  Proposito: Expande una bacteria en la celda actual.
+        Precondicion: debe existir en la celda actual 2 nutrientes y un cultivo de bacteria.*/
+    Poner(unaBacteria())
+    Sacar_DeColor_(2, unNutriente())
+}
+function hayBacterias(){
+    /*  Proposito: indica si hay bacterias en la celda actual.
+        Precondicion : ninguna.
+        Tipo: booleano.*/
+    return(hayBolitas(unaBacteria()))
+}
+function hayNutrientes(){
+    /* Proposito: indica si hay nutrientes en la celda actual.
+       Precondiciones: ninguna
+       Tipo: booleano.*/
+    return(hayBolitas(unNutriente()))
+}
+function esCantidadDeNutrientes(){
+    /*  Proposito: describe la cantidad de nutrientes en la celda actual.
+        Precondicion: ninguna.
+        Tipo:Numero.*/
+    return(nroBolitas(unNutriente()))
+}
+function unaBacteria(){
+    /*  Proposito: describe una bacteria.
+        Precondicion: ninguna.
+        Tipo: Color.*/
+    return(Verde)
+}
+function unNutriente(){
+     /*  Proposito: describe un nutriente.
+        Precondicion: ninguna.
+        Tipo: Color.*/
+    return(Rojo)
+}
+//D
+procedure PonerFlecha_AlNorteSiCorresponde(colorDeLaFlecha){
+    /*  Proposito: colocar una flecha de "colorDeLaFlecha" al Norte si corresponde.
+        Precondicion: ninguna.
+        Parametros: "colorDeLaFlecha". es un Color.*/
+    if(puedeMover(Norte)){
+        ColocarLaFlechaDe_(colorDeLaFlecha)
+    }
+}
+procedure ColocarLaFlechaDe_(color){
+    /*  Proposito: Colocar una flecha de "color".
+        Precondicion: la celda actual debe estar vacia.
+        Parametro: "color", es un Color.*/
+    Poner(color)
+}
+
+//EJERCICIO 4////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//Solucion 1
+procedure PudrirManzana(){
+    /* Proposito: pudrir una manzana y retirar un gusano de la celda actual.
+       Precondiciones: debe existir al menos una manzana y un gusano en la celda actual.
+       OBSERVACIONES: las manzanas en buen estado se representan con bolitas de color Rojo, las manzanas podridas 
+                      con bolitas de color Negro, y los gusanos con bolitas de color Verde.
+    */
+    Sacar(unaManzana())
+    Poner(unaManzanaPodrida())
+    Sacar(unGusano())
+}
+//Solucion 2
+procedure PudrirManzana(){
+    /* Proposito: pudrir una manzana y retirar un gusano de la celda actual.
+       Precondiciones: debe existir al menos una manzana y un gusano en la celda actual.
+       OBSERVACIONES: las manzanas en buen estado se representan con bolitas de color Rojo, las manzanas podridas 
+                      con bolitas de color Negro, y los gusanos con bolitas de color Verde.
+    */
+    Reemplazar_Y_Por_(unaManzana(), unGusano(), unaManzanaPodrida)
+}
+procedure Reemplazar_Y_Por_(primerColorAReemplazar, segundoColorAReemplazar, colorAAgregar){
+    /*
+        Proposito: Reemplazar el "primerColorAReemplazar" y el "segundoColorAReemplazar" por
+                   "colorAAgregar"
+        Precondicion: debe existir al menos una bolita de "primerColorAReemplazar" y "segundoColorAReemplazar"
+                      en la celda actual.
+        Parametros:
+            * primerColorAReemplazar: es un Color
+            * segundoColorAReemplazar: es un Color.
+            * colorAAgregar: es un Color.
+    */
+    //B
+    Sacar(primerColorAReemplazar)
+    Sacar(segundoColorAReemplazar)
+    Poner(colorAAgregar)
+}
+function unaManzana(){
+    /*  Proposito: describe una manzana en la celda actual.
+        Precondicion: ninguna.
+        Tipo: Color.*/
+    return(Rojo)
+}
+function unaManzanaPodrida(){
+    /*  Proposito: describe una manzana podrida en la celda actual.
+        Precondicion: ninguna.
+        Tipo: Color.*/
+    return(Negro)
+}
+function unGusano(){
+    /*  Proposito: describe un gusano en la celda actual.
+        Precondicion: ninguna.
+        Tipo: Color.*/
+    return(Verde)
+}
+
+//C
+// RESUELTO POR SABA
+
+program{
+    PudrirHasta_Manzanas(5)
+}
+
+
+procedure Poner_Si_(color, condicion){
+    /*
+        Proposito: pone una bolita del color dado si la condicion dada es 
+            verdadera, sino no hace nada.
+        Precondiciones: No tiene
+        Parametros:
+            - color: Color
+            - condicion: Booleano
+    */
+    if(condicion){
+        Poner(color)
+    }
+    
+}
+
+
+procedure PudrirManzana(){
+    /*
+        Proposito: ...
+        Precondiciones: 
+            - No tiene
+    
+    */
+    if(hayGusano() && hayManzana()) {
+        PudrirUnaManzanaYRetirarGusano()
+    }
+}
+
+function hayGusano(){
+    return(hayBolitas(gusano()))
+}
+function gusano(){
+    return(Verde)
+}
+function hayManzana(){
+    return(hayBolitas(manzana()))
+}
+function manzana(){
+    return(Rojo)
+}
+
+function manzanaPodrida(){
+    return(Negro)
+}
+
+procedure PudrirUnaManzanaYRetirarGusano(){
+    Reemplazar_Y_Por_(manzana(),gusano(),manzanaPodrida())
+}
+
+procedure Reemplazar_Y_Por_(primerColorAReemplazar, segundoColorAReemplazar, colorAAgregar){
+    Sacar(primerColorAReemplazar)
+    Sacar(segundoColorAReemplazar)
+    Poner(colorAAgregar)
+}
+
+
+procedure PudrirHasta_Manzanas(cantidadAPudrir){
+    /*
+        Proposito: pudre hasta cantidadAPudrir manzanas. Pueden ser menos si no secumplen las 
+            condiciones.
+        Precondiciones: No tiene.
+        Observaciones: las condiciones para que se pudra una manzana es haya una manzana 
+            en buen estado por gusano
+    */
+    
+    repeat(cantidadAPudrir){
+        PudrirManzana()
+    }
+
+}
+
+
+
+// EJERCICIO 5 - BIBLIOTECA ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+//A
+procedure Poner_Si_(color, condición){
+    /*
+        Proposito: Colocar un "color" si se cumple la  "condicion"
+        Precondicion: ninguna
+        Parametros:
+            color: es un Color y denota el color a colocar.
+            condicion: es un Booleano. denota la condicion a cumplir para colcar el color.
+    */
+    if(condicion){
+        Poner(color)
+    }
+}
+//B
+procedure Sacar_Si_(color, condición){
+    /*
+        Proposito: Remover un "color" si se cumple la  "condicion"
+        Precondicion: ninguna (preguntar)
+        Parametros:
+            color: es un Color y denota el color a colocar.
+            condicion: es un Booleano. denota la condicion a cumplir para colcar el color.
+    */
+    if(condicion){
+        Sacar(color)
+    }
+}
+
+procedure Mover_Si_(dirección, condición){
+    /*
+        Proposito: ubicar el cabezal hacia "direccion" si "condicion" se cumple.
+        Precondicion: ninguna
+        Parametros:
+            * direccion : es una Direccion que denota hacia donde se mueve el cabezal.
+            * condicion: es un Booleano. que denota si se cumple o no la condicion.
+    */
+    if(condicion){
+        Mover(direccion)
+    }
+}
+//C
+procedure DesempatarParaElLocal__(colorDelLocal,colorDelVisitante){
+    /*
+        Proposito: desempatar el equipo local si el mismo empata con el equipo visitante.
+        Precondiciones: debe haber igual cantidad de bolitas de "colorDelLocal" que de "colorDelVisitante"
+        Parametros:
+            * colorDelLocal: es un color que denota el color del equipo loca.
+            * colorDelVisitante: es un color que denota el color del equipo visitante.
+    */
+    Poner_Si_(colorDelLocal,((esCantidadDelEquipo_(colorDelLocal)) == (esCantidadDelEquipo_(colorDelVisitante))))
+    }
+
+//D
+/*      A mi parecer no tiene sentido usar dicho procedimientos porque se supone que para usar ese procedimiento 
+        se deberia cumplir la precondicion del mismo y no salvar todos los casos con condiciones seria como
+        programar a la defensiva.
+*/
+//E
+/*los beneficios serian el no escribir tanto codigo porque al cumplirse la condicion se ejecuta al no hacerlo no hay problema*/
+
+//EJERCICIO 6 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+//A
+procedure GerminarSemilla(){
+        /*
+        Proposito: Transformar una semilla en un árbol en la celda actual. si no hay suficientes nutrientes no hace nada.
+        Precondicion: ninguna. // preguntar
+        Observaciones: la germinacion consume 3 unidades de nutrientes. */
+        if(haySuficientesNutrientes() && haySemilla()){
+            Sacar(semilla())
+            Sacar_DeColor_(3, nutriente())
+            Poner(arbol())
+        }
+}
+function semilla(){
+    /*  Proposito: describe una semilla.
+        Precondicion: ninguna
+        Tipo: Color.*/
+    return(Negro)
+}
+function nutriente(){
+     /*  Proposito: describe un nutriente.
+        Precondicion: ninguna.
+        Tipo: Color.*/
+    return(Rojo)
+}
+function haySuficientesNutrientes(){
+    /*  Proposito: indica si hay suficientes Nutrientes para germinar una semilla en la celda actual.
+        Precondicion: ninguna.
+        Tipo: Booleano.*/
+    return(nroBolitas(nutriente()) >= 3)
+}
+function haySemilla(){
+    /*  Proposito: indica si hay una semilla en la celda actual.
+        Precondiciones: ninguna,
+        Tipo: Booleano.*/
+    return(haybolitas(unaSemilla()))
+}
+//B
+procedure AlimentarÁrboles(){
+    /*  Proposito: alimentar los arboles de la celda actual.
+        Precondicion: debe existir al menos un arbol y un nutriente en la celda actual.*/
+    if(cantidadDeNutrientes() < cantidadDeArboles()){
+        Sacar_DeColor_(cantidadDeNutrientes(), unNutriente())
+    } else {
+        Sacar_DeColor_(cantidadDeArboles(), unNutriente())
+    }
+}
+function cantidadDeNutrientes(){
+    /*  Proposito: describe la cantidad de nutrientes en la celda actual.
+        Precondicion: ninguna
+        Tipo: Numero.*/
+    return(nroBolitas(unNutriente()))
+}
+function cantidadDeArboles(){
+    /*  Proposito: describe la cantidad de arboles en la celda actual.
+        Precondicion:ninguna
+        Tipo: Numero.*/
+    return(nroBolitas(unArbol()))
+}
+//C
+procedure ExplotarBomba(){
+    /*  Proposito: explotar una bomba en la celda actual.
+        Precondicion: debe existir al menos una bomba en la celda actual.
+        Observaciones: una bomba derriba 5 árboles en la celda actual y 3 en la
+                    celda lindante al Norte. Si la celda actual está en el borde Norte, entonces
+                    solo se eliminan los árboles de la celda actual. Atención que cuando haya
+                    menos árboles de los que la bomba puede eliminar, entonces elimina los que
+                    haya. La bomba se consume en el proceso*/
+    ExplotarSiSePuedeAlNorte()
+    ExplotarBombaEnLaCeldaActual()
+}
+
+procedure DetonarBombaEnLaCeldaActual(){
+    /*  Proposito: explotar una bomba en la celda actual.
+        Precondicion: debe existir al menos una bomba en la celda actual.*/
+    if(cantidadDeArboles()>= 5){
+        Sacar(unaBomba())
+        Sacar_DeColor_(5, unArbol())
+    } else {
+        Sacar(unaBomba())
+        Sacar_DeColor_(cantidadDeArboles(), unArbol())
+    }
+}
+
+procedure ExplotarSiSePuedeAlNorte(){
+    /*  Proposito: explota la bomba y expande si se puede la onda expansiva hacia el norte.
+        Precondicion: debe existir una bomba a detonar en la celda actual.*/
+    if(puedeMover(Norte)){
+        Mover(Norte)
+        Sacar_DeColor_(3, unArbol())
+        Mover(Sur)
+    }
+}
+
+function unaBomba(){
+    /*  Proposito: describe una bomba.
+        Precondicion: ninguna.
+        Tipo: Color.*/
+    return(Negro)
+}
+
+//D
+
+procedure Polinizar(){
+    /*  Proposito: polinizar la celda lindante al este desde la celda actual.
+        Precondicion: debe existir al menos 1 arbol en la celda actual.*/
+    if(puedeMover(Este) && cantidadDeArboles() > 4){
+        GenerarSemillasAlEsteDe_(cantidadDeArboles())
+    }
+}
+
+procedure GenerarSemillasAlEsteDe_(cantidadDeArboles()){
+    /*  Proposito: generar semillas para polinizar la celda lindante al este desde la actual.
+        Precondicion: ninguna.
+        Parametro: cantidadDeArboles: es un Numero*/
+    Mover(Este)
+    Poner_Veces_(unaSemilla(), (cantidadDeArboles() - 3))
+    Mover(Oeste)
+}
+
+// EJERCICIO 7 //////////////////////////////////////////////////////////// BIBLIOTECA.
+
+// A
+
+function esCeldaVacia(){
+    /*  Proposito: indica si la celda actual esta vacia.
+        Precondicion: ninguna.
+        Tipo: Booleano.*/
+    return(not esCeldaMultiColor())
+}
+
+//B
+
+function hayAlMenosUnaDeCada(){
+    /*  Proposito: indica si hay al menos una de cada en la celda actual.
+        Precondicion: ninguna.
+        Tipo: Booleano.*/
+    return(esCeldaMultiColor())
+}
+
+// C
+
+function esCeldaConBolitas(){
+    /*  Proposito: indica si la celda actual es una celda con al menos un color de bolitas.
+        Precondicion: ninguna.
+        Tipo: Booleano.*/
+    return(esCeldaSinAlMenosUnColor())
+}
+
+// EJERCICIO 8
+
+//A: opcion a porque se presupone que hay 8 bolitas azules a sacar por ende el programa no fallaria.
+//B:
+procedure SacarExactamente_Bolitas_(cantidadASacar, colorASacar){
+    /*  Proposito: saca exactamente de "colorASacar" de "cantidadASacar".
+        Precondicion: ninguna.
+        Parametros: colorASacar.  es un Color.
+                    cantidadASacar: es un numero*/
+    Sacar_DeColor_(cantidadASacar, colorASacar)
+}
+
+// EJERCICIO 9
+
+
+program {
+RepararEdificio()
+}
+procedure RepararEdificio(){
+  /* 
+     PROPÓSITO: 
+       * reparar todas las máquinas del edificio. 
+         El cabezal queda en el Hall del último piso 
+         del edificio (el hall más al Norte)
+     PRECONDICIONES: 
+       * el cabezal debe estar en la hall del edificio
+  */
+  repeat(cantidadDePisos()){
+      Mover(Norte)
+      RepararPiso()
+  }
+}
+function cantidadDePisos(){
+    /*  Proposito: describe la cantidad de pisos a reparar.
+        Precondiciones: ninguna
+        Tipo: Numero*/
+    return(nroBolitas(Azul))
+}
+procedure RepararPiso(){
+  /* 
+     PROPÓSITO: 
+       * reparar todas las máquinas del piso actual
+         (sacando todos los Virus de las máquinas del piso)
+     PRECONDICIONES: 
+       * la celda actual es el Hall del piso
+  */
+  repeat(cantidadDeMaquinasARepararEnElPiso()){
+      Mover(Este)
+      RepararMáquina()
+  }
+  IrAlBorde(Oeste)
+}
+function cantidadDeMaquinasARepararEnElPiso(){
+    /*  Proposito: describe la cantidad de maquinas a reparar en el piso.
+        Precondicion: ninguna.
+        Tipo: Numero.*/
+    return(nroBolitas(Negro))
+}
+
+procedure RepararMáquina(){
+  /* 
+     PROPÓSITO: 
+       * eliminar los virus de la celda actual y dejar la marca de OK 
+     PRECONDICIONES: 
+       * en la celda actual hay una máquina con virus y sin marcas de OK
+  */
+  if(hayVirus()){
+    SacarTodas_(unVirus())
+    IndicarOk()
+  }
+  IndicarOk()
+}
+function hayVirus(){
+    /*  Proposito: indica si hay un virus en la maquina actual.
+        Precondicion: ninguna.
+        TIpo: Booleano.*/
+    return(hayBolitas(unVirus()))
+}
+
+function unVirus(){
+    /*  Proposito: describe un virus.
+        Precondicion: ninguna.
+        Tipo: Color*/
+    return(Rojo)
+}
+procedure IndicarOk() {
+  /* 
+     PROPÓSITO: 
+       * indicar que la máquina de la celda actual no tiene 
+         virus poniendo la indicación de OK
+     PRECONDICIONES: 
+       * la máquina de la celda actual no tiene virus ni 
+         indicación de OK
+  */
+  Poner(Verde)
+}
+
+procedure SacarTodas_(colorASacar) {
+  /*
+     PROPÓSITO: 
+       * sacar de la celda actual todas las bolitas del color dado
+     PRECONDICIONES: 
+       * ninguna (es una operación total)
+     PARÁMETROS:
+       * colorASacar es un color, que indica el color de las bolitas que se deben sacar
+  */
+  Sacar_Veces_(colorASacar, nroBolitas(colorASacar))
+}
+procedure Sacar_Veces_(color, cantidad){
+  /*...*/
+	repeat(cantidad){
+		Sacar(color)
+	}
+}
+
+// EJERCICIO 10
+
+// A
+function colorAliado(){
+    /* Proposito: indica el color de los aliados
+       Precondicion: ninguna.
+       Tipo: Color */
+    return(Negro)
+}
+function colorEnemigo() { 
+    /* Proposito: indica el color de los enemigos
+       Precondicion: ninguna.
+       Tipo: Color */
+    return (Rojo)
+}
+//B
+function cantidadDeSoldadosDel_(colorDelEjército){
+    /*
+        Proposito: Indica la cantidad de soldados en la celda actual del ejercito de  "colorDelEjercito"
+        Tipo: Numero
+        Parametros: "colorDelEjercito" , es un Color.
+    */
+    return (nroBolitas(colorDelEjercito))
+}
+//C
+function esCeldaIndefensa() {
+    /* Proposito: indica cuando no hay soldados aliados en la celda actual
+       Precondicion: ninguna.
+       Tipo: booleano */
+    return (not hayBolitas(colorAliado()))
+}
+//D
+function esEstadoDeEmergencia() {
+    /* PROPÓSITO:  Indica si la celda actual esta en estado emergencia.
+       Precondicion: Ninguna
+       TIPO: booleano */
+    return (esCeldaIndefensa() && (hayMasDe100Enemigos())
+}
+function hayMasDe100Enemigos(){
+    /*  Proposito: indica si hay mas de 100 enemigos en la celda actual.
+        Precondicion: ninguna
+        Tipo: Booleano.*/
+    return(cantidadDeSoldadosDel_(colorEnemigo()) >= 100)
+}
+//E
+function haySuficientesAliadosARazónDe_PorCada_(cantidadDefensa,cantidadAtaque){ // PREGUNTAR AL PROFE
+    /*
+        Proposito: indica si hay suficientes aliados para "cantidadDefensa" a razon de "cantidadAtaque"
+        Parametros:
+            * cantidadDefensa: color, denota el color de los aliados.
+            * cantidadAtaque   : color, denota el color de los enemigos.
+        Tipo: Booleano
+    */
+    //return(nroBolitas(cantidadDefensa) > nroBolitas(cantidadAtaque))
+    return((cantidadDeSoldadosDel_(colorAliado()) >= ((cantidadDeSoldadosDel_(colorEnemigo()) * cantidadDefensa)) div cantidadAtaque))
+}
+
+//F
+function aliadosNecesariosParaDefensaEficaz(){ // preguntar al profe
+    /*
+        PROPÓSITO:  indica el número de soldados aliados que faltan para defender la celda actual.
+        TIPO: Numero
+
+    */
+    return((nroBolitas(Rojo) div 2) * 3) + nroBolitas(Negro))
+}
+//EJERCICIO 11 // EN PAPEL
+//A
+function sePuedeAterrizarA_Hacia_(distanciaAPlaneta, direcciónAPlaneta){
+    /* Proposito:   indica si hay un planeta a distanciaAPlaneta en la dirección 
+                    direcciónAPlaneta y sí el combustible es suficiente para llegar almismo.   
+       Precondicion: el cabezal inicia sobre la nave.
+       Parametros:    distanciaAPlaneta: Numero.
+                      direcciónAPlaneta: Direccion.
+       Tipo: Booleano.*/
+    return(hayUnPlanetaA_Hacia_(distanciaAPlaneta, direcciónAPlaneta) && combustibleRestante() >= distanciaAPlaneta)
+}
+//B
+function hayUnPlanetaRecto(){
+    /*  Proposito:   indica que existe un planeta en cualquiera de
+                    las direcciones, a cualquier distancia desde la nave.
+        Precondiciones: ninguna
+        Tipo: Booleano.*/
+    return(hayUnPlanetaA_Hacia_(3, Norte) || hayUnPlanetaA_Hacia_(3, Sur) || hayUnPlanetaA_Hacia_(3, Este)
+            || hayUnPlanetaA_Hacia_(3, Oeste) )
+}
+
+// EJERCICIO 12
+
+// A o C
+
+procedure Depositar_EnMoneda_ComoPesos(cantidadADepositar, moneda){
+    /*  Proposito: depositar "cantidadADepositar" en la "moneda" realizando la conversion a pesos.
+        Precondicion: la "cantidadADepositar" debe ser mayor a cero.
+        Parametros: "cantidadADepositar", Numero. representa la cantidad a depositar.
+                    "moneda": Color. representa la moneda a convertir en pesos.
+        Observaciones: 
+            ● bolitas negras para pesos argentinos.
+            ● bolitas verdes para dólares estadounidenses.
+            ● bolitas azules para euros.
+            ● bolitas rojas para yuanes chinos
+            ● el deposito siempre se hace en pesos.
+    */
+    if(moneda == dolar()){
+        Poner_Veces_(pesos(), (cantidadADepositar * 80)) // enmascararlo 
+    } else if (moneda == euro()){
+        Poner_Veces_(pesos(), (cantidadADepositar * 90))
+    } else if (moneda == yuan()){
+        Poner_Veces_(pesos(), (cantidadADepositar * 12))
+    } else{
+        Poner_Veces_(pesos(), cantidadADepositar)
+    }
+}
+function dolar(){
+    /*  Proposito: describe la moneda dolar.
+        Precondicion: ninguna.
+        Tipo: Color.*/
+    return(Verde)
+}
+function euro(){
+    /*  Proposito: describe la moneda euro.
+        Precondicion: ninguna.
+        Tipo: Color.*/
+    return(Azul)
+}
+function yuan(){
+    /*  Proposito: describe la moneda yuan.
+        Precondicion: ninguna.
+        Tipo: Color.*/
+    return(Rojo)
+}
+function pesos(){
+    /*  Proposito: describe la moneda pesos.
+        Precondicion: ninguna.
+        Tipo: Color.*/
+    return(Negro)
+}
+
+// B O D
+
+procedure ExtraerHasta_EnMoneda_(cantidadAExtraer, moneda){
+    /*  Proposito: extraer de la celda actual la "cantidadAExtraer" en la "moneda" dada.Si en la cuenta hubiera menos pesos de lo solicitado, se convierte
+                        todo lo que haya.
+        Precondicion: la "cantidadAExtraer" debe ser un numero mayor a 0.
+        Parametros: cantidadAExtraer. Numero. denota la cantidad de dinero a extraer.
+                    moneda. Color. denota la moneda a extraer.*/
+    if(cantidadAExtraer <= cantidadDeLa_(moneda)){
+        Sacar_DeColor_(cantidadAExtraer, moneda)
+    } else{
+        SacarTodasLasDeColor_(moneda)
+    }
+}
+
+function cantidadDeLa_(moneda) {
+    /*  Proposito: describe la cantidad de la "moneda" dada.
+        Precondicion: ninguna.
+        Tipo: Numero
+        Parametro: moneda. Color.*/
+    return(nroBolitas(moneda))
+}
+
+// C O E
+
+procedure ConvertirHasta_PesosA_(pesosAConvertir, moneda){
+    /*  Proposito: convertir "pesosAConvertir" a la "moneda" dada en la cuenta actual. Si no alcanza la cantidad de pesos a convertir se convierte todo lo que haya.
+        Precondicion: "pesosAConvertir" tiene que ser un numero mayor a 0. y la moneda a convertir no debe ser pesos.
+        Parametros: "pesosAConvertir". Numero
+                    "moneda". Color.
+        Observaciones: bla XD
+    */
+     if(moneda == dolar()){
+        Poner_Veces_(dolar(), (pesosAConvertir div 100))
+        ExtraerHasta_EnMoneda_(pesosAConvertir, pesos())
+    } else if (moneda == euro()){
+        Poner_Veces_(euro(), (pesosAConvertir div 115))
+        ExtraerHasta_EnMoneda_(pesosAConvertir, pesos())
+    } else{
+        Poner_Veces_(yuan(), (pesosAConvertir div 17))
+        ExtraerHasta_EnMoneda_(pesosAConvertir, pesos())
+    }
+}
+
+// D O F
+
+procedure RealizarCorridaCambiaria(){
+    /*   Proposito: realizar una corrida cambiaria en un tablero de 10 columnas, donde se convierte todas las cuentas a pesos.
+         Precondicion: el tablero debe ser de 1x10.
+    */
+    IrAlInicioDeLasCuentasAConvertir()
+    ConvertirHasta_PesosA_(cantidadDeLa_(pesos()), dolar())
+    repeat(9){
+        MoverASiguienteCuenta()
+        ConvertirHasta_PesosA_(cantidadDeLa_(pesos()), dolar())
+    }
+}
+procedure MoverASiguienteCuenta(){
+    /*Proposito: Mueve el cabezal hacia la siguiente cuenta a convertir.
+      Precondicion: debe existir al menos una celda hacia el este.
+      */
+    Mover(siguienteCuenta())
+}
+function siguienteCuenta(){
+    /*  Proposito: describe la direccion a la siguiente cuenta a cambiar.
+        Precondicion: ninguna.
+        Tipo: Direccion.*/
+    return(Este)
+}
+
+//EJERCICIO 13
+
+//a
+
+function pesos(){
+    /*  Proposito: describe la moneda pesos.
+        Precondicion: ninguna.
+        Tipo: Color.*/
+    return(Negro)
+}
+
+//B
+
+function dolar(){
+    /*  Proposito: describe la moneda dolar.
+        Precondicion: ninguna.
+        Tipo: Color.*/
+    return(Verde)
+}
+
+//C
+
+function euro(){
+    /*  Proposito: describe la moneda euro.
+        Precondicion: ninguna.
+        Tipo: Color.*/
+    return(Azul)
+}
+
+//D
+
+function yuan(){
+    /*  Proposito: describe la moneda yuan.
+        Precondicion: ninguna.
+        Tipo: Color.*/
+    return(Rojo)
+}
+
+//E
+
+function ahorrosEn_(moneda){
+    /*  Proposito: describe la cantidad de la "moneda" dada.
+        Precondicion: ninguna.
+        Tipo: Numero
+        Parametro: moneda. Color.*/
+    return(nroBolitas(moneda))
+}
+
+//F
+
+function cuantosDolaresSePuedeComprarCon_Pesos(cantidadDePesos){
+    /*  Proposito: indica cuantos dolares se pueden comprar con pesos en la celda actual.
+        Precondicion: "cantidadDePesos" debe ser positivo.
+        Tipo: Numero.
+        Parametros: "cantidadDePesos" es un Numero.*/
+    return(cantidadDePesos div 100)
+}
+
+//G
+
+function cuantosEurosSePuedeComprarCon_Pesos(cantidadDePesos){
+   /*  Proposito: indica cuantos euros se pueden comprar con pesos en la celda actual.
+        Precondicion: "cantidadDePesos" debe ser positivo.
+        Tipo: Numero.
+        Parametros: "cantidadDePesos" es un Numero.*/
+    return(cantidadDePesos div 115)
+}
+
+// H
+
+function cuantosYuanesSePuedeComprarCon_Pesos(cantidadDePesos){
+     /*  Proposito: indica cuantos yuanes se pueden comprar con pesos en la celda actual.
+        Precondicion: "cantidadDePesos" debe ser positivo.
+        Tipo: Numero.
+        Parametros: "cantidadDePesos" es un Numero.*/
+    return(cantidadDePesos div 12)
+}
+//I
+
+function  cuantosPesosSiVendo_Dólares(cantidadDeMonedaExtranjera){
+    /*  Proposito: indica cuantos pesos se va obtener si se venden "cantidadDeMonedaExtranjera"de dolares.
+        Pprecondicion: ninguna.
+        Tipo: Numero
+        Parametro: cantidadDeMonedaExtranjera. Numero.*/
+    return(cantidadDeMonedaExtranjera div 80 )
+}
+
+// J
+
+function cuantosPesosSiVendo_Euros(cantidadDeMonedaExtranjera){
+    /*  Proposito: indica cuantos pesos se va obtener si se venden "cantidadDeMonedaExtranjera"de euros.
+        Pprecondicion: ninguna.
+        Tipo: Numero
+        Parametro: cantidadDeMonedaExtranjera. Numero.*/
+    return(cantidadDeMonedaExtranjera div 90 )
+}
+
+// K
+
+function cuantosPesosSiVendo_Yuanes(cantidadDeMonedaExtranjera){
+    /*  Proposito: indica cuantos pesos se va obtener si se venden "cantidadDeMonedaExtranjera"de yuanes.
+        Pprecondicion: ninguna.
+        Tipo: Numero
+        Parametro: cantidadDeMonedaExtranjera. Numero.*/
+    return(cantidadDeMonedaExtranjera div 12 )
+}
+
+// L
+
+//insconcientemente ya lo hice
+
+
+
+
+Ejercicio  elevador agregado a la practica por saba. XD
+program{
+    MoverElevadorAlPiso_(9)
+}
+
+
+procedure MoverElevadorAlPiso_(piso){
+    /*  Proposito: mover el elevador al "piso" dado.
+        Precondicion: ninguno. Si el piso actual es el techo no hace nada.
+                     "piso" debe ser un numero entre 0 y 9.
+                     El cabezal debe estar sobre el ascensor a subir o bajar.
+        Parametro: "piso". es un Numero. denota el piso a mover.
+    */
+    if(pisoActual() < piso){
+        SubirElevador_(piso)
+    } elseif (pisoActual() > piso){
+       BajarELevador_(piso)
+    }
+
+}
+
+procedure SubirElevador_(piso){
+    /*  Proposito: subir el elevador tantos "piso" dados.
+        Precondicion: el elevador no debe estar en el techo.
+                      El cabezal debe estar sobre el ascensor a subir o bajar.
+        Parametros: piso. Es un numero. denota el piso a mover.*/
+    repeat(piso - pisoActual()){
+            SubirElevadorUnPiso()
+        }
+}
+
+procedure BajarELevador_(piso){
+    /*  Proposito: bajar el elevador tantos "piso" dados.
+        Precondicion: el elevador no debe estar en el piso 0.
+                      El cabezal debe estar sobre el ascensor a subir o bajar.
+        Parametros: piso. Es un numero. denota el piso a mover.*/
+     repeat(pisoActual() - piso){
+            BajarElevadorUnPiso()
+        }
+}

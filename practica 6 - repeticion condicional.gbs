@@ -1,0 +1,754 @@
+// EJERCICIO 1
+
+procedure IrAlBorde_(direccion){
+       /*
+        Proposito: Ubicar el cabezal al borde hacia "direccion". 
+        Precondicion: ninguna.
+        Parametros: direccion: es una direccion y denota hacia donde mueve el cabezal.
+    */
+    while (puedeMover(direccion)) {
+        Mover(direccion)
+    }
+}
+
+// EJERCICIO 2
+
+procedure SacarTodasLasDeColor_(colorASacar){
+    /*
+        Proposito: Remover todas las bolitas de la celda actual de "colorASacar"
+        Precondicion: ninguna
+        Parametros: colorASacar: es un Color que denota el color de las bolitas a sacar.
+    */
+    while(hayBolitas(colorASacar)){
+        Sacar(colorASacar)
+    }
+}
+
+//EJERCICIO 3
+
+procedure VaciarFilaDe_(color){
+    /*Proposito: vacia las celda de la fila actual del "color" dado.
+      Precondicion: ninguna
+      Parametros: "color": es un Color. denota el color a vaciar de la fila.*/
+    IrAlBorde(Oeste)
+    while(puedeMover(Este)){
+        SacarTodasLasDeColor_(color)
+        Mover(Este)
+    }
+    SacarTodasLasDeColor_(color)
+    IrAlBorde(Oeste)
+}
+
+// A ok
+//B si funciona puesto que inicia el recorrido.
+//C si totalmente puesto que tiene el mismo comportamiento.
+//D y de varias formas en ambos sentidos o bien usando un recorrido por celdas.
+
+//EJERCICIO 4
+
+procedure VaciarTableroDe_(color){
+    /* Proposito: vaciar el tablero del "color" de bolitas dado.
+       Precondicion: ninguna.
+       Parametros: "color": denota el color de las bolitas a vaciar del tablero dado.*/
+    //A
+    IrAEsquina_Y_(Oeste,Sur)
+    while(puedeMover(Norte)){
+        VaciarFilaDe_(color)
+        Mover(Norte)
+    }
+    VaciarFilaDe_(color)
+}
+
+// OPCION B
+
+procedure VaciarTableroDe_(color){
+    /* Proposito: vaciar el tablero del "color" de bolitas dado.
+       Precondicion: ninguna.
+       Parametros: "color": denota el color de las bolitas a vaciar del tablero dado.*/
+    IrAPrimeraCeldaEnUnRecorridoAl_YAl_(Norte,Este)
+    while(haySiguienteCeldaEnUnRecorridoAl_YAl_( Norte,Este )){
+        SacarTodasLasDeColor_(color)
+        IrASiguienteCeldaEnUnRecorridoAl_YAl_(Norte ,Este )
+    }
+    SacarTodasLasDeColor_(color)
+}
+
+//EJERCICIO 5
+
+//A: la direccion.
+//B: a mi juicio 4 seria norte-este o sur.oeste / norte-oeste o bien sur - este-
+//C :
+
+procedure VaciarFilaDe_(color){
+    /*Proposito: vacia las celda de la fila actual del "color" dado.
+      Precondicion: ninguna
+      Parametros: "color": es un Color. denota el color a vaciar de la fila.*/
+    IrAlBorde(Este)
+    while(puedeMover(Oeste)){
+        SacarTodasLasDeColor_(color)
+        Mover(Oeste)
+    }
+    SacarTodasLasDeColor_(color)
+    IrAlBorde(Este)
+}
+
+// opcion por celda.
+
+procedure VaciarTableroDe_(color){
+    /* Proposito: quita las bolitas el tablero del "color" de bolitas dado.
+       Precondicion: ninguna.
+       Parametros: "color": denota el color de las bolitas a vaciar del tablero dado.*/
+    IrAPrimeraCeldaEnUnRecorridoAl_YAl_(Sur,Oeste)
+    while(haySiguienteCeldaEnUnRecorridoAl_YAl_( Sur,Oeste )){
+        SacarTodasLasDeColor_(color)
+        IrASiguienteCeldaEnUnRecorridoAl_YAl_(Sur ,Oeste )
+    }
+    SacarTodasLasDeColor_(color)
+}
+
+// EJERCICIO 6
+
+procedure VaciarFilaDe_HaciaEl_(color, direccion){
+    /*Proposito: vacia las celdas de la fila actual del "color" dado hacia "direccion".
+      Precondicion: "direccion" debe ser o bien este o oeste.
+      Parametros: "color": es un Color. denota el color a vaciar de la fila.
+                "direccion: es una Direccion. denota hacia donde se vacia la fila*/
+    IrAlBorde(opuesto(direccion))
+    while(puedeMover(direccion)){
+        SacarTodasLasDeColor_(color)
+        Mover(direccion)
+    }
+    SacarTodasLasDeColor_(color)
+    IrAlBorde(opuesto(direccion))
+}
+
+// EJERCICIO 7 ---- biblioteca
+
+/*      a. IrAPrimeraCeldaEnUnRecorridoAl_Y_(dirPrincipal, dirSecundaria)
+b. haySiguienteCeldaEnUnRecorridoAl_Y_(dirPrincipal, dirSecundaria)
+c. IrASiguienteCeldaEnUnRecorridoAl_Y_(dirPrincipal, dirSecundaria)
+*/
+procedure IrAPrimeraCeldaEnUnRecorridoAl_Y_(dirPrincipal, dirSecundaria){
+        /*
+        Proposito: Ubicar el cabezal al inicio del recorrido. de "dirPrincipal" y "dirSecundaria".
+        Precondiciones: Las direcciones no pueden ser opuestas u iguales.
+        Parametros: diPrincipal: es una direccion que denota ir al borde de "dirPrincipal" .
+                    dirSecundaria: es una direccion que denota hacia que borde debo moverme hacia "dirSecundaria".*/
+    IrAlBorde(opuesto(dirPrincipal))
+    IrAlBorde(opuesto(dirSecundaria))
+}
+
+function haySiguienteCeldaEnUnRecorridoAl_Y_(dirPrincipal, dirSecundaria){
+    /*  Proposito: inidica si hay una siguiente celda en un recorrido hacia "dirPrincipal" y "dirSecundaria".
+        Precondicion: Las direcciones no pueden ser opuestas u iguales..
+        Parametros: dirPrincipal: es una Direccion.
+                    dirSecundaria: es una Direccion.
+        Tipo: booleano.*/
+    return(puedeMover(dirPrincipal ) || puedeMover(dirSecundaria)) 
+}
+
+procedure IrASiguienteCeldaEnUnRecorridoAl_Y_(dirPrincipal, dirSecundaria){
+    /*  Proposito:  Ubicar el cabezal en la siguiente celda de un recorrido hacia "dirPrincipal" y "dirSecundaria".
+        Precondicion: Las direcciones no pueden ser opuestas u iguales.
+                    debe existir al menos una siguiente celda en la direccion en el recorrido. 
+        Parametros: dirPrincipal: es una Direccion.
+                    dirSecundaria: es una Direccion.*/
+    if (puedeMover(dirPri)) { 
+        Mover(dirPri) 
+    } else { 
+        Mover(dirSec ) 
+        IrAlBorde(opuesto(dirPri)) 
+    }
+}
+
+//  EJERCICIO 8
+
+// funcion primitiva:
+/*      function direcciónDelCódigo_(código)
+/* PROPÓSITO:
+describir la dirección correspondiente al
+código dado
+PRECONDICIONES:
+* el código está entre 1 y 4
+PARÁMETROS:
+* código: Número. El número que codifica la
+dirección descripta
+*/
+
+//A
+
+function caminante(){
+    /*  Proposito: Indica el color del caminante.
+        Precondicion: ninguna
+        Tipo: Color*/
+        return(Azul)
+}
+function huella(){
+    /*  Proposito: Indica que el color de la huella
+        Precondicion: ninguna
+        Tipo: Color*/
+        return(Negro)
+}
+function meta(){
+    /*  Proposito: Indica el color de la meta.
+        Precondicion: ninguna.
+        Tipo: Color*/
+        return(Rojo)
+}
+function indicador(){
+    /*  Proposito: indica el color del indicador
+        Precondicion: ninguna.
+        tipo: Numero.*/
+        return(Verde)
+}
+
+//B
+
+procedure LlevarAlCaminanteALaMeta(){
+        /*Proposito: LLevar el camimante hacia la meta.
+          Precondicion: que exista una meta y un caminante*/
+        while(not esMeta()){
+            DarUnPaso()
+        }
+}
+
+function numeroDelindicador(){
+    /*  Proposito: describe el numero del indicador.
+        Precondicion: ninguna.
+        Tipo: Numero.*/
+    return(nroBolitas(indicador()))
+}
+
+procedure MoverAlCaminante_(direccion){
+        /*Proposito: Ubicar al caminante en la siguiente celda hacia "direccion".
+                Precondicion: debe existir al menos una celda hacia "direccion" a mover.
+                Parametros: direccion es una direccion a mover el caminante.*/
+        repeat(nroBolitas(caminante())){
+                Mover(direccion)
+                Poner(caminante)
+                Mover(opuesto(direccion))
+        }
+        SacarTodasLasDeColor_(caminante())
+        Mover(direccion)
+}
+
+//C
+
+function estaEnLaMeta(){
+        /*Proposito: Indica si el caminante esta en la meta,
+                Tipo: booleano.*/
+        return(estaElCaminante() && esLaMeta())
+}
+
+function estaElCaminante(){
+    /*  Proposito: indica si el caminante esta en la celda actual.
+        Precondicion: ninguna.
+        Tipo: Booleano.*/
+    return(hayBolitas(caminante()))
+}
+
+function esLaMeta(){
+    /*  Proposito: Indica si en la celda actual es la meta.
+        Precondicion: ninguna.
+        Tipo: Booleano.*/
+    return(hayBolitas(meta()))
+}
+
+//D
+
+procedure DarUnPaso(){
+        /*Proposito: Dar un paso hacia la siguiente celda.
+        Precondicion: debe existir el caminante en la celda actual.*/
+        DejarHuella()
+        MoverAlCaminante_(direcciónDelCódigo_(numeroDelindicador()))
+}
+
+//E
+
+procedure CambiarDeDirecciónSiHayIndicador(){ // PREGUNTAR AL PROFE
+            /*Proposito: cambiar la direccion del caminante segun indique el indicador.
+            Precondicion: existe un caminante en la celda actual.*/
+        if(hayBolitas(indicador)){
+                no se jajajaj
+        }
+}
+
+// F
+
+procedure DejarHuella(){
+        /*Proposito: Dejar huella en la celda actual.
+                Precondicion: no debe existir una huella en la celda actual.*/
+        Poner(huella)
+}
+
+// G
+
+procedure MoverAlCaminante_(direccion){
+        /*Proposito: Ubicar al caminante en la siguiente celda hacia "direccion".
+                Precondicion: debe existir al menos una celda hacia "direccion" a mover.
+                Parametros: direccion es una direccion a mover el caminante.*/
+        repeat(nroBolitas(caminante())){
+                Mover(direccion)
+                Poner(caminante)
+                Mover(opuesto(direccion))
+        }
+        SacarTodasLasDeColor_(caminante())
+        Mover(direccion)
+}
+
+// H
+
+function hayIndicadorDeCambioDeDireccion(){
+        /*Proposito: Indica si hay un indicador en la celda actual        
+                Tipo: booleano*/
+        return(not hayBolitas(indicador()))
+}
+
+// I
+
+function direcciónIndicada(){
+        /* Proposito: Indica la direccion en la que esta mirando el caminante.
+                Tipo: numero*/
+        return (direcciónDelCódigo_(numeroDelindicador()))
+}
+
+// J
+
+procedure Cambiar_ParaImitar_(colorACambiar, colorAImitar){
+        /*Proposito: cambiar las cantidad de bolitas de "colorACambiar" segun la cantidad de bolitas de "colorAImitar" que hay en la celda actual
+                Precondicion: ninguna
+                Parametros: "colorACambiar": es un color y denota las bolitas que deben ser cambiadas.
+                            "colorAImitar" : es un color y denota las bolitas que deben ser imitadas.*/
+       if (nroBolitas(colorACambiar) < nroBolitas(ColorAimitar)){
+               Poner_Veces_(colorACambiar, diferenciaEntre_Y_(colorAImitar, colorACambiar))
+       } else{
+               Poner_Veces_(colorACambiar, diferenciaEntre_Y_(colorACambiar, colorAImitar))
+       }
+}
+
+function function diferenciaEntre_Y_(color1, color2){
+        /*  Proposito: indica la diferencia de "color1" y "color2"
+            tipo: numero
+            Parametros: - color1: es un Color.
+                        - color2: es un Color.*/
+        return(nroBolitas(color1) - nroBolitas(color2) )        
+}
+
+//K
+
+procedure Mover_Bolitas_Al_(cantidad, color, dirección){
+        /*Proposito: Mover la "cantidad" indicada de bolitas de "color" a la celda lindante en la "direccion" dada.
+                Precondicion: existe las "cantidad" de bolitas de "color" en la celda actual, y al menos un celda hacia direccion dada.
+                Parametros:
+                        * cantidad: Numero, denota la cantidad de bolitas a mover,
+                        * color: Color, denota el color de las bolitas a mover
+                        * direccion: Direccion, denota hacia donde debe moverse.*/
+        Sacar_Veces_(color, cantidad)
+        Mover(direccion)
+        Poner_Veces_(color, cantidad)      
+        
+}
+
+// EJERCICIO 9
+
+//A 
+function esDepositoCentral(){
+    /*
+    |   Proposito: Indica si la celda actual es un deposito central.
+        Precondiciones: ninguna
+        Tipo:booleano
+    */
+    return(nroBolitas(Negro) == 3)
+}
+function esDepotisoLocal(){
+    /*
+        Proposito: Indica si la celda actual es deposito local.
+        Precondiciones: ninguna
+        Tipo: booleano
+    */
+    return(nroBolitas(Negro) == 2)
+}
+
+// B
+procedure IrDeCentralAlLocal_(direccion) {
+    /*
+        PROPÓSITO:  Ubicar el cabezal desde el  deposito central al deposito local que esta en la "direccion" dada.
+        PARÁMETROS:
+            * direccion: es una Direccion, y denota la direccion hacia donde se mueve el cabezal.
+        PRECONDICIONES:
+            * existen celdas hacia "direccion" a mover.
+    */
+    while(not esDepositoCentral()){
+        Mover(direccion)
+    }
+}
+
+// C
+
+procedure IrDelLocal_ACentral(direccion){
+    /*
+        Proposito: Ubicar el cabezal desde el  deposito local al deposito central.
+        Precondicion: hay celdas hacia direccion a mover.
+        PARÁMETROS:
+            * direccion: es una direccion, y denota la direccion hacia donde se mueve el cabezal.
+    */
+     while(not esDepotisoLocal()){
+        Mover(opuesto(direccion))
+    }
+}
+
+// D
+
+procedure Llevar_MercaderiaAlLocal_(cantidad, direccion){
+    /*
+        Proposito: Llevar la "cantidad" mercaderia dada del deposito central al deposito local hacia "direccion".
+        Precondicion: existen celdas hacia "direccion" a mover.
+        Parametros:
+            * CANTIDAD: es un Numero y denota la cantidad de mercaderia a mover.
+            * direccion: es una Direccion, y denota hacia que direccion debe moverse la mercaderia.
+    */
+        if(hayMercaderia() && (cantidadDeMercaderia() >= cantidad)){
+            Sacar_Veces_(mercaderia(), cantidad)
+            IrDeCentralAlLocal_(direccion)
+            Poner_Veces_(mercaderia(), cantidad)
+        }
+}
+
+function hayMercaderia(){
+    /*
+        Proposito: Indica si hay mercaderia en la celda actual.
+        Precondicion: ninguna
+        Tipo: booleano
+    */
+    return(hayBolitas(Azul))
+}
+
+function cantidadDeMercaderia(){
+    /*
+        Proposito: Indica la cantidad de mercaderia en la celda actual.
+        Precondicion: hay mercaderia en la celda actual
+        Tipo: numero.
+    */
+    return(nroBolitas(Azul))
+}
+
+// E
+
+procedure Traer_MercaderiasDelLocal_(cantidad, direccion){
+    /*
+        Proposito: Traer la "cantidad" de  mercaderia del deposito local al central hacia "direccion".
+        Precondiciones: existen celdas hacia "direccion" a mover.
+        Parametros:
+            * cantidad: Numero, denota la cantidad de mercaderia a llevar.
+            *direccion: es una Direccion, denota hacia donde debe moverse.
+    */
+            if(hayMercaderia() && (cantidadDeMercaderia() >= cantidad)){
+                Sacar_Veces_(mercaderia(),cantidad)
+                IrDelLocal_ACentral(direccion)
+                Poner_Veces_(mercaderia(, cantidad))
+            }
+}
+
+// F
+
+procedure Mover_MercaderiasDelLocal_AlLocal_(cantidad, origen, destino){
+    /*
+        Proposito: Llevar una "cantidad" mercaderia del deposito local de "origen" hacia el deposito local "destino"
+        Precondicion: existen celdas hacia destino. y origen.
+        Parametros:
+            * cantidad: es un Numero que denota la cantidad de mercaderia a llevar.
+            * origen: Direccion, denota desde que deposito se realiza el envio.
+            * destino: Direccion, denota hacia que deposito se lleva la mercaderia.
+    */
+    IrDeCentralAlLocal_(origen)
+    if((hayMercaderia() && (cantidadDeMercaderia() >= cantidad)){
+        Sacar_Veces_(mercaderia(),cantidad)
+        IrDelLocal_ACentral(opuesto(origen))
+        IrDeCentralAlLocal_(destino)
+        Poner_Veces_(mercaderia(),cantidad)
+    }
+}
+
+// EJERCICIO 10
+
+// A
+procedure AgregarApuestaDe_Al_Para_(monto,nroApostado,nroJugador){
+    /*  Proposito: agregar la apuesta indicada en alguna celda vacia. el cabezal se encuentra sobre la celda a apostar.
+        Precondicion:en la celda actual no debe existir ninguna apuesta.
+        Parametros: monto: Numero. denota la cantidad de plata a apostar.
+                    nroApostado: el Numero al cual se apuesta.
+                    nroJugador: Numero. representa al jugador*/
+    Poner_Veces_(jugador(), nroJugador)
+    Poner_Veces_(apuesta(), nroApostado)
+    Poner_Veces_(pesos(), monto)
+}
+function jugador(){
+    /*  Proposito: describe el color del jugador.
+        Precondicion: ninguna.
+        Tipo: Color.*/
+    return(Rojo)
+}
+function apuesta(){
+    /*  Proposito: describe el color del numero apostado.
+        Precondicion: ninguna.
+        Tipo: Color.*/
+    return(Azul)
+}
+function pesos(){
+    /*  Proposito: describe el color de la moneda apostada
+        Precondicion: ninguna.
+        Tipo: Color.*/
+    return(Verde)
+}
+// B
+procedure PagarYCobrarAl_(nroQueSalió){
+    /*  	Proposito: pagar las apuestas que acertaron al "nroQueSalio"y retirar aquellas que no.
+            Precondicion: ninguna.
+            Parametro: "nroQueSalio": es un Numero.*/
+    IrAPrimeraCeldaEnUnRecorridoAl_YAl_(Norte ,Este )
+    while(haySiguienteCeldaEnUnRecorridoAl_YAl_( Norte,Este )){
+        PagarOCobrarAl_(nroQueSalió)
+        IrASiguienteCeldaEnUnRecorridoAl_YAl_(Norte ,Este )
+    }
+        PagarOCobrarAl_(nroQueSalió)
+}
+
+procedure PagarOCobrarSiCorresponde_(nroQueSalió){
+    /*  Proposito: paga o cobra segun corresponda en la apuesta actual.
+        Precondicion: ninguna.
+        Parametro: "nroQueSalió". Numero.*/
+    if(hayApuesta()){
+        PagarOCobrarAl_(nroQueSalió)
+    }
+}
+procedure PagarOCobrarAl_(nroQueSalió){
+    /*  Proposito: paga o cobra en la celda actual la apuesta realizada.
+        Precondicion: ninguna.
+        Parametros: "nroQueSalió". Numero. representa el numero apostado.*/
+    if(nroQueSalió == nroApostado()){
+        Poner_Veces_((pesos(), (montoApostado() * 5)))// SERIA MEJOR ENMASCARARLO COMO PAGAR APUESTA
+    } else {
+        Sacar_Veces_(pesos(), montoApostado()) // SERIA MEJOR ENMASCARARLO COMO COBRAR APUESTA.
+    }
+}
+function hayApuesta(){
+    /*  Proposito: indica si hay apuesta.
+        Precondicion: ninguna.
+        Tipo: Booleano.*/
+        return(hayBolitas(apuesta()) && hayBolitas(jugador()) && hayBolitas(pesos()))
+}
+function nroApostado(){
+    /*  Proposito: describe el numero apostado.
+        Precondicion: ninguna.
+        Tipo: Numero.*/
+    return(nroBolitas(apuesta()))
+}
+function montoApostado(){
+    /*  Proposito: describe el dinero apostado.
+        Precondicion: ninguna.
+        Tipo: Numero.*/
+    return(nroBolitas(pesos()))
+}
+
+//C
+
+procedure RecogerPropinas(){
+    /*  Proposito: extrae un peso de cada celda que registra una apuesta.
+        Precondicion: ninguna.*/
+    IrAPrimeraCeldaEnUnRecorridoAl_YAl_(Norte ,Este )
+    while(haySiguienteCeldaEnUnRecorridoAl_YAl_( Norte,Este )){
+        CobrarPropinaSiPuede()
+        IrASiguienteCeldaEnUnRecorridoAl_YAl_(Norte ,Este )
+    }
+    CobrarPropinaSiPuede()
+}
+procedure CobrarPropinaSiPuede(){
+    /*  Proposito:  cobra la propina si corresponde en la celda actual.
+        Precondicion: ninguna.*/
+    if(hayCantidadDePesos() >=15){
+        Sacar(pesos())
+    }
+}
+function hayCantidadDePesos(){
+    /*  Proposito: indica si hay cierta cantidad de pesos en la celda actual.
+        Precondicion: ninguna.
+        Tipo: Numero.*/
+    return(nroBolitas(pesos()))
+}
+
+// D
+procedure SeVaElJugador_(nroJugador){ 
+    /*  Proposito: borra la celda del "nroJugador" que se haya ido.
+        Precondicion: ninguna.
+        Parametros:     "nroJugador": es un Numero.*/
+    IrAPrimeraCeldaEnUnRecorridoAl_YAl_(Norte ,Este )
+    while(haySiguienteCeldaEnUnRecorridoAl_YAl_( Norte,Este )){
+        BorrarSiCorrespondeAl_(nroJugador)
+        IrASiguienteCeldaEnUnRecorridoAl_YAl_(Norte ,Este )
+    }
+    BorrarSiCorrespondeAl_(nroJugador)
+}
+function numeroDelJugador(){
+    /*  Proposito: describe el numero del jugador de la celda actual.
+        Precondicion: ninguna.
+        Tipo: Numero.*/
+    return(nroBolitas(jugador()))
+}
+procedure BorrarSiCorrespondeAl_(nroJugador)(){
+    /*  Proposito: borra toda la informacion del "nroJugador" de la celda actual si corresponde.
+        Precondicion: ninguna.
+        Parametros*/
+    if(nroJugador == numeroDelJugador()){
+        VaciarCelda()
+    }
+}
+
+// E
+
+procedure DuplicarApuestasAl_(nroApostado){
+    /*  Proposito: duplicar el monto de las apuestas al numero indicado en "nroApostado"
+        Precondicion: ninguna
+        Parametro: "nroApostado". es un Numero.*/
+    IrAPrimeraCeldaEnUnRecorridoAl_YAl_(Norte ,Este )
+    while(haySiguienteCeldaEnUnRecorridoAl_YAl_( Norte,Este )){
+        DuplicarSiApostoAl_(nroApostado)
+        IrASiguienteCeldaEnUnRecorridoAl_YAl_(Norte ,Este )
+    }
+    DuplicarSiApostoAl_(nroApostado)
+}
+procedure DuplicarSiApostoAl_(nroApostado){
+    /*  Proposito: duplica la apuesta sobre "nroApostado" si corresponde en la celda actual.
+        Precondicion: ninguna.
+        Parametros: "nroApostado". es un Numero.*/
+    if(nroApostado == nroApostado()){
+        Poner_Veces_(pesos(), (montoDuplicado())
+    }
+}
+function montoDuplicado(){
+    /*Proposito: describe el monto apostado duplicado.
+      Precondicion: ninguna
+      Tipo: Numero.*/
+    return(montoApostado() * 2)
+}
+
+//F
+procedure DuplicarApuestasDelJugador_(nroJugador){
+    /*  Proposito: duplica la apuesta del "nroJugador" unicamente.
+        Precondicion: existe "nroJugador".
+        Parametro: "nroJugador" es un Numero.*/
+    IrAPrimeraCeldaEnUnRecorridoAl_YAl_(Norte ,Este )
+    while(haySiguienteCeldaEnUnRecorridoAl_YAl_( Norte,Este )){
+        DuplicarApuestaDel_SiCorresponde(nroJugador)
+        IrASiguienteCeldaEnUnRecorridoAl_YAl_(Norte ,Este )
+    }
+    DuplicarApuestaDel_SiCorresponde(nroJugador)
+}
+procedure DuplicarApuestaDel_SiCorresponde(nroJugador){
+    /*  Proposito: duplicar la apuesta del jugador actual si corresponde.
+        Precondicion: ninguna.
+        Parametros: "nroJugador". Es un Numero.*/
+    if(nroJugador == numeroDelJugador()){
+        Poner_Veces_(pesos(), montoDuplicado())
+    } 
+}
+
+//G
+
+procedure CambiarNroApostadoDel_Al_(nroAnterior, nroNuevo){
+    /*  Proposito: cambiar todas las apuestas de los jugadores con el "nroAnterior" al "nroNuevo" dado.
+        Precondicion: ninguna.
+        Parametros: "nroAnterior". es un Numero. que denota el numero apostado a cambiar.
+                    "nroNuevo". es un Numero. que denota el numero apostado nuevo.*/
+    IrAPrimeraCeldaEnUnRecorridoAl_YAl_(Norte ,Este )
+    while(haySiguienteCeldaEnUnRecorridoAl_YAl_( Norte,Este )){
+        CambiarSiTiene_Por_(nroAnterior, nroNuevo)
+        IrASiguienteCeldaEnUnRecorridoAl_YAl_(Norte ,Este )
+    }
+    CambiarSiTiene_Por_(nroAnterior, nroNuevo)
+}
+procedure CambiarSiTiene_Por_(nroAnterior, nroNuevo){
+    /*  Proposito: cambia el numero "nroAnterior" de la apuesta de la celda actual por "nroNuevo"
+        Precondicion: ninguna,
+        Parametros: "nroAnterior". es un Numero. que denota el numero apostado a cambiar.
+                    "nroNuevo". es un Numero. que denota el numero apostado nuevo.*/
+    if(nroAnterior == nroApostado()){
+        BorrarNumeroApostado() // definirlo despues...
+        Poner_Veces_(apuesta(), nroNuevo)
+    }
+}
+
+// H
+
+procedure AumentarEn_LaApuestaDelJugador_Al_(monto, nroJugador,nroApostado){
+    /*  Proposito: agregar la apuesta con el  "monto" del jugador "nroJugador" al "nroApostado".
+        Precondicion: debe existir el numero de jugador y el numero apostado.
+        Parametros: "monto": Numero que denota el dinero a agregar al monto del jugador.
+                    "nroJugador": Numero que representa al jugador.
+                    "nroApostado": Numero que denota el numero ganador.*/
+    IrAPrimeraCeldaEnUnRecorridoAl_YAl_(Norte ,Este )
+    while( es_JugadorCon_(nroJugador, nroApostado)){ 
+        IrASiguienteCeldaEnUnRecorridoAl_YAl_(Norte ,Este )
+    }
+    AumentarSiCorresponde_Del_(monto,nroApostado)
+}
+
+procedure AumentarSiCorresponde_Del_(monto,nroApostado){
+    /*  Proposito: agrega el "monto" indicado si corresponde al "nroApostado"
+        Precondicion: ninguna.
+        Parametros: "monto": Numero que denota el dinero a agregar al monto del jugador.
+                    "nroApostado": Numero que denota el numero ganador.*/
+    if(nroApostado == nroApostado() ){
+        Poner_Veces_(pesos(), monto)
+    }
+}
+
+//I
+
+procedure BuscarApuestaDelJugador_Al_(nroJugador, nroApostado){
+    /*  Proposito: busca al "nroJugador" con el "nroApostado".
+        Precondicion: ninguna.
+        Parametros: "nroJugador": es un Numero. denota el numero del jugador.
+                    "nroApostado": es un Numero. denota el numero apostado.*/
+    IrAPrimeraCeldaEnUnRecorridoAl_YAl_(Norte ,Este )
+    while(haySiguienteCeldaEnUnRecorridoAl_Y_(Norte, Este) &&  es_JugadorCon_(nroJugador, nroApostado)){
+        IrASiguienteCeldaEnUnRecorridoAl_YAl_(Norte ,Este )
+    }
+}
+
+function es_JugadorCon_(nroJugador, nroApostado){
+    /*  Proposito: indica si la celda actual esta ocupada con el "nroApostado" del "nroJugador".
+        Precondicion: ninguna.
+        Tipo: Booleano.
+        Parametros: "nroJugador". es un Numero.
+                    "nroApostado". es un Numero.*/
+    return(nroJugador == numeroDelJugador() && nroApostado == nroApostado())
+}
+
+//EJERCICIO DE BLINK ZELDA:
+
+program{
+    AvanzarYAtacarConEspadaAEnemigo()
+
+}
+
+procedure AvanzarYAtacarConEspadaAEnemigo(){
+    /*  Proposito: avanzar con blink y atacar al enemigo 
+        Precondicion: el enemigo esta en la celda lindante.*/
+    IrASiguienteEnemigo()
+    AtacarEnemigoConArcoYFlecha()
+}
+
+procedure AtacarEnemigoConArcoYFlecha(){
+    /*  Proposito: blink ataca al enemigo
+        Precondicion: debe haber un enemigo en la celda lindante.*/
+    EliminarEnemigoEn_(direcciónDeBlink())
+}
+
+procedure IrASiguienteEnemigo(){
+    /*  Proposito: blink avanza hacia el siguiente enemigo.
+        Precondicion: las celdas hacia el enemigo debe estar vacia.*/
+    while(not hayEnemigoEn_(direcciónDeBlink())){
+        AvanzarBlinkEn_(direcciónDeBlink())
+    }
+    
+}

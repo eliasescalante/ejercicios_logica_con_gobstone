@@ -1,0 +1,122 @@
+program{
+    SembrarFilaDe_Cantidad(5)
+    MoverAutomataAlNorte()
+    SembrarFilaDe_Cantidad(4)
+    MoverAutomataAlNorte()
+    SembrarFilaDe_Cantidad(3)
+    MoverAutomataAlNorte()
+    SembrarFilaDe_Cantidad(4)
+    MoverAutomataAlNorte()
+    SembrarFilaDe_Cantidad(5)
+}
+
+procedure SembrarFilaDe_Cantidad(parcelas){
+    /*Proposito: sembrar todas las parcelas de la primera fila.
+      precondicion: debe existir "parcelas" hacia el este desde la celda actual.
+      parametros: parcelas, es un numero que denota la cantidad de parcelas a sembrar.
+    */
+    PrepararLaTierraDeLaFilaCon_(parcelas)
+    PlantarElPastoDeLaFilaCon_(parcelas)
+    PlantarLasFloresDeLaFilaCon_(parcelas)
+    RegarLasParcelasDeLaFilaCon_(parcelas)
+}
+
+procedure PrepararLaTierraDeLaFilaCon_(parcelas){
+    /*  Proposito: preparar la tierra de las parcelas de la primera fila
+        Precondicion: las celdas deben estar vacias. y debe existir
+                      al menos 5 celdas hacia el este desde la celda actual.
+        Parametros: parcelas. es un numero que denota la cantidad de parcelas a preparar la tierra*/
+    repeat(parcelas){
+        AcomodarElAutomata()
+        PrepararLaTierra()
+    }
+    VolverAlInicioDeLaFila_(parcelas)
+}
+procedure PlantarElPastoDeLaFilaCon_(parcelas){
+    /*  Proposito: plantar el pasto en las parcelas de la primera fila.
+        Precondicion: debe existir al menos 5 celdas hacia el este desde la celda
+                      actual. en las mismas no debe estar plantado pasto previamente
+        Parametros: parcelas. es un numero que denota la cantidad de parcelas a plantar pasto.
+    */
+    repeat(parcelas){
+        AcomodarElAutomata()
+        PlantarPasto()
+    }
+    VolverAlInicioDeLaFila_(parcelas)
+}
+procedure PlantarLasFloresDeLaFilaCon_(parcelas){
+    /*Proposito: plantar las flores de las parcelas de la primera fila.
+      Precondicion: las parcelas deben tener la tierra preparada y no deben tener
+                    flores plantadas previamente.
+      Parcelas : es un numero, que denota la cantidad de parcelas a plantar flores.
+    */
+    repeat(parcelas){
+        AcomodarElAutomata()
+        PlantarFlores()
+    }
+    VolverAlInicioDeLaFila_(parcelas)
+}
+procedure RegarLasParcelasDeLaFilaCon_(parcelas){
+    /* Proposito: riega las "parcelas" parcelas de la fila.
+       Precondicion: debe haber "parcelas" en la fila. las mismas deben estar
+                    con tierra preparada y con plantaciones de flores y pasto.
+        Parametros: parcelas. es un numero, denota la cantidad de parcelas a regar.
+    */
+    repeat(parcelas){
+        AcomodarElAutomata()
+        RegarLaParcela()
+    }
+    VolverAlInicioDeLaFila_(parcelas)
+}
+procedure VolverAlInicioDeLaFila_(parcelas){
+    /*  Proposito: ubicar el automata al inicio de la fila.
+        Precondicion: debe existir al menos "parcelas" celdas hacia el oeste desde la
+                      celda actual.
+        Parametros: parcelas, es un numero denota la cantidad de parcelas a volver.*/
+    repeat(parcelas){
+        Mover(Oeste)
+    }
+}
+
+procedure PrepararLaTierra(){
+    /*  Proposito: prepara la tierra de la parcela.
+        Precondicion: la tierra de la parcela no debe estar preparada.
+                      y la misma debe estar vacia.*/
+    Poner(Negro)
+}
+procedure PlantarPasto(){
+    /*  Proposito: plantar el pasto en la parcela actual.
+        Precondicion: la parcela debe tener la tierra preparada. Y
+                      no debe tener pasto plantado*/
+    repeat(98){
+        Poner(Verde)
+    }
+}
+procedure PlantarFlores(){
+    /*  Proposito: Plantar flores en la parcela actual.
+        Precondicion: la parcela debe tener tierra preparada y no 
+                      debe haber flores plantadas.*/
+    repeat(3){
+        Poner(Rojo)
+    }
+}
+procedure RegarLaParcela(){
+    /*  Proposito: regar la parcela actual.
+        Precondicion: debe existir algo plantado en la parcela actual
+                      ya sea flores o pasto. No debe estar regado*/
+    repeat(4){
+        Poner(Azul)
+    }
+}
+procedure AcomodarElAutomata(){
+    /*  Proposito: acomodar el automata para comenzar a sembrar
+        Precondicion: debe existir al menos 1 celda hacia el este
+                      desde la celda actual.*/
+    Mover(Este)
+}
+procedure MoverAutomataAlNorte(){
+    /* proposito: acomodar el automata una celda al norte.
+       precondicion: debe existir al menos una celda al norte desde la celda actual.*/
+    Mover(Norte)
+}
+

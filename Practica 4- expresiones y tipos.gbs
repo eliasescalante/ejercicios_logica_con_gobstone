@@ -1,0 +1,397 @@
+// EJERCICIO 1
+
+program{
+    DibujarBanda_EnDiagonalNEDe_x_(Rojo, 3, 5)
+}
+procedure DibujarBanda_EnDiagonalNEDe_x_(color, alto, largo){
+    /*
+        Proposito: Dibujar una banda en diagonal. de color "color" y de alto "alto" y de largo "largo". el cabezal finaliza en la celda inicial.
+        Precondiciones: las celdas del tablero deben estar vacias. debe existir al menos celdas de "largo" hacia el este
+                        desde la celda actual y hacia el norte debe existir al menos "alto" * 2.
+                        El cabezal inicia en la esquina inferior izquierda.
+        parametros:
+            * color: es un color que denota el color en el cual se dibuja la banda en diagonal.
+            * alto: es un numero y denota la cantidad de bolitas a dibujar hacia el norte.
+            * largo: es un numero  denota el largo de la banda a dibujar.
+    */
+
+    repeat(largo - 1){
+        DibujarLineas_VerticalDe_Al_(color, alto, Norte)
+        AcomodarCabezal()
+    }
+    DibujarLineas_VerticalDe_Al_(color, alto,Norte)
+    ReiniciarCabezal()
+}
+procedure DibujarLineas_VerticalDe_Al_(color,alto,direccion){
+    /*
+        Proposito: dibujar una linea vertical de color "color" y alto "alto". el cabezal finaliza en la celda inicial.
+        Precondiciones: debe existir al menos "alto" de celdas hacia el Norte de la celda actual. las mismas deben estar vacias.
+        Parametros:
+            * color: es un color que denota el color en el cual se dibuja la linea vertical.
+            * alto: es un numero y denota la cantidad de bolitas a dibujar hacia el norte.
+    */
+
+    repeat(alto - 1){
+        Poner(color)
+        Mover(direccion)
+    }
+    Poner(color)
+    Mover_Veces_(opuesto(direccion), alto - 1)
+}
+procedure AcomodarCabezal(){
+    /*
+        Proposito: Ubicar el cabezal para dibujar la siguiente linea vertical.
+        Precondicion: debe existir al menos una celda hacia el este y otra hacia el norte desde la celda actual.
+    */
+    Mover(Este)
+    Mover(Norte)
+}
+procedure ReiniciarCabezal(){
+    /*
+        Proposito: reubicar el cabezal en la celda inicial.
+        Precondiciones: ninguna
+    */
+    IrAlBorde(Oeste)
+    IrAlBorde(Sur)
+}
+//no lo tenia definido en la biblioteca por eso lo vuelvo a definir XD
+procedure Mover_Veces_(direccion, cantidad){
+	repeat(cantidad){
+		Mover(direccion)
+	}
+}
+
+// EJERCICIO 2
+
+procedure Mover_SegúnColor_(direccion, color){
+    /*
+        Proposito: Ubicar cabezal hacia "direccion" segun la cantidad de bolitas de "color" denote en la celda actual. 
+        el cabezal finaliza en la celda a distancia "color" y direccion desde la celda actual.
+        Precondiciones: debe existir al menos numero de "color" celdas hacia "direccion" desde la celda actual. 
+        Parametros: 
+            * direccion: es una direccion y denota hacia donde debe moverse el cabezal.
+            * color: es un color que denota el color de la bolita
+                    a sensar para moverse hacia "direccion"
+    */
+    repeat(nroBolitas(color)){
+        Mover(direccion)
+    }
+}
+
+// EJERCICIO 3
+
+// A: nroBolitas(Negro) + nroBolitas(Azul)
+    /*
+            TABLERO A : 3
+            TABLERO B : 8
+            TABLERO C : 0
+
+// B: opuesto(opuesto(Este))
+        TABLERO A : queda en el lugar ESTE -------PREGUNTAR NO ENTENDI--------- 
+        TABLERO B : queda en el lugar ESTE
+        TABLERO C : queda en el lugar ESTE
+
+// C: c. nroBolitas(siguiente(Azul))
+        TABLERO A : 0
+        TABLERO B : 4
+        TABLERO C : 0
+
+// D . 2*nroBolitas(colorAImitar)
+        TABLERO A: 0
+        TABLERO B : 8
+        TABLERO C : 0
+*/
+
+procedure PonerElDobleDe_QueDe_(Rojo, Azul){
+    /* 
+        PROPÓSITO: Poner bolitas de color **colorAPoner** en una cantidad que sea el doble de las que hay de color **colorAImitar** en la celda actual
+        PRECONDICIONES: ninguna
+        PARÁMETROS:
+            * colorAPoner: Color. El color de las bolitas a poner
+            * colorAImitar: Color. El color de las bolitas cuya cantidad se va a imitar en la celda actual
+    */
+
+    /*
+        TABLERO A : 6 rojo
+        TABLERO B : 8 ROJO
+        TABLERO C : 1
+    */
+    
+}
+
+//EJERCICIO 4
+//A
+procedure Poner_SemillasaL_(cantidadDeSemillasAPoner, direccionAPoner){
+    /*
+        Proposito: Colocar "cantidadDeSemillasAPoner" hacia "direccionAPoner" de semillas en la parcela actual.
+        Precondicion: la parcela hacia "direccionAPoner" debe estar vacia. 
+        Paremetros:
+            cantidadDeSemillasAPoner: es un numero que denota la cantidad de semillas a colocar en la parcela actual.
+            direccionAPoner: es una direccion. denota hacia donde se debe plantar la semilla.
+        observaciones: las semillas se representan con una bolita roja.
+    */
+    Mover(direccionAPoner)
+    Poner_Veces_(Rojo, cantidadDeSemillasAPoner)
+}
+//B
+procedure Sacar_ArbolesAl_(cantidadDeÁrbolesv, direcciónASacar){
+    /*
+        Proposito: Eliminar las "cantidadDeSemillasASacar" semillas de la parcela lindante hacia "direcciónASacar".
+        Precondiciones: la parcela lindante hacia "direcciónASacar" actual debe tener al menos semillas >="cantidadDeSemillasASacar"
+        Parametros:
+            cantidadDeÁrboles: es un numero que denota la cantidad de arboles a sacar de la parcela actual.
+            direcciónASacar: es una direccion denota hacia donde debe sacar las semillas.
+    */
+    Mover(direcciónASacar)
+    Sacar_Veces_(Verde, cantidadDeÁrboles)
+}
+//C
+procedure Sacar_SemillasEnDiagonalAl_Y_(cantidadDeSemillas, primeraDirDiagonal, segundaDirDiagonal){
+    /* Proposito: sacar "cantidadDeSemillas" en la celda hacia "primeraDirDiagonal" y "segundaDirDiagonal".
+        Precondicion: debe existir "cantidadDeSemillas" en la celda hacia "primeraDirDiagonal" y "segundaDirDiagonal".
+                     debe existir una celda hacia "primeraDirDiagonal" y "segundaDirDiagonal".
+                     "primeraDirDiagonal" y "segundaDirDiagonal", no deben ser opuestas o iguales.
+        Parametros: "primeraDirDiagonal": direccion.
+                    "segundaDirDiagonal". direccion. 
+                    "cantidadDeSemillas: es un numero.*/
+    Mover(primeraDirDiagonal)
+    Mover(segundaDirDiagonal)
+    Sacar_DeColor_(cantidadDeSemillas, Rojo)
+    
+}
+// D
+procedure Sacar_ÁrbolesEnDiagonalHorariaAl_(cantidadDeÁrboles, direcciónDiagonal){
+    /*  Proposito: sacar los arboles en la diagonal "direccionDiagonal"  y la siguiente "direccionDiagonal" desde la celda actual.
+        Precondicion: debe existir al menos una celda hacia "direcciónDiagonal" y hacia la siguiente "direcciónDiagonal".
+                      debe existir en la celda a la siguiente de "direcciónDiagonal" "cantidadDeArboles" arboles a sacar.
+        Parametros: cantidadDeÁrboles: es un Número, que denota la cantidad de arboles a sacar.
+                    direccionDiagonal: es una Dirección, denota la direccion a sacar los arboles.
+    */
+    MoverDiagonalHorariaAl_(direcciónDiagonal)
+    Sacar_DeColor_(cantidadDeÁrboles, Verde)
+    MoverDiagonalHorariaAl_(opuesto(direcciónDiagonal))
+}
+
+procedure MoverDiagonalHorariaAl_(direccion){
+    /*...*/
+    Mover(direccion)
+    Mover(siguiente(direccion))
+}
+
+procedure Sacar_DeColor_(cantidad, color){
+    /*
+        Proposito: Sacar "cantidad" de bolitas de "color"
+        Precondicion: debe existir en la celda actual "cantidad" de bolitas de "color" a sacar en la celda actual.
+        parametros:
+            * color: es un color, denota el "color" a sacar de la celda actual.
+            * cantidad: es un numero, denota la cantidad de bolitas a sacar de la celda actual.
+    */
+    repeat (cantidad){
+        Sacar(color)
+    }
+}
+
+// EJERCICIO 5
+procedure PasarPalabraActualAMayuscula(){
+    /*  Proposito: convertir una palabra de mayusculas a minusculas.
+        Precondicion:   debe existir en la celda actual una palabra representada a convertir.
+                        debe existir tantas celdas hacia el este como letras tenga la palabra a representar.
+                        toda la fila al norte de la celda actual debe estar vacia.
+    */
+    PasarPalabraActualAMinuscula_(nroBolitas(Rojo))
+}
+
+procedure PasarPalabraActualAMinuscula_(codigoDePalabra){
+    /*
+        Proposito: Convertir una palabra de "codigoDePalabra" letras a mayusculas representada por bolitas a minusculas.
+        Precondiciones: debe existir al menos "codigoDePalabra" de celdas hacia el este y una celda lindante hacia el norte.
+                        El cabezal se encuentra en la celda más al Oeste de una fila donde hay una palabra representada.
+        Parametros: codigoDePalabra: es un numero que representa la palabra a cambiar.
+    */
+    Mover(Este)
+    repeat(codigoDePalabra){
+        ConvertirMinusculaAMayuscula_(nroBolitas(Negro))
+    }
+    Mover_Veces_(Oeste, cantidadDeLetras + 1)
+}
+procedure ConvertirMinusculaAMayuscula_(codigoDeLetra){
+    /*
+        Proposito: Convertir una letra mayuscula representada por bolitas en minuscula. el cabezal termina en la celda lindante al norte.
+        Precondiciones: debe existir en la celda actual una palabra a codificar en minuscula. debe existir al menos una celda lindante al norte.
+                        El cabezal se encuentra en la celda más al Oeste de una fila donde hay una palabra representada.
+        Parametros: codigoDeLetra: es un numero que representa una letra.
+    */
+    Mover(Norte)
+    Imprimir_Letra(codigoDeLetra + 32)
+    Mover(Sur)
+    Mover(Este)
+}
+
+procedure Imprimir_Letra(cantidad){
+    /*
+        Proposito: Imprimir una letra de "cantidad" de bolitas Negro.
+        Precondicion: la celda actual este vacia. debe existir al norte una celda lindante.
+        Parametro: cantidad : es un numero que denota la cantidad de bolitas a imprimir
+    */
+        Poner_Veces_(Rojo, cantidad)
+    }
+
+procedure  Poner_Veces_(color, cantidad){
+    repeat(cantidad){
+        Poner(color)
+    }
+}
+    
+procedure Mover_Veces_(direccion, cantidad){
+	repeat(cantidad){
+		Mover(direccion)
+	}
+}
+
+//EJERCICIO 6 ---biblioteca
+
+procedure SacarTodasLasDeColor_(colorASacar){
+    /*
+        Proposito: Eliminar todas las bolitas de "colorASacar" de la celda actual.
+        Precondicion: debe existir en la celda actual bolitas de "coloASacar".
+        Parametros:
+            * colorASacar: es un color que denota el color de bolitas a sacar.
+    */
+    Sacar_Veces_(colorASacar, nroBolitas(colorASacar))
+}
+
+// EJERCICIO 7 
+
+procedure VaciarCelda(){
+    /* Proposito: Vaciar la celda actual de bolitas de colores.
+       Precondicion: ninguna.
+    */
+     Sacar_Veces_(Rojo, nroBolitas(Rojo))
+     Sacar_Veces_(Verde, nroBolitas(Verde))
+     Sacar_Veces_(Negro, nroBolitas(Negro))
+     Sacar_Veces_(Azul, nroBolitas(Azul))
+}
+
+// EJERCICIO 8
+
+// A
+
+procedure EnviarAliadosParaDuplicarEnemigos(){ // verificado
+    /*
+        Proposito: Agregar el doble de soldados aliados en la celda actual que de soldados enemigos.
+        Precondicion: en la celda actual debe haber soldados enemigos.
+        Observacion: los soldados enemigos se representan con bolitas rojas y los aliados con bolitas negras.
+    */
+    repeat((nroBolitas(Rojo) * 2) - nroBolitas(Negro) ){
+        Poner(Negro)
+    }
+}
+
+//B
+
+procedure PelearLaBatalla(){
+     /*
+        Proposito: simular la batalla entre aliados y enemigos.
+        Precondicion: tiene que existir la cantidad de soldados Aliados suficientes para ganar la batalla. 
+                      debe existir al dos enemigos en la celda actual.
+        Observaciones: los enemigos estan representados con bolitas rojas y aliados con bolitas negras negras
+    */
+    Sacar_Veces_(Negro, ((nroBolitas(Rojo) div 2) * 3))
+    SacarTodas_(Rojo)
+}
+
+
+procedure Sacar_Veces_(color, cantidad){
+    /*....*/
+	repeat(cantidad){
+		Sacar(color)
+	}
+}
+
+procedure SacarTodas_(colorASacar){
+    /*
+        Proposito: Eliminar todas las bolitas de "colorASacar" de la celda actual.
+        Precondicion: debe existir en la celda actual bolitas de "coloASacar".
+        Parametros:
+            * colorASacar: es un color que denota el color de bolitas a sacar.
+    */
+    Sacar_Veces_(colorASacar, nroBolitas(colorASacar))
+}
+
+//EJERCICIO 9
+
+program {
+RepararEdificio()
+}
+procedure RepararEdificio(){
+  /* 
+     PROPÓSITO: 
+       * reparar todas las máquinas del edificio. 
+         El cabezal queda en el Hall del último piso 
+         del edificio (el hall más al Norte)
+     PRECONDICIONES: 
+       * el cabezal debe estar en la hall del edificio
+  */
+  repeat(nroBolitas(Azul)){
+      Mover(Norte)
+      RepararPiso()
+  }
+}
+procedure RepararPiso(){
+  /* 
+     PROPÓSITO: 
+       * reparar todas las máquinas del piso actual
+         (sacando todos los Virus de las máquinas del piso)
+     PRECONDICIONES: 
+       * la celda actual es el Hall del piso
+  */
+  repeat(nroBolitas(Negro)){
+      Mover(Este)
+      RepararMáquina()
+  }
+  IrAlBorde(Oeste)
+}
+
+procedure RepararMáquina(){
+  /* 
+     PROPÓSITO: 
+       * eliminar los virus de la celda actual y dejar la marca de OK 
+     PRECONDICIONES: 
+       * en la celda actual hay una máquina con virus y sin marcas de OK
+  */
+  SacarTodas_(Rojo)
+  IndicarOk()
+}
+procedure IndicarOk() {
+  /* 
+     PROPÓSITO: 
+       * indicar que la máquina de la celda actual no tiene 
+         virus poniendo la indicación de OK
+     PRECONDICIONES: 
+       * la máquina de la celda actual no tiene virus ni 
+         indicación de OK
+  */
+  Poner(Verde)
+}
+
+procedure SacarTodas_(colorASacar) {
+  /*
+     PROPÓSITO: 
+       * sacar de la celda actual todas las bolitas del color dado
+     PRECONDICIONES: 
+       * ninguna (es una operación total)
+     PARÁMETROS:
+       * colorASacar es un color, que indica el color de las bolitas que se deben sacar
+  */
+  Sacar_Veces_(colorASacar, nroBolitas(colorASacar))
+}
+procedure Sacar_Veces_(color, cantidad){
+  /*...*/
+	repeat(cantidad){
+		Sacar(color)
+	}
+}
+
+
+
+

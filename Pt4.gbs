@@ -1,0 +1,461 @@
+//EJERCICIO 1
+procedure Mover3VecesAl_(direccionAMover){
+    /*  Proposito: ubicar el cabezal a 3 celdas hacia "direccionAMover"
+        Precondicion:   debe existir al menos 3 celdas hacia "direccionAMover" 
+                        desde la celda actual.
+        Parametros: "direccionAMover": es una direccion. denota la direccion a mover el 
+                                    cabezal.
+    */
+    repeat(3){
+        Mover(direccionAMover)
+    }
+}
+//EJERCICIO 2
+procedure Poner_Al_(colorAPoner, direccionHaciaDondePoner){
+    /*  Proposito: colocar un color de "colorAPoner" hacia la direccion "direccionHaciaDondePoner"
+        Precondicion: debe existir al menos 1 celda hacia "direccionHaciaDondePoner".
+        Parametros: "colorAPoner", es un color y denota el color a poner en la celda.
+                    "direccionHaciaDondePoner", es una direccion y denota hacia donde debe colocar el color.
+    */
+    Mover(direccionHaciaDondePoner)
+    Poner(colorAPoner)
+}
+
+// a: si no se usaran parametros seria uno por cada color mas uno con cada direccion y sus combinaciones.
+// b: la invocacion seria:
+procedure PonerColorAzulAlNorte(){
+    /* Proposito: coloca al norte una bolita de color azul.
+       Precondicion: debe existir al menos una celda hacia el norte.
+    */
+    Poner_Al_(Azul, Norte)
+}
+// c: la invocacion seria:
+procedure PonerColorAzulYRojaAlNorte(){
+    /* Proposito: coloca al norte una bolita de color azul y de color rojo.
+       Precondicion: debe existir al menos una celda hacia el norte.
+    */
+    Poner_Al_(Azul, Norte)
+    Poner_Al_(Rojo, Norte)
+}
+
+// EJERCICIO 3
+program{
+    DibujarRelojAnalógicoSimplificadoDeRadio_(1)
+}
+
+procedure DibujarRelojAnalógicoSimplificadoDeRadio_(radio){
+    /*
+        Proposito: Dibujar un reloj analogico de "radio" de radio. 
+        Precondicion: Debe existir "radio" de celdas hacia cada direccion
+                      desde la celda actual. Y las mismas deben estar vacias.
+                    el cabezal inicia en el centro del relog analogico.
+        Parametros:
+            * Radio: tipo numero. denota el radio del relog analogico.
+    */
+    IrA_Hacia_(radio, Norte)
+    ColocarLaHora_(12)
+    IrA_Hacia_(radio, Sur)
+    IrA_Hacia_(radio, Este)
+    ColocarLaHora_(3)
+    IrA_Hacia_(radio, Oeste)
+    IrA_Hacia_(radio, Sur)
+    ColocarLaHora_(6)
+    IrA_Hacia_(radio, Norte)
+    IrA_Hacia_(radio, Oeste)
+    ColocarLaHora_(9)
+    IrA_Hacia_(radio, Este)
+}
+
+procedure IrA_Hacia_(radio, direccion){
+    /*
+        Proposito: Ubicar el cabezal a "radio" celdas hacia "direccion".
+        Precondicion: debe existir "radio"  celdas hacia la "direccion" como minimo
+                      desde la celda actual.
+        Parametros: 
+            * radio: tipo numero. denota las celdas a colocar la hora desde la celda actual
+            * direccion: tipo direccion. denota hacia donde se coloca la hora.
+    */
+    repeat(radio){
+        Mover(direccion)    
+    }
+}
+
+procedure ColocarLaHora_(horaDelReloj){
+/*
+    Proposito: colocar la hora en la celda actual
+    Precondicion:
+        - la celda actual debe estar vacia
+    Parametro:
+        - horaDelReloj: de tipo numero. es la cantidad a poner de bolitas rojas, 
+*/
+    repeat(horaDelReloj) {
+        Poner(Rojo)
+    }
+}
+
+// EJERCICIO 4
+
+procedure Poner_ADistancia3Al_(color, dirección) {
+/*
+    Proposito: Colocar a 3 celdas de "direccion" bolitas de "color". el cabezal
+            termina a 3 celdas hacia "direccion"
+    Precondicion: Debe existir al menos 3 celdas hacia "direccion" desde la celda actual.
+    Parametros:
+        * color: del tipo color. denota el color a poner en la celda dada.
+        * direccion: es una direccion y denota hacia donde mover el cabezal.
+*/
+
+    Mover_3Veces(dirección) 
+    Poner(color)
+}
+
+// b :  la relacion esta en que este procedimiento llama a dicho parametro dentro del mismo.
+
+// EJERCICIO 5
+
+procedure EscribirFecha___(dia, mes, año){
+    /*
+        Proposito: Escribir la fecha de un "dia", "mes" y "año".
+        Precondicion: Debe existir al menos 3 celdas hacia el este desde la celda actual
+                      y las mismas deben estar vacias.
+        Parametros: 
+            dia: numero, denota el numero del dia a colocar y no debe ser menor a 0 y mayor a 31.
+            mes: numero, denota el numero del mes y no debe ser menor a 0 y mayor a 12.
+            año: numero, denota el numero del año a colocar y no debe ser menor a 0.
+    */
+    
+    ColocarFecha_(dia)
+    MoverParaColocarElSiguienteDato()
+    ColocarFecha_(mes)
+    MoverParaColocarElSiguienteDato()
+    ColocarFecha_(año)
+}
+
+procedure MoverParaColocarElSiguienteDato(){
+    /*  Proposito: ubicar el cabezal al este para la siguiente parte de la fecha.
+        Precondicion: debe existir al menos una celda hacia el este desde la celda actual. */
+    Mover(Este)
+}
+
+procedure ColocarFecha_(numero){
+    /*
+        Proposito: Coloca el "numero" dado en la celda actual.
+        Precondicion: la celda actual debe estar vacia. el numero dado no debe ser menor a 0.
+        Parametro: 
+            numero: numero, denota el numero a representar en la celda actual.
+    */
+    
+    repeat(numero){
+        Poner(Rojo)
+    }
+}
+
+// EJERCICIO 6 
+
+program{
+    /*
+        Proposito: Colocar las fechas DADAS en un listado vertical.
+        Precondicion: Debe existir al menos tres celdas hacia el este y 
+                      7 celdas hacia el norte desde la celda actual.
+    */
+    EscribirFecha___(10, 2, 1985)
+    AcomodarCabezalParaLaSiguienteFecha()
+    EscribirFecha___(10, 2, 1985)
+    AcomodarCabezal()
+    EscribirFecha___(10, 2, 1985)
+    AcomodarCabezal()
+    EscribirFecha___(10, 2, 1985)
+    AcomodarCabezal()
+    EscribirFecha___(10, 2, 1985)
+    AcomodarCabezal()
+    EscribirFecha___(10, 2, 1985)
+    AcomodarCabezal()
+    EscribirFecha___(10, 2, 1985)
+    
+}
+
+procedure AcomodarCabezalParaLaSiguienteFecha(){
+    /*
+        Proposito: Ubicar cabezal para imprimir la siguiente fecha.
+        Precondicion: debe existir al menos 2 celdas hacia el oeste y una al norte
+                      desde la celda actual.
+    */
+    repeat(2){
+        Mover(Oeste)
+    }
+    Mover(Norte)
+}
+
+// EJERCICIO 7
+
+//A
+
+procedure Pintar3PuntosAzules() {
+    /*  Proposito: pintar de color azul 3 puntos hacia el este a 3 celdas de distancia.
+        Precondicion: debe existir al menos 6 celdas hacia el este desde la celda actual. */
+    Poner(Azul)
+    Poner_ADistancia3Al_(Azul, Este)
+    Poner_ADistancia3Al_(Azul, Este)
+    Mover3VecesAl_(Oeste) Mover3VecesAl_(Oeste)
+}
+
+// B la relacion radica en la distancia a recorrer y la direccion.
+//C
+procedure Pintar3Puntos_(colorPunto) {
+    /*  Proposito: pintar de color "colorPunto" 3 puntos hacia el este a 3 celdas de distancia.
+        Precondicion: debe existir al menos 6 celdas hacia el este desde la celda actual. */
+    Poner(colorPunto)
+    Poner_ADistancia3Al_(colorPunto, Este)
+    Poner_ADistancia3Al_(colorPunto, Este)
+    Mover3VecesAl_(Oeste) 
+    Mover3VecesAl_(Oeste)
+}
+
+// EJERCICIO 8
+procedure PintarArcoIris(){
+    /*
+        Proposito: Pintar un arcoiris hacia la derecha.
+        Precondicion: debe existir al menos 6 celdas hacia el este desde la celda actual
+    */
+    Pintar3Puntos_(Negro)
+    Pintar3Puntos_(Rojo)
+    Pintar3Puntos_(Azul)
+    IrYAPintarVerde()
+    Pintar3Puntos_(Verde)
+}
+
+procedure IrYAPintarVerde(){
+    /*
+        Proposito: Ubicar el cabezal para pintar de color verde.
+        Precondicion: la celda actual debe estar vacia y debe haber al menos una celda
+                      hacia el norte desde la celda actual.
+    */
+    Mover(Norte)
+    Mover(Este)
+}
+
+//EJERCICIO 9
+
+//A
+
+procedure Mover_VecesAl_(cantidad, direccion){
+    /*
+        Proposito: Ubicar cabezal a "cantidad" de celdas hacia "direccion".
+        Precondicion: debe existir al menos "cantidad" de celdas hacia "direccion" desde la celda actual.
+        Parametros:
+            * cantidad: es un numero, denota las veces a mover el cabezal.
+            * direccion: es una direccion, denota hacia donde mover el cabezal.
+    */
+    repeat(cantidad){
+        Mover(direccion)
+    }
+}
+
+//B  la respuesta es no.
+//C 
+procedure Poner_DeColor_(cantidad, color){
+    /*
+        Proposito: Colocar "cantidad" de bolitas de "color".
+        Precondicion: ninguna
+        Parametros:
+            * color: es un color, denota el color de las bolitas a poner.
+            * cantidad: es un numero, denota la cantidad de bolitas a poner de "color"
+    */
+    repeat(cantidad){
+        Poner(color)
+    }
+}
+procedure Sacar_DeColor_(cantidad, color){
+    /*
+        Proposito: Sacar "cantidad" de bolitas de "color"
+        Precondicion: debe existir en la celda actual "cantidad" de bolitas de "color" a sacar en la celda actual.
+        parametros:
+            * color: es un color, denota el "color" a sacar de la celda actual.
+            * cantidad: es un numero, denota la cantidad de bolitas a sacar de la celda actual.
+    */
+    repeat (cantidad){
+        Sacar(color)
+    }
+}
+
+// EJERCICIO 10
+procedure IrAEsquina_Y_(primeraDirección,segundaDirección){
+    /* Proposito:   ubicar el cabezal en la esquina hacia "primeraDirección" y "segundaDirección", desde la celda
+                    actual.
+       Precondicion: la "segundaDirección" y la "primeraDirección" no deben ser iguales u opuestas.
+       Parametros: primeraDirección: es una direccion, denota la primera direccion hacia la esquina a mover.
+                   segundaDirección: es una direccion, denota la segunda direccion hacia la esquina a mover.
+    */
+    IrAlBorde(segundaDirección)
+    IrAlBorde(primeraDirección)
+}
+
+//EJERCICIO 11
+procedure DibujarLasInicialesDeMiNombre(){
+    /* Proposito: dibujar las iniciales del nombre Elias y apellido Escalante.
+       Precondicion: debe existir al menos 5 celdas hacia el norte desde la celda actual y 7 celdas hacia
+                     el este. la mismas deben estar vacias. */
+    DibujarLetraEDelNombre()
+    DibujarLetraEDelApellido()
+}
+procedure DibujarLetraEDelApellido(){
+    /* Proposito: dibuja la inicial del apellido .
+       Precondicion: debe existir al menos 5 celdas hacia el norte y 1 celda hacia el este desde la celda actual.
+                     la misma debe
+    */
+    DibujarLetraEDelNombre()
+}
+
+procedure DibujarLetraEDelNombre(){
+    /*
+    Proposito:   Dibuja la inicial del nombre.
+    Precondicion:   Debe haber al menos 1 celda hacia el este desde la celda actual y 5 celdas hacia el norte.
+                    Las mismas deben estar vacias.
+    */
+    DibujarLíneaHacia_DeLargo_(Norte, 5)
+    Mover_VecesAl_(1, Este)
+    repeat (2){
+        DibujarLíneaHacia_DeLargo_(Este, 1)
+        Mover_VecesAl_(2, Norte)
+    }
+    DibujarLíneaHacia_DeLargo_(Este, 1)
+}
+
+//EJERCICIO 12
+procedure DibujarCuadradoDeColor_DeTamaño_(colorDelCuadrado,tamaño){
+    /* PROPÓSITO: Dibujar un cuadrado de "tamaño" de color "colorDelCuadrado"
+    PRECONDICIONES:
+    * Hay al menos "tamaño" celda al Norte y "tamaño" de celdas hacia al Este de la celda actual
+    PARÁMETROS:
+    * colorDelCuadrado: el color con el que se dibuja el cuadrado.
+    * tamaño: es un numero que denota el tamaño de celdas del cuadrado.
+*/
+    DibujarLíneaDeColor_yDe_(colorDelCuadrado,tamaño)
+    PosicionarParaSiguienteLíneaDe_(tamaño)
+    DibujarLíneaDeColor_yDe_(colorDelCuadrado,tamaño)
+    
+}
+
+procedure DibujarLíneaDeColor_yDe_(colorDelCuadrado,tamaño) {
+/* PROPÓSITO: Dibujar una línea de longitud de "tamaño" de color
+**colorCuadrado**
+PRECONDICIONES: Hay al menos "tamaño" de celdas al Este de la celda actual.
+PARAMETROS: 
+* colorDelCuadrado: el color con el que se dibuja la linea.
+* tamaño: es un numero, denota la cantidad de celdas de la linea a dibujar.
+*/
+    repeat(tamaño - 1){
+        Poner(colorCuadrado)
+        Mover(Este)
+    }
+    Poner(colorCuadrado) 
+}
+
+procedure PosicionarParaSiguienteLíneaDe_(tamaño){
+    /*
+        Proposito: Ubicar el cabezal para dibujar la siguiente linea
+        Precondicion: debe existir al menos "tamaño" de celda al norte desde la celda actual
+        Parametro: "tamaño". es un numero que denota la cantidad de veces a mover.
+    */
+    repeat(tamaño){
+        Mover(Oeste)
+    }
+    Mover(Norte)
+}
+
+// ejercicio 12 original de nova
+
+procedure DibujarCuadradoDeColor_(colorDelCuadrado){
+    /* PROPÓSITO: Dibujar un cuadrado de 2x2 de color
+    **colorDelCuadrado**
+    PRECONDICIONES:
+    * Hay al menos 1 celda al Norte y 1 al Este de la actual
+    PARÁMETROS:
+    * colorDelCuadrado: el color con el que se dibuja el cuadrado
+*/
+    DibujarLíneax2(colorDelCuadrado)
+    PosicionarParaSiguienteLínea()
+    DibujarLíneax2(colorDelCuadrado)
+    
+}
+
+procedure DibujarLíneax2(colorCuadrado) {
+/* PROPÓSITO: Dibujar una línea de longitud 2 de color
+**colorCuadrado**
+PRECONDICIONES: Hay al menos 1 celda al Este de la actual
+PARAMETROS: 
+* colorDelCuadrado: el color con el que se dibuja el cuadrado
+*/
+    Poner(colorCuadrado) 
+    Mover(Este)
+    Poner(colorCuadrado)
+}
+
+procedure PosicionarParaSiguienteLínea(){
+    /*
+        Proposito: Ubicar el cabezal para dibujar la siguiente linea
+        Precondicion: debe existir al menos una celda al norte de la celda actual
+    */
+    Mover(Norte)
+    Mover(Oeste)
+}
+
+//EJERCICIO 13
+
+//a
+procedure Poner_Semillas(cantidadDeSemillasAPoner){
+    /*  Proposito: colocar "cantidadDeSemillasAPoner" de semillas en la parcela actual.
+        Precondicion: ninguna.
+        Parametros: cantidadDeSemillasAPoner, es un numero que denota la cantidad de semillar a poner.
+    */
+    repeat(cantidadDeSemillasAPoner){
+        PonerUnaSemilla()// procedimiento definido en la practica 2 ejercicio 8
+    }
+}
+//b
+procedure Sacar_Semillas(cantidadDeSemillasASacar){
+    /*  Proposito: sacar "cantidadDeSemillasASacar" de semillas en la parcela actual.
+        Precondicion: debe existir en la celda actual "cantidadDeSemillasASacar" de semillas.
+        Parametros: cantidadDeSemillasASacar, es un numero que denota la cantidad de semillar a sacar.
+    */
+    repeat(cantidadDeSemillasASacar){
+        SacarUnaSemilla()
+    }
+}
+//c
+procedure Poner_Árboles(cantidadDeÁrbolesAPoner){
+    /* Proposito: colocar "cantidadDeÁrbolesAPoner" de arboles en la celda actual.
+       Precondicion: ninguna.
+       Parametros: "cantidadDeÁrbolesAPoner", es un numero que denota la cantidad de arboles a poner.
+     */
+     repeat(cantidadDeÁrbolesAPoner){
+         PonerUnÁrbol()
+     }
+}
+//d
+procedure Sacar_Árboles(cantidadDeÁrbolesASacar){
+    /* proposito: retirar "cantidadDeÁrbolesASacar" de arboles de la celda actual.
+       precondicion: debe existir en la celda actual "cantidadDeÁrbolesASacar" de arboles.
+       Parametros: cantidadDeÁrbolesASacar, es un numero que denota la cantidad de arboles a sacar.
+    */
+    repeat(cantidadDeÁrbolesASacar){
+        SacarUnÁrbol()
+    }
+}
+//e
+procedure Poner_Nutrientes(cantidadDeNutrientesAPoner){
+    /*  Proposito: colocar " cantidadDeNutrientesAPoner "nutrientes en la celda actual.
+        Preocndicion: ninguna.
+        Parametros: cantidadDeNutrientesAPoner, es un numero que denota la cantidad de nutrientes a colocar.
+    */
+    repeat(cantidadDeNutrientesAPoner){
+        PonerUnNutriente()
+    }
+}
+
+
+
+
+
+
+
