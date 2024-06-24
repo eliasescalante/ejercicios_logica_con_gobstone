@@ -1,2 +1,2 @@
-# gobstone_practicas
-Ejercicios con gobstone... solo practica
+## Introduccion a la programacion
+## Ejercicios con el lenguaje Gobstone ...
