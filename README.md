@@ -7,3 +7,5 @@
 - Arrays, recorridos (busqueda, transformacion, procesamiento)
 - Listas, operaciones
 - Contratos
+- Variables, uso de parametros y argumentos
+- Funciones y procedimientos.
