@@ -1,0 +1,847 @@
+type TipoDePago is variant {
+    /* PROP: modelar Tipos de pago aceptados */
+    case Tarjeta {}
+    case MartPago {}
+    case Efectivo {}
+}
+type Producto is record{
+    /* PROP: modelar productos
+    INV.REP.: precio > 0 */
+    field nombre // String
+    field marca // String
+    field precio // Número
+}
+type Cliente is record {
+    /* PROP: modelar clientes */
+    field dni // String
+    field tipoDePago // TipoDePago
+    field productos // [Producto]
+}
+type Caja is record {
+    /* PROP: modelar cajas
+    INV.REP.: número > 0
+    facturado >= 0 */
+    field número // Número
+    field clientesEsperando // [Cliente]
+    field aceptaPagos // [TipoDePago]
+    field esRápida // Bool
+    field facturado // Número
+}
+// 1
+function cliente1(){
+    /*  Proposito: describe un cliente.
+        Precondicion: ninguna.
+        Tipo: Cliente*/
+        return(Cliente( dni <- 31444,
+                        tipoDePago <- Tarjeta,
+                        productos <- [agua(), azucar()]))
+}
+function cliente2(){
+    /*  Proposito: describe un cliente.
+        Precondicion: ninguna.
+        Tipo: Cliente*/
+        return(Cliente( dni <- 32444,
+                        tipoDePago <- Tarjeta,
+                        productos <- [agua(), azucar()]))
+}
+function botellaDeAgua(){
+    /*  Proposito: describe un producto de agua.
+        Precondicion: ninguna.
+        Tipo: Producto*/
+    return(Producto(nombre <- "agua",
+                    marca  <- "Villa del Sur",
+                    precio <- 45))
+}
+function paqueteDeAzucar(){
+    /*  Proposito: describe un paquete de azucar
+        Precondicion: ninguna.
+        Tipo: Producto*/
+    return(Producto(nombre <- "azucar",
+                    marca  <- "Ledesma",
+                    precio <- 30))
+}
+function caja1(){
+    /*  Proposito: describe la Caja 1.
+        Precondicion: ninguna
+        Tipo: Caja*/
+    return(Caja( número <- 2
+                 clientesEsperando <- [cliente1(), cliente2()]
+                 aceptaPagos <- [Tarjeta, MartPago,Efectivo]
+                 esRápida <- True
+                 facturado <- 3))
+}
+function caja2(){
+    /*  Proposito: describe la Caja 2.
+        Precondicion: ninguna
+        Tipo: Caja*/
+    return(Caja( número <- 1
+                 clientesEsperando <- [cliente1(), cliente2()]
+                 aceptaPagos <- [Tarjeta, MartPago,Efectivo]
+                 esRápida <- True
+                 facturado <- 2))
+}
+// EJERCICIO 2
+//A
+function cantidadDeClientesEsperandoEn_(caja){
+    /*  Proposito: describe la cantidad de clientes que estan esperando en la "caja" dada.
+        Precondicion: ninguna.
+        Parametro: "caja", es una Caja.
+        Tipo: Lista de Numeros*/
+    return(longitudDe_(clientesEsperando(caja)))
+}
+//B
+function cajaMenosOcupadaDe_(listaDeCaja){
+    /*  Proposito: describe la caja con menos clientes esperando de una "listaDeCaja" dada.
+        Precondicion: la lista de cajas no debe estar vacia y debe existir por lo menos 2 cajas.
+        Parametros: "listaDeCaja". es una Lista de Cajas.
+        Tipo: Caja*/
+    cajaMenosOcupada := primero(listaDeCaja)
+    foreach caja in resto(listaDeCaja) {
+        cajaMenosOcupada := cajaConMenosClientesEntre_Y_(cajaMenosOcupada, caja)
+    }
+    return(cajaMenosOcupada)
+}
+function cajaConMenosClientesEntre_Y_(caja1, caja){
+    /*  Proposito: describe la caja con menos clientes entre las dos cajas dadas.
+        Precondiciones: ninguna.
+        Parametros: cajaMenosOcupada y caja, son Cajas.
+        Tipo: Caja*/
+    return( choose caja1 when (mínimoEntre_Y_(cantidadDeClientesEsperandoEn_(caja1), cantidadDeClientesEsperandoEn_(caja)))
+                   caja  otherwise)
+}
+// C
+// RESUELTO CON SABA
+function gobsMart_conIngresoDe_aCaja_(listaDeCajas, cliente, noDeCaja){
+    /*  Proposito: describe la misma lista de cajas con el cliente agregado al numero de caja dado.
+        Precondicion: el "noDeCaja" debe ser un numero de caja y debe ser valido. y deben tener un numero unico.
+                      el "cliente" no debe estar en ninguna caja.         
+        Parametros: listaDeCajas: [Cajas]
+                    cliente: Cliente
+                    noDeCaja: Numero
+        Tipo:[Caja]
+        OBSERVACIONES: RECORRIDO DE TRNASFORMACION SOBRE LISTAS*/
+    listaDeCajasARecorrer := listaDeCajas
+    listaDeCajasObservadas := []
+    while(nroDeCaja /= numero(primero(listaDeCajasARecorrer)){
+        listaDeCajasObservadas := listaDeCajasObservadas ++ [primero(listaDeCajasARecorrer)]
+        listaDeCajasARecorrer := resto(listaDeCajasARecorrer)
+    }
+    return(listaDeCajasObservadas ++ [caja_ConNuevoCliente_(primero(listaDeCajasARecorrer), cliente)] ++ resto(listaDeCajasARecorrer))
+}
+// D
+// RESUELTO CON SABA
+function gobsMart_conIngresosDe_(listaDeCajas, listaDeClientes){
+    /*...*/
+    listaDeCajasConNuevosClientes := listaDeCajas
+    foreach cliente in listaDeClientes {
+        listaDeCajasConNuevosClientes := listaDeCajas_ConNuevoCliente_(listaDeCajasConNuevosClientes, cliente)
+    }
+    return(listaDeCajasConNuevosClientes)
+}
+function listaDeCajas_ConNuevoCliente_(listaDeCajasConNuevosClientes, cliente){
+    /*...*/
+    return(gobsMart_conIngresoDe_aCaja_(listaDeCajasConNuevosClientes, cliente,numero(cajaMenosOcupadaDe_(listaDeCajas_ConMetodoDePago_(listaDeCajas, tipoDePago(cliente))))))
+}
+function listaDeCajas_ConMetodoDePago_(listaDeCajas, tipoDePago){
+     /* 
+    Propósito: Describe una lista de cajas cuyo método de pago aceptado contempla el dado.
+    Precondiciones: -la lista de cajas dada no debe ser vacía
+    Parámetros: *listaDeCajas: [Caja]
+                *cliente: Cliente
+    Tipo: [Caja]
+    */
+    listaDeCajasVistas:= []
+    foreach caja in listaDeCajas{
+        listaDeCajasVistas:= listaDeCajasVistas ++ singular_Si_(caja,contiene_A_(aceptaPagos(caja),tipoDePago)) 
+    }
+    return(listaDeCajasVistas)
+}
+// E
+function caja_conPrimeroFacturado(caja){
+    /*  Proposito: describe una "caja" dada resultante de facturar al primer cliente de la caja dada.
+        Precondicion: el cliente a facturar eligio bien la caja de acuerdo a su tipo de pago.
+        Parametro: "caja", es una Caja.
+        Tipo: Caja*/
+    return(Caja(caja | facturado <- facturado + 1, clientesEsperando <- resto([clientesEsperando])))
+}
+// F
+function gobsMart_conCliente_cambiaACaja_(listaDeCajas, dni, nroCaja ){
+    /*  Proposito: describe la lista de cajas en donde un cliente con "dni" dado se cambia a una caja de "nroCaja" dado en la listaDerCajas dada.
+        Precondiciones: existe un cliente con el Dni dado esperando en alguna caja del gobsMart. y la el nroDeCaja dado
+        Parametros: listaDeCajas: es una [Lista de Cajas].
+                    dni, es un String.
+                    nroCajas: es un Numero.
+        Tipo: [Lista de Cajas]    */
+    listaDeCajasNueva := lista_SinElClienteDel_(listaDeCajas, dni)
+    listaDeCajasConElClienteNuevo := []
+    while(not primero(listaDeCajas) && número(primero(listaDeCajasNueva)) /= nroCaja){
+        listaDeCajasConElClienteNuevo := snoc_(listaDeCajasConElClienteNuevo, primero(listaDeCajasNueva))
+        listaDeCajasNueva := resto(listaDeCajasNueva)
+    }
+    listaDeCajasConElClienteNuevo := snoc_(listaDeCajasConElClienteNuevo, caja_ConClienteDe_(primero(listaDeCajasNueva), dni))
+    return( listaDeCajasConElClienteNuevo ++ resto(listaDeCajasNueva) )
+}
+function lista_SinElClienteDel_(listaDeCajas, dni){
+    /*  Proposito: describe una lista de cajas nueva a partir de "listaDeCajas" dada sin el cliente con el "dni" dado.
+        Precondiciones: existe el cliente con el "dni" dado en alguna caja de la lista.
+        Parametros: listaDeCajas: [Caja]
+                    dni: es un String.
+        Tipo: [cajas]   */
+    listaSinElCliente := []
+    foreach caja in listaDeCajas {
+        listaSinElCliente := listaSinElCliente ++ elemento_Con_Si_(caja,dni, es_ConCliente_(caja, dni ))
+    }
+    return (listaSinElCliente)
+}
+function elemento_Si_(caja, condicion){
+    /*  Proposito: describe una caja con el cliente actualizado si en ella se cumple la condicion, si no devuelve la caja actual dada.
+        Precondiciones: ninguna.
+        Parametro:  caja, es una Caja.
+                    dni : String.
+                    condicion: Booleano
+        tipo: Caja*/
+    return(choose   caja_ActualizadaSinClienteCon_(caja ,dni) when (condicion)
+                    caja otherwise)
+}
+function caja_ActualizadaSinClienteCon_(caja, dni){ // preguntar a saba
+    /*  Proposito: describe una caja sin un cliente con "dni" dado.
+        Precondicion: la caja tiene en su lista de clientes esperando un cliente con "dni" dado.
+        Parametros: DNI. es un String.
+        Tipo: Caja*/
+    listaDeClientesNueva := []
+    listaDeClienteARecorrer := clientesEsperando(caja)
+    while(not primero(listaDeClienteARecorrer) && dni(cliente) /= dni){
+        listaDeClientesNueva := snoc_(listaDeClientesNueva, primero(listaDeClienteARecorrer))
+        listaDeClienteARecorrer := resto(listaDeClienteARecorrer)
+    }
+    listaDeClientesNueva := listaDeClientesNueva ++ resto(listaDeClienteARecorrer)
+    return(Caja(caja | clientesEsperando <- listaDeClientesNueva))
+}
+function es_ConCliente_(caja, dni ){
+    /*  Proposito: indica si la caja actual tiene un cliente con dni dado.
+        Precondicion: ninguna.
+        Parametros: caja. es una Caja.
+                    dni: es un String.
+        Tipo: Booleano.*/
+    listaDeClientes := clientesEsperando(caja)
+    while (not esVacía(listaDeClientes) && dni(cliente) /= dni) {
+        listaDeClientes := resto(listaDeClientes)
+    }
+    return (esVacía(elementosQueQuedanPorVer))
+}
+function caja_ConClienteDe_(caja, dni){
+    /*  Proposito: describe una caja agregando un cliente con dni dado.
+        Precondicion: ninguna.
+        Parametro: caja, es una Caja.
+                    dni, es un String.
+        Tipo: Caja*/
+    return(Caja( caja | clientesEsperando <- snoc_(clientesEsperando, clienteCon_(dni))))
+}
+function clienteCon_(dni){
+    /*  Proposito: describe un cliente con "dni" dado.
+        Precondicion: ninguna.
+        Parametro: dni, es un String
+        Tipo: Cliente*/
+    return(Cliente( cliente | dni <- "dni"))
+}
+//OTRA FORMA DE HACERLO CON SABA
+function gobsMart_conCliente_cambiaACaja_(listaDeCajas, dniCliente, nroCaja){
+    /*  Proposito: describe una lista de cajas con un cliente con **dniCliente** cambiando
+            de alguna caja de **listaDeCajas** a la caja **nroCaja**.
+        Precondiciones:
+            - Tiene que existir el cliente con dniCliente en alguna 
+                de las cajas de listaDeCajas.
+            - Tiene que existir la caja nroCaja en listaDeCajas.
+        Parametros:
+            - listaDeCajas: [Caja]
+            - dniCliente: String
+            - nroCaja: Número
+        Tipo: [Caja]*/
+    return(gobsMart_conIngresoDe_aCaja_(
+        cajas_SinClienteConDNI_(listaDeCajas,dniCliente), clienteConDni_EnListaDeCajas_(dniCliente,listaDeCajas) ,nroCaja))
+}
+function clienteConDni_EnListaDeCajas_(dniCliente,listaDeCajas){
+    /**/
+    listaDeCajasARecorrer:= listaDeCajas
+    while(not esClienteConDNI_EnCaja_(dniCliente, primero(listaDeCajasARecorrer)){
+        listaDeCajasARecorrer:= resto(listaDeCajasARecorrer)
+    }
+    return(clienteConDNI_EnCaja_(dniCliente, primero(listaDeCajasARecorrer)))
+}
+function clienteConDNI_EnCaja_(dniCliente, caja){
+    /**/
+    clientesARecorrer:= clientesEsperando(caja)
+    while(not esCliente_ConDNI_(primero(clientesARecorrer), dniCliente)){
+        clientesARecorrer := resto(clientesARecorrer)
+    }
+    return(primero(clientesARecorrer))
+}
+function cajas_SinClienteConDNI_(listaDeCajas,dniCliente){
+    /*  Proposito: describe una lista de cajas eliminando el cliente con dniCliente
+            de la caja donde se encuentre en listaDeCajas.
+        Precondiciones:
+            - Tiene que existir un unico cliente con dniCliente en alguna 
+                de las cajas de listaDeCajas.
+        Parametros:
+            - listaDeCajas: [Caja]
+            - dniCliente: String
+        Tipo: [Caja]
+        Observaciones: Recorrido de busqueda y transformacion sobre una lista 
+            buscando al cliente con dniCliente y quitarlo.*/   
+    listaDeCajasARecorrer:= listaDeCajas
+    listaRecorridaSinCambios:= []
+    while(not esClienteConDNI_EnCaja_(dniCliente,primero(listaDeCajasARecorrer))){
+        listaRecorridaSinCambios:= listaRecorridaSinCambios + [primero(listaDeCajasARecorrer)]
+        listaDeCajasARecorrer:= resto(listaDeCajasARecorrer)
+    }
+    return(listaRecorridaSinCambios ++ [caja_SinCliente_(primero(listaDeCajasARecorrer), dniCliente))] ++ resto(listaDeCajasARecorrer))
+}
+function esClienteConDNI_EnCaja_(dniCliente, caja){
+    /*  Proposito: indica si el cliente con dni **dniCliente** esta en la caja dada.
+        Precondiciones:
+            - Ninguna
+        Parametros:
+            - dniCliente: String
+            - caja: Caja
+        Tipo: Booleano
+        Observaciones: Recorrido de busqueda, 
+            buscando al cliente con dni en la lista de clientes*/ 
+    listaDeClientesARecorrer:= clientesEsperando(caja)
+    while(  not esVacía(listaDeClientesARecorrer) &&  
+            not esCliente_ConDNI_(primero(listaDeClientesARecorrer),dniCliente)){       
+        listaDeClientesARecorrer := resto(listaDeClientesARecorrer)
+    }
+    return(not esVacía(listaDeClientesARecorrer))
+}
+function esCliente_ConDNI_(cliente, dniCliente){
+    /**/
+    return(dniCliente == dni(cliente))
+}
+function caja_SinCliente_(caja, dniCliente){
+    /**/
+    return(Caja(caja |caja
+        clientesEsperando <- listaDeClientes_SinClienteDNi_(clienesEsperando(caja), dniCliente)))
+}
+function listaDeClientes_SinClienteDNi_(listaDeClientes, dniCliente){
+    /**/
+    listaDeClientesARecorrer := listaDeClientes
+    listaDeClientesRecorridos:=[]
+    while(not esCliente_ConDNI_(primero(listaDeClientesARecorrer), dniCliente)){
+        listaDeClientesRecorridos := listaDeClientesRecorridos ++ [primero(listaDeClientesARecorrer)]
+        listaDeClientesARecorrer := resto(listaDeClientesARecorrer)
+    }
+    return(listaDeClientesRecorridos ++ resto(listaDeClientesARecorrer)) 
+}
+// EJERCICIO G
+function fila_ConAumentoDePrecioAMarolio(listaDeClientes){
+    /*  Proposito: Describe una lista de clientes donde se aumenta en 10 pesos todos los productos de la marca "Marolio" que tenga en su compra.
+        Precondicion: La lista de clientes no debe estar vacia y su lista de productos tampoco.
+        Parametros: listaClientes, es una lista de [Clientes]
+        Tipo: [Lista de Clientes]*/
+    listaDeClientesActualizada := []
+    foreach cliente in listaDeClientes {
+        listaDeClientesActualizada := listaDeClientesActualizada ++ [productoDel_ConPrecioActualizado(cliente)]
+    }
+    return(listaDeClientesActualizada)
+}
+function productoDel_ConPrecioActualizado(cliente){
+    /*  Proposito: describe un Cliente con la lista de sus productos Marolio actualizados al nuevo precio.
+        Precondicion: la lista de productos no puede estar vacia.
+        Parametros: cliente, es un Cliente.
+        Tipo: Cliente*/
+    listaDeProductosActualizada := []
+    foreach producto in productos(cliente) {
+        listaDeProductosActualizada := listaDeProductosActualizada ++ [productoConAumentoSiEsMarolioSiNoProductoDel_(producto)]
+    }
+    return(listaDeClientesActualizada)
+}
+function productoConAumentoSiEsMarolioSiNoProductoDel_(producto){
+    /*  Proposito: describe un "producto" dado con un aumento de "10" pesos si el producto es Marolio en caso contrario describe un "producto" dado.
+        Precondicion: ninguna
+        Parametros: producto, es un Producto.
+        Tipo: Producto*/
+    return( choose  Producto( producto | precio <- precio(producto) + 10 ) when (marca(producto) == "Marolio")
+                    producto otherwise)
+    }
+// PARTE 2 POKEMONES
+type TipoDePókemon is variant{
+/* PROPÓSITO: Modelar los tipos de Pókemon posibles */
+case Tierra {}
+case Agua {}
+case Fuego {}
+}
+type Pókemon is record {
+/* PROPÓSITO: Modelar un Pókemon
+INV.REP.: * La fuerza y el nivel son mayores o iguales a 0
+* Si está debilitado, su fuerza es cero */
+field tipo // TipoDePókemon
+field fuerza // Número
+field estáVivo // Booleano.
+field nivel // Número
+}
+// 1. Ejercicios con Registros y Variantes
+//A
+function es_esMásFuerteQue_(pokemon1, pokemon2){
+    /*  Proposito: indica si el primer "pokemon1" tiene mas fuerza que el segundo "pokemon2" dado.
+        Precondicion: no tiene
+        Parametros: * pokemonA: Pokemón - describe un pokemón.
+                    * pokemonB: Pokemón - describe un pokemón. 
+        TIPO: Booleano.*/
+    return(fuerza(pokemon1) > fuerza(pokemon2))
+}
+//B
+function esDeMayorNivel_Que_(pokemon1, pokemon2){
+    /*  PROPÓSITO: indica si el pokemón **pokemon1** tiene mayor nivel que el **pokemon2**.
+        PRECONDICIONES:No tiene.
+        PARÁMETROS:
+            * pokemon1: Pokemón - describe un pokemón.
+            * pokemon2: Pokemón - describe un pokemón. 
+        TIPO:Booleano.*/
+    return(nivel(pokemon1) > nivel(pokemon2))
+} 
+//C
+function pókemon_PotenciadoEn_(pokemon, potencia){
+    /*  Proposito: describe el "pokemon" dado con nivel y fuerza aumentados en "potencia" dada.
+        Precondicion: no tiene.
+        Parametros: pokemon, es un Pokemon.
+                    potencia, es un Numero.
+        tipo: Pokemon*/
+    return(Pókemon(pokemon | fuerza <- fuerza(pokemon) * potencia,
+                             nivel <- nivel(pokemon) * potencia))
+}
+//D
+function pókemon_ConValoresDuplicados(pokemon){
+    /*  PROPÓSITO:  describe el pokemón **pokemon** con nivel y fuerza duplicado.
+        PRECONDICIONES: No tiene.
+        PARÁMETROS: pokemon: Pokemón - describe un pokemón.
+        TIPO:Pokemon.*/
+    return(pókemon_PotenciadoEn_(pokemon, 2))
+}
+//E
+function pókemon_PotenciadoSiEsDeTipo_En(pokemon, tipo, potencia){
+    /*PROPÓSITO: describe el pokemón **pokemon** con nivel y fuerza multiplicado por **potencia** si es de tipo **tipo**.
+        PRECONDICIONES: No tiene.
+        PARÁMETROS:
+            * pokemon: Pokemón - describe un pokemón.
+            * tipo: TipoDePókemon - 
+            * potencia: Número - describe la potencia.
+        TIPO: Pokemon.*/
+    return(choose   pókemon_PotenciadoEn_(pokemon, potencia) when (tipo(pokemon)==tipo)
+                    pokemon otherwise) 
+}
+// F
+function pókemon_Derrotado(pokemon){
+    /* PROPÓSITO: describe el pokemón **pokemon** debilitado.
+        PRECONDICIONES:No tiene.
+        PARÁMETROS:pokemon: Pokemón - describe un pokemón.
+        TIPO:Pokemon.*/
+    return(Pókemon( pokemon | fuerza <- 0,
+                              estáVivo <- False))
+}
+// 2. Ejercicios con Listas de Registros
+// A
+function pókemonDe_Entrenados_(pokemones, número){
+    /*  PROPÓSITO:describe la lista de pokemones potenciados por **potencia**.
+        PRECONDICIONES: No tiene.
+        PARÁMETROS: pokemon: Pokemón - describe un pokemón.
+        TIPO: * Pokemon */
+    pokemonesPotenciados := []
+    foreach pokemon in pokemones{
+        pokemonesPotenciados := pokemonesPotenciados ++ [pókemon_PotenciadoEn_(pokemon, número)]
+    }
+    return(pokemonesPotenciados)
+}
+//B
+function pókemonDe_DelTipo_(listaDePokemones, tipoPokemon){
+    /*  PROPÓSITO: describe una lista de listaDePokemones de tipo **tipoPokemon** tomados de la lista **listaDePokemones**.
+        PRECONDICIONES: No tiene.
+        PARÁMETROS: listaDePokemones: Pokemón - describe una lista de listaDePokemónes.
+                    * tipoPokemon - TipoDePokemon.
+        TIPO:Lista de Pókemones.*/    
+    listaDePokemonesDeTipoVistos := []
+    foreach pokemon in listaDePokemones{
+        listaDePokemonesDeTipoVistos := listaDePokemonesDeTipoVistos ++ singular_Si_(pokemon, tipo(pokemon) == tipoPokemon)
+    }
+    return(listaDePokemonesDeTipoVistos)
+}
+//C
+function elMásFuerteDe_(listaDePokemon){
+    /*  Proposito: describe el pokemon mas fuerte de mas alto nivel de una "listaDePokemon* dada 
+        Preocondicion: existe un pokemon mas fuerte dentro de la "listaDePokemon" dado, si existiera
+                    dos pokemones con mismo nivel se elige cualquiera de los dos
+        parametros: [listaDePokemon]
+        Tipo: Pokemon*/
+    pokemonMásFuerteHastaAhora := primero(listaDePokemon)
+    foreach pokemon in resto(listaDePokemon){
+        pokemonMásFuerteHastaAhora := pokemosMásFuerteEntre_Y_(pokemonMásFuerteHastaAhora, pokemon)
+    }
+    return(pokemonMásFuerteHastaAhora)
+}
+function pokemosMásFuerteEntre_Y_(pokemonA, pokemonB){
+    /*  Proposito: describe un pokemon mas fuerte entre "pokemonA" y "pokemonB" dados.
+        Precondicion: ninguna.
+        Parametros: "pokemonA" y "pokemonB" son Pokemones.
+        Tipo: Pokemon*/
+    return(choose
+            pokemonA when (es_MásFuerteQue_(pokemonA,pokemonB))
+            pokemonB otherwise)
+}
+// D
+function pókemonDe_DelTipo_Duplicados(listaDePokemon, tipoDePokemon){
+    /*  Proposito: describe una lista de pokemones resultante de duplicar aquellos pokemones de la "listaDePokemon" dado y del "tipoDePokemon" dado.
+        Precondicion: ninguna.
+        Parametros: "listaDePokemon", es una [Lista de Pokemon]
+                    "tipoDePokemon", es un TipoDePókemon.
+        Tipo: [Lista de Pokemon]
+    */
+    listaDePokemonHastaAhora := []
+    foreach pokemon in listaDePokemon{
+        listaDePokemonHastaAhora := listaDePokemonHastaAhora ++ duplicarSiEsTipo_SinoEs_(tipo(pokemon),pokemon)
+    }
+    return (listaDePokemonHastaAhora)|
+}
+function duplicarSiEsTipo_SinoEs_(tipoDepokemon, pokemon){
+    /*  Proposito: describe una lista de pokemon dado dos veces si el tipoDepokemon dado concuerda con el tipo del pokemon a duplicar. si no
+                    describe el mismo pokemon en una lista.
+        Precondicion: ninguna.
+        Parametros: "tipoDePokemon", es un TipoDePókemon.
+                    pokemon, es un Pokemon.
+        Tipo: Lista de Pokemon*/
+    return(choose
+            [pókemon_ConValoresDuplicados(pokemon)] when (tipo(pokemon)== tipoDePokemon)
+            [pokemon] otherwise)
+}
+// E
+function elMásDébilDe_(listaDePokemon){
+     /*  Proposito: describe el pokemon mas debil de menos nivel de una "listaDePokemon* dada 
+        Preocondicion: existe un pokemon menos fuerte dentro de la "listaDePokemon" dado, si existiera
+                    dos pokemones con mismo nivel se elige cualquiera de los dos
+        parametros: [listaDePokemon]
+        Tipo: Pokemon*/
+    pokemonMásDébilHastaAhora := primero(listaDePokemon)
+    
+    foreach pokemon in resto(listaDePokemon){
+        pokemonMásDébilHastaAhora := pokemosMásDébilEntre_Y_(pokemonMásDébilHastaAhora, pokemon)
+    }
+    return(pokemonMásDébilHastaAhora)
+}
+function pokemosMásDébilEntre_Y_(pokemonA, pokemonB){
+    /*  Proposito: describe un pokemon menos fuerte entre "pokemonA" y "pokemonB" dados.
+        Precondicion: ninguna.
+        Parametros: "pokemonA" y "pokemonB" son Pokemones.
+        Tipo: Pokemon*/
+    return(choose
+            pokemonA when (not es_MásFuerteQue_(pokemonA,pokemonB))
+            pokemonB otherwise)
+}
+//F
+function pókemonDebilitadosDe_(listaDePokemon){
+    /*  Proposito: describe la lista de aquellos pokemones de la "listaDePokemon" dados que estan debilitados.
+        Precondiciones: existen pokemones debilitados en la lsita dada.
+        Parametros: listaDePokemon, es una [Lista de Pokemon]
+        Tipo: [Lista de Pokemon]
+    */
+    listaDePokemonDebilitadosYaVistos := []
+    foreach pokemon in listaDePokemon{
+        listaDePokemonDebilitadosYaVistos := listaDePokemonDebilitadosYaVistos ++ singularSi(pokemon, not estáVivo(pokemon))
+    }
+    return(listaDePokemonDebilitadosYaVistos)
+}
+// G
+function cantidadDePókemonSaludablesEn_(listaDePokemon){
+    /*  Proposito: describe la cantidad de Pókemon de la lista dada que no están debilitados.
+        Precondicion: la lista de pokemon no esta vacia.
+        Parametro: "listaDePokemon", es una [Lista de Pokemon]
+        Tipo: Numero
+    */
+    cantidadDePokemonSaludablesYaVistos := 0
+    foreach pokemon in listaDePokemon{
+        cantidadDePokemonSaludablesYaVistos := cantidadDePokemonSaludablesYaVistos + esUnoSi_SinoCero(estáVivo(pokemon))
+    }
+    return(cantidadDePokemonSaludablesYaVistos)
+}
+//H
+function existePókemonEn_ConFuerza_Tipo_YNivel_(listaDePokemon, fuerza, tipoDePokemon, nivel){
+    /*  Proposito: indica si existe un pokemon en la lista dada de"fuerza, tipoDePokemon y nivel" dado.
+        Precondiciones: ninguna.
+        Parametros: listaDePokemon, es una [Lista de Pokemon]
+                    fuerza, es un Numero.
+                    tipoDePokemon, es un TipoDePokemon
+                    nivel, Numero.
+        Tipo: Booleano*/
+    listaDePokemonARecorrer := listaDePokemon
+    while(not esVacía(listaDePokemonARecorrer) && not esPokemon_Con_Y_Y_(primero(listaDePokemon), fuerza, tipoDePokemon, nivel)){
+        listaDePokemonARecorrer := resto(listaDePokemonARecorrer)
+    }
+    return(not esVacía(listaDePokemonARecorrer))
+}
+function esPokemon_Con_Y_Y_(pokemon, fuerza, tipoDePokemon, nivel){
+    /*  Proposito: indica si el pokemon dado tiene fuerza, nivel y tipoDePokemon son iguales a los dados.
+        Precondicion: ninguna.
+        Parametros: pokemon, es una Pokemon
+                    fuerza, es un Numero.
+                    tipoDePokemon, es un TipoDePokemon
+                    nivel, Numero.
+        tipo: Booleano*/
+    return(fuerza(pokemon) == fuerza
+            &&
+           tipo(pokemon) == tipoDePokemon
+           &&
+           nivel(pokemon) == nivel)
+}
+// EJERCICIO 3 - 3. Ejercicio con Registros y Listas
+type Entrenador is record{
+/* PROPÓSITO: Modelar un entrenador de Pókemon.
+INV.REP.: identificador es un número > 0 */
+field lista // [Pokemon]
+field identificador // Número
+field esTáctico // Booleano
+}
+// A
+function entrenador__(identificador,esTáctico ){
+    /*  Proposito: Modelar un entrenador de Pókemon
+        Precondiciones: Identificador es un número > 0 
+        Parametros: identificador, es un Numero
+                    esTáctico, es un Booleano.
+        Tipo: Entrenador*/
+    return(Entrenador(  lista         <- [], 
+                        identificador <- identificadorDelEntrenador,
+                        esTáctico     <- entrenadorTáctico))
+}
+//B
+function entrenador_ConPókemon_Agregado(entrenador, pokemon){
+    /*  Proposito: describe al entrenador resultante de agregar al pokemon dado a la lista de pokemon del entrenador dado.
+        Precondicion: ninguna.
+        Parametros: entrenador: es un Entrenador.
+                    pokemon, es un Pokemon.
+        Tipo: Entrenador*/
+    return (Entrenador(entrenador | lista <- snoc_(lista(entrenador), pókemonAAgregar)))
+}
+//C
+function cantidadDePókemonDe_(entrenador){
+    /*  PROPÓSITO: Describe la cantidad total de Pókemons del entrenador *entrenador*
+        PARÁMETROS: *entrenador*: Es de tipo Entrenador. Describe a un entrenador 
+        PRECONDICIONES:No tiene 
+        Tipo:Número 
+        Observaciones: Recorrido de acumulación 
+    */
+    return (longitudDe_(lista(entrenador)))
+}
+//D
+function cantidadTotalDePókemonEn_(listaDeEntrenadores) {
+    /*  PROPÓSITO: Describe la cantidad total de Pókemons que tienen todos los entrenadores 
+        de la lista *listaDeEntrenadores*
+        PARÁMETROS: *listaDeEntrenadores*: [Entrenador]. Describe una lista de entrenadores 
+        PRECONDICIONES: No tiene 
+        Tipo: Número     */
+    cantidadTotalDePókemonsDeLosEntrenadores := 0 
+    foreach entrenador in listaDeEntrenadores {
+        cantidadTotalDePókemonsDeLosEntrenadores := cantidadTotalDePókemonsDeLosEntrenadores + 
+            cantidadDePókemonDe_(entrenador)
+    }
+    return (cantidadTotalDePókemonsDeLosEntrenadores)
+}
+//E
+function entrenadorMásAntiguoEntre_Y_(entrenador1, entrenador2) {
+    /*  PROPÓSITO: Describe al entrenador más antiguo entre el *entrenador1* y el *entrenador2*
+        PARÁMETROS:
+            - *entrenador1*: Es de tipo Entrenador. Describe a un entrenador  
+            - *entrenador2*: Es de tipo Entrenador. Describe a un entrenador 
+        PRECONDICIONES: No tiene 
+        Tipo:Booleano */
+    return (choose entrenador1 when (identificador(entrenador1) < identificador(entrenador2))
+                   entrenador2 otherwise)
+}
+//F
+function elMásAntiguoEn_(listaDeEntrenadores) {
+    /*  PROPÓSITO: Describe al Entrenador más antiguo de la lista *listaDeEntrenadores*
+        PARÁMETROS: *listaDeEntrenadores*: [Entrenador]. Describe una lista de entrenadores
+        PRECONDICIONES: [Entrenador] no debe ser vacía 
+        TIPO:Entrenador 
+        OBSERVACIONES:Recorrido de máximos y mínimos 
+    */
+    entrenadorMásAntiguoHastaAhora := primero(listaDeEntrenadores)
+    foreach entrenador in resto(listaDeEntrenadores) {
+        entrenadorMásAntiguo := entrenadorMásAntiguoEntre_Y_(entrenadorMásAntiguoHastaAhora, entrenador)
+    }
+    return (entrenadorMásAntiguo)
+}
+// G
+function entrenadorGanadorDeDesafíoEntre_Y_(entrenador1, entrenador2) {
+    /*  PROPÓSITO: Describe al Entrenador ganador de una lucha de Pókemons entre 
+        *entrenador1* y *entrenador2*
+        PARÁMETROS:
+            - *entrenador1*: Entrenador. Describe a un entrenador contrincante 
+            - *entrenador2*: Entrenador. Describe a un entrenador contrincante
+        PRECONDICIONES:
+            - En cada pelea entre dos Pókemon siempre gana el más fuerte
+            - Si tienen igual fuerza, la pelea no cuenta para ninguno de los dos 
+            - Gana el desafío el entrenador que consiga ganar más batallas o de haber empate en la cantidad 
+              de peleas ganadas, gana el de mayor antigüedad.
+            - Todos los entrenadores deben ser diferentes
+        TIPO:Entrenador 
+        OBSERVACIONES:  La lucha consiste en que compitan un Pókemon de cada entrenador hasta que
+                        se acaben los Pókemon de uno de ellos, resultando en batallas del primero con
+                        el primero, el segundo con el segundo, etc.
+                         - recorrido sobre 2 listas 
+    */
+    pókemonsPrimerEntrenador := lista(entrenador1)
+    pókemonsSegundoEntrenador := lista(entrenador2)
+    batallasGanadasEntrenador1 := 0
+    batallasGanadasEntrenador2 := 0 
+    while (not esVacía(pókemonsPrimerEntrenador) && not esVacía(pókemonsSegundoEntrenador)) {
+        batallasGanadasEntrenador1 := batallasGanadasEntrenador1
+          + esUnoSi_SinoCero(fuerza(primero(pókemonsPrimerEntrenador)) > fuerza(primero(pókemonsSegundoEntrenador)))
+        batallasGanadasEntrenador2 := batallasGanadasEntrenador2 
+          + esUnoSi_SinoCero(fuerza(primero(pókemonsSegundoEntrenador)) > fuerza(primero(pókemonsPrimerEntrenador)))
+        pókemonsPrimerEntrenador  := resto(pókemonsPrimerEntrenador)
+        pókemonsSegundoEntrenador := resto(pókemonsSegundoEntrenador)
+    }
+    return (choose entrenador1 when (batallasGanadasEntrenador1 > batallasGanadasEntrenador2)
+                   entrenadorMásAntiguoEntre_Y_(entrenador1, entrenador2) 
+                                        when (batallasGanadasEntrenador1 == batallasGanadasEntrenador2)         
+                   entrenador2 otherwise)
+}
+// H
+function entrenadorGanadorDeDesafioEn_(listaDeEntrenadores) {
+    /*  PROPÓSITO: Describe al Entrenador ganador del desafío entre Entrenadores de la lista 
+        *listaDeEntrenadores*
+        PARÁMETROS: *listaDeEntrenadores*: [Entrenador]. Describe una lista de Entrenadores 
+        PRECONDICIONES: La lista de entrenadores no debe ser vacía 
+        TIPO:Entrenador 
+        OBSERVACIONES: bRecorrido de Máximos y Mínimos 
+    */
+    entrenadorGanadorHastaAhora := primero(listaDeEntrenadores)
+    foreach entrenador in resto(listaDeEntrenadores) {
+        entrenadorGanadorHastaAhora := entrenadorGanadorDeDesafíoEntre_Y_(entrenadorGanadorHastaAhora, entrenador)
+    }
+    return (entrenadorGanadorHastaAhora)
+}
+//I 
+function fuerzaTotalDe_(entrenador) {
+    /*  PROPÓSITO: Describe la fuerza total de todos los Pókemons del entrenador *entrenador*
+        PARÁMETROS: *entrenador*: Entrenador. Describe un entrenador 
+        PRECONDICIONES:No tiene 
+        TIPO:Número 
+        OBSERVACIONES:Recorrido de acumulación
+    */
+    fuerzaTotalHastaAhora := 0 
+    foreach pokemon in lista(entrenador) {
+        fuerzaTotalHastaAhora := fuerzaTotalHastaAhora + fuerzaDeCada_(pokemon)
+    }
+    return (fuerzaTotalHastaAhora)
+}
+function fuerzaDeCada_(pokemon) {
+    /*  PROPÓSITO: Describe la fuerza de cada Pókemon *pokemon*
+        PARÁMETROS:*pokemon*: Pókemon. Describe a un pókemon 
+        PRECONDICIONES: No tiene 
+        TIPO: Número 
+    */
+    return (fuerza(pokemon))
+}
+//J
+function fuerzaTotalEnBatallaEn_(listaDeEntrenadores) {
+    /*  PROPÓSITO: Describe la fuerza total de todos los Pókemons de todos los entrenadores 
+        en la lista *listaDeEntrenadores*
+        PARÁMETROS: *listaDeEntrenadores*: [Entrenador]. Describe una lista de entrenadores 
+        PRECONDICIONES: No tiene 
+        TIPO: Número 
+        OBSERVACIONES: Recorrido de acumulación
+    */
+    fuerzaDeTodosLosPókemons := 0 
+    foreach entrenador in listaDeEntrenadores {
+        fuerzaDeTodosLosPókemons := fuerzaDeTodosLosPókemons + fuerzaTotalDe_(entrenador)
+    }
+    return (fuerzaDeTodosLosPókemons)
+}
+//K
+function mejorPókemonDe_ParaJugada(entrenador) {
+    /* PROPÓSITO: Describe al pókemon de mayor nivel si el entrenador *entrenador* es táctico, si el 
+        entrenador no es táctico describe al primer pókemon de su lista 
+        PARÁMETROS: *entrenador*: Entrenador. Describe a un entrenador 
+        PRECONDICIONES: No tiene 
+        TIPO: Booleano 
+    */
+    return (choose  elPókemonDeMayorNivelDe_(lista(entrenador)) when (esTáctico(entrenador))
+                    primero(lista(entrenador)) otherwise)
+}
+function elPókemonDeMayorNivelDe_(listaDePókemons) {
+    /*  PROPÓSITO: Describe al pókemon de mayor nivel con sus valores duplicados 
+        PARÁMETROS:*listaDePókemons*: [Pókemon]. Describe una lista de pókemon
+        PRECONDICIONES:La lista de pókemons no debe ser vacía  (porque estoy haciendo primero(listaDePókemons) antes del foreach)
+        TIPO:Pókemon 
+        OBSERVACIONES:Recorrido de máximos y minimos 
+    */
+    elPókemonDeMayorNivelHastaAhora := primero(listaDePókemons)
+    foreach pókemon in resto(listaDePókemons) {
+        elPókemonDeMayorNivelHastaAhora := máximoEntre_Y_(nivel(pókemon), nivel(elPókemonDeMayorNivelHastaAhora))
+    }
+    return (elPókemonDeMayorNivelHastaAhora)
+}
+//L
+function ganadorDeDesafíoInteligenteDe_CombatesEntre_Y_(númeroDeCombates, entrenador1, entrenador2) {
+    /* PROPÓSITO: Describe al entrenador ganador de un desafío inteligente con la cantidad 
+        de combates *númeroDeCombates* entre los entrenadores *entrenador1* y *entrenador2*
+        PARÁMETROS:
+            - *númeroDeCombates*: Número. Describe la cantidad de combates que van a realizar ambos 
+            entrenadores, es decir, a cantidad de pókemons que va a elegir de sus listas en orden
+            - *entrenador1*: Entrenador. Describe a un entrenador 
+            - *entrenador2*: Entrenador. Describe a un entrenador 
+        PRECONDICIONES:Gana el desafío el entrenador que consiga ganar más batallas o de haber empate en la cantidad 
+              de peleas ganadas, gana el de mayor antigüedad.
+            - Todos los entrenadores deben ser diferentes
+        TIPO:Entrenador 
+        OBSERVACIONES: recorrido sobre 2 listas 
+    */
+    listaDePókemonsElegidosDelPrimerEntrenador := listaDe_OrdenadaDeMayorAMenorDe(segmentoInicialDeLargo_de_(númeroDeCombates, lista(entrenador1)))
+    listaDePókemonsElegidosDelSegundoEntrenador := listaDe_OrdenadaDeMayorAMenorDe(segmentoInicialDeLargo_de_(númeroDeCombates, lista(entrenador2)))
+    batallasGanadasEntrenador1 := 0
+    batallasGanadasEntrenador2 := 0 
+    while (not esVacía(listaDePókemonsElegidosDelPrimerEntrenador) && not esVacía(listaDePókemonsElegidosDelSegundoEntrenador)) {
+        batallasGanadasEntrenador1 := batallasGanadasEntrenador1
+          + esUnoSi_SinoCero(fuerza(primero(listaDePókemonsElegidosDelPrimerEntrenador)) > fuerza(primero(listaDePókemonsElegidosDelSegundoEntrenador)))
+        batallasGanadasEntrenador2 := batallasGanadasEntrenador2 
+          + esUnoSi_SinoCero(fuerza(primero(listaDePókemonsElegidosDelSegundoEntrenador)) > fuerza(primero(listaDePókemonsElegidosDelPrimerEntrenador)))
+        pókemonsPrimerEntrenador  := resto(listaDePókemonsElegidosDelPrimerEntrenador)
+        pókemonsSegundoEntrenador := resto(listaDePókemonsElegidosDelSegundoEntrenador)
+    }
+    return (choose entrenador1 when (batallasGanadasEntrenador1 > batallasGanadasEntrenador2)
+                   entrenadorMásAntiguoEntre_Y_(entrenador1, entrenador2) 
+                                        when (batallasGanadasEntrenador1 == batallasGanadasEntrenador2)      
+                   entrenador2 otherwise)
+}
+function listaDe_OrdenadaDeMayorAMenorDe(listaDePókemons) {
+    /*  PROPÓSITO: Describe la lista *listaDePókemons* ordenada del mas fuerte al mas débil 
+        PARÁMETROS:*listaDePókemons*: [Pókemon]. Describe una lista de pókemon 
+        PRECONDICIONES:No tiene 
+        TIPO:[Pókemon]
+        OBSERVACIONES:  Recorrido de ordenar lista de mayor a menor, reutilizo el que hizo saba en una clase que 
+                        está al final de todo en mi biblioteca 
+    */
+    listaARecorrer:= listaDePókemons // []
+    listaOrdenada:= []  // [7, 4, 3, 3, 2]
+    while(not esVacía(listaARecorrer)){
+        elementoMaximoEncontrado := elMásFuerteDe_(listaDePokemon) // 2
+        listaOrdenada := listaOrdenada ++ [elementoMaximoEncontrado]
+        listaARecorrer := laLista_SinElElemento_(listaARecorrer, elementoMaximoEncontrado)
+    }
+    return (listaOrdenada)
+}
+//M
+function ganadorDeDesafíoInteligenteDe_CombatesEn_(númeroDeCombates, listaDeEntrenadores) {
+    /* PROPÓSITO: Describe al Entrenador ganador de un desafío inteligente entre los entrenadores de la lista 
+        *listaDeEntrenadores*
+        PARÁMETROS:
+            - *númeroDeCombates*: Número. Describe un número de combates que van a realizar cada uno de los entrenadores 
+            - *listaDeEntrenadores*: [Entrenador]. Describe una lista de entrenadores 
+        PRECONDICIONES: La lista *listaDeEntrenadores* no debe ser vacía 
+        TIPO: Entrenador 
+        OBSERVACIONES: Recorrido de máximos y mínimos 
+    */
+    ganadorDelDesafíoHastaAhora := primero(listaDeEntrenadores)
+    foreach entrenador in resto(listaDeEntrenadores) {
+        ganadorDelDesafíoHastaAhora := 
+            ganadorDeDesafíoInteligenteDe_CombatesEntre_Y_(númeroDeCombates, ganadorDelDesafíoHastaAhora, entrenador)
+    }
+    return (ganadorDelDesafíoHastaAhora)
+}
