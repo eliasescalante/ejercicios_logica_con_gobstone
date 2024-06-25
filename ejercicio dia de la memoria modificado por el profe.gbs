@@ -1,0 +1,40 @@
+procedure EscribirFecha___(dia, mes, año){
+    /*
+        Proposito: Escribir la fecha de un "dia", "mes" y "año".
+        Precondicion: Debe existir al menos 3 celdas hacia el este desde la celda actual
+                      y las mismas deben estar vacias.
+        Parametros: 
+            dia: numero, denota el numero del dia a colocar y no debe ser menor a 0 y mayor a 31.
+            mes: numero, denota el numero del mes y no debe ser menor a 0 y mayor a 12.
+            año: numero, denota el numero del año a colocar y no debe ser menor a 0.
+    */
+    
+    ColocarFecha_(dia,Azul)
+    MoverParaColocarElSiguienteDato()
+    ColocarFecha_(mes,Rojo)
+    MoverParaColocarElSiguienteDato()
+    ColocarFecha_(año, Negro)
+}
+
+procedure MoverParaColocarElSiguienteDato(){
+    /*  Proposito: ubicar el cabezal al este para la siguiente parte de la fecha.
+        Precondicion: debe existir al menos una celda hacia el este desde la celda actual. */
+    Mover(Este)
+}
+
+procedure ColocarFecha_(numero,color){
+    /*
+        Proposito: Coloca el "numero" dado en la celda actual.
+        Precondicion: la celda actual debe estar vacia. el numero dado no debe ser menor a 0.
+        Parametro: 
+            numero: numero, denota el numero a representar en la celda actual.
+    */
+    
+    repeat(numero){
+        Poner(color)
+    }
+}
+
+program{
+    EscribirFecha___(24, 3, 1976)
+}
